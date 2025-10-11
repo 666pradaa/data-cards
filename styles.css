@@ -2986,29 +2986,88 @@ body.light-theme {
 /* Эффекты контроля */
 .fear-marker, .freeze-marker {
     position: absolute;
-    top: -30px;
+    top: 10%;
     left: 50%;
     transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.9);
-    color: #fff;
-    padding: 0.3rem 0.8rem;
-    border-radius: 8px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    white-space: nowrap;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
     z-index: 100;
-    animation: markerBounce 0.5s ease-out;
+    animation: hitmarkerAppear 0.5s ease, hitmarkerFloat 2s ease-in-out infinite;
     pointer-events: none;
 }
 
 .fear-marker {
-    background: rgba(139, 0, 0, 0.9);
-    border: 2px solid #ff0000;
+    /* Стили для страха */
+}
+
+.fear-icon {
+    font-size: 3rem;
+    filter: drop-shadow(0 0 10px rgba(220, 38, 38, 1));
+    animation: fearPulse 0.5s ease infinite;
+}
+
+.fear-text {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: #fff;
+    background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+    padding: 0.4rem 1.2rem;
+    border-radius: 12px;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.8), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    letter-spacing: 2px;
 }
 
 .freeze-marker {
-    background: rgba(0, 100, 200, 0.9);
-    border: 2px solid #00bfff;
+    /* Стили для заморозки */
+}
+
+.freeze-icon {
+    font-size: 3rem;
+    filter: drop-shadow(0 0 10px rgba(59, 130, 246, 1));
+    animation: freezePulse 0.5s ease infinite;
+}
+
+.freeze-text {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: #fff;
+    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+    padding: 0.4rem 1.2rem;
+    border-radius: 12px;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.8), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    letter-spacing: 2px;
+}
+
+@keyframes hitmarkerAppear {
+    0% {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px) scale(0.5);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
+    }
+}
+
+@keyframes hitmarkerFloat {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-10px); }
+}
+
+@keyframes fearPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2) rotate(-10deg); }
+}
+
+@keyframes freezePulse {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.2) rotate(15deg); }
 }
 
 @keyframes markerBounce {
@@ -6622,9 +6681,17 @@ textarea.form-input {
     }
     
     .fear-marker, .freeze-marker {
-        font-size: 0.7rem;
-        padding: 0.2rem 0.5rem;
-        top: -25px;
+        top: 5%;
+    }
+    
+    .fear-icon, .freeze-icon {
+        font-size: 2rem;
+    }
+    
+    .fear-text, .freeze-text {
+        font-size: 0.9rem;
+        padding: 0.3rem 0.8rem;
+        letter-spacing: 1px;
     }
     
     .damage-number {

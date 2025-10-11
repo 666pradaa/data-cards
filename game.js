@@ -36,10 +36,14 @@ class SoundSystem {
             try {
                 const audio = new Audio(soundPath);
                 audio.volume = this.masterVolume * volume;
-                audio.play().catch(() => {}); // Игнорируем ошибки если файл не найден
+                audio.play().catch((err) => {
+                    console.log(`Звук ${type} не воспроизведен:`, err.message);
+                });
             } catch (e) {
-                // Файл не найден - просто игнорируем
+                console.log(`Ошибка создания аудио ${type}:`, e.message);
             }
+        } else {
+            console.log(`Звук ${type} не найден в soundPaths`);
         }
     }
 
@@ -136,19 +140,19 @@ class GameData {
             invisibility: {
                 name: 'Руна невидимости',
                 description: 'Карта не может быть атакована в этом раунде',
-                icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/3/38/Invis_Rune_icon.png/revision/latest?cb=20200626151209',
+                icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/3/38/Invis_Rune_icon.png',
                 type: 'invisibility'
             },
             shield: {
                 name: 'Руна щита',
                 description: '+40% защиты на раунд',
-                icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/b/b0/Haste_Rune_icon.png/revision/latest?cb=20200626151213',
+                icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/b/b0/Haste_Rune_icon.png',
                 type: 'shield'
             },
             water: {
                 name: 'Руна воды',
                 description: 'Восстанавливает 20% здоровья',
-                icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/b/bf/Regen_Rune_icon.png/revision/latest?cb=20200626151220',
+                icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/b/bf/Regen_Rune_icon.png',
                 type: 'water'
             }
         };
@@ -256,7 +260,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/terrorblade.png',
                 skill: {
                     name: 'Sunder',
-                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/2/2f/Sunder_icon.png/revision/latest?cb=20140810071521',
+                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/2/2f/Sunder_icon.png',
                     description: 'Меняется HP с выбранной картой',
                     cooldown: 2
                 }
@@ -271,7 +275,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/crystal_maiden.png',
                 skill: {
                     name: 'Frostbite',
-                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/d/d5/Frostbite_icon.png/revision/latest?cb=20140810071445',
+                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/d/d5/Frostbite_icon.png',
                     description: 'Заморозка: карта пропускает следующий ход',
                     cooldown: 2
                 }
@@ -286,7 +290,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/spirit_breaker.png',
                 skill: {
                     name: 'Charge of Darkness',
-                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/6/68/Charge_of_Darkness_icon.png/revision/latest?cb=20140810071407',
+                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/6/68/Charge_of_Darkness_icon.png',
                     description: '+20 скорости на раунд, можно ударить любую карту',
                     cooldown: 2
                 }
@@ -302,7 +306,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/nevermore.png',
                 skill: {
                     name: 'Реквием душ',
-                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/9/90/Requiem_of_Souls_icon.png/revision/latest?cb=20140810071604',
+                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/9/90/Requiem_of_Souls_icon.png',
                     description: '50 урона карте напротив, 20 остальным. Все в страхе (пропуск хода)',
                     cooldown: 2
                 }
@@ -317,7 +321,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/pudge.png',
                 skill: {
                     name: 'Dismember',
-                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/3/30/Dismember_icon.png/revision/latest?cb=20140810071422',
+                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/3/30/Dismember_icon.png',
                     description: 'Снимает 50 HP врага, восстанавливает 25 HP',
                     cooldown: 2
                 }
@@ -332,7 +336,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/invoker.png',
                 skill: {
                     name: 'Sun Strike',
-                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/8/8f/Sun_Strike_icon.png/revision/latest?cb=20140810071513',
+                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/8/8f/Sun_Strike_icon.png',
                     description: '100 урона + Cold Snap (пропуск следующего хода)',
                     cooldown: 2
                 }
@@ -3413,6 +3417,20 @@ class GameData {
         const aliveBotCards = this.battleState.botDeck.filter(card => !card.isDead && card.health > 0);
         if (aliveBotCards.length === 0) return;
         
+        // Проверяем, не пропускает ли бот ход (все карты на кулдауне/заморожены/в страхе)
+        const availableBotCards = aliveBotCards.filter(card => {
+            const notOnCooldown = !this.battleState.lastBotCard || card.name !== this.battleState.lastBotCard.name;
+            const notFrozen = !this.battleState.frozenCards.includes(card.name);
+            const notFeared = !this.battleState.fearedCards.includes(card.name);
+            return notOnCooldown && notFrozen && notFeared;
+        });
+        
+        // Если нет доступных карт - руну нельзя использовать
+        if (availableBotCards.length === 0 && aliveBotCards.length > 0) {
+            console.log('⏳ Бот пропускает ход, не может использовать руну');
+            return;
+        }
+        
         let targetCard = null;
         
         if (rune.type === 'invisibility') {
@@ -4435,19 +4453,22 @@ class GameData {
     }
     
     showFearEffect() {
-        // Показываем хитмаркеры страха над всеми врагами
+        // Показываем эпичные хитмаркеры страха над всеми врагами
         this.battleState.botDeck.forEach(enemy => {
             if (!enemy.isDead) {
                 const cardEl = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${enemy.name}"]`);
                 if (cardEl) {
                     const fearMarker = document.createElement('div');
                     fearMarker.className = 'fear-marker';
-                    fearMarker.textContent = '😱 СТРАХ';
+                    fearMarker.innerHTML = `
+                        <div class="fear-icon">😱</div>
+                        <div class="fear-text">СТРАХ</div>
+                    `;
                     cardEl.appendChild(fearMarker);
                     
                     setTimeout(() => {
                         if (cardEl.contains(fearMarker)) cardEl.removeChild(fearMarker);
-                    }, 2000);
+                    }, 2500);
                 }
             }
         });
@@ -4458,12 +4479,15 @@ class GameData {
         if (cardEl) {
             const freezeMarker = document.createElement('div');
             freezeMarker.className = 'freeze-marker';
-            freezeMarker.textContent = '❄️ ЗАМОРОЖЕН';
+            freezeMarker.innerHTML = `
+                <div class="freeze-icon">❄️</div>
+                <div class="freeze-text">ЗАМОРОЖЕН</div>
+            `;
             cardEl.appendChild(freezeMarker);
             
             setTimeout(() => {
                 if (cardEl.contains(freezeMarker)) cardEl.removeChild(freezeMarker);
-            }, 2000);
+            }, 2500);
         }
     }
     
