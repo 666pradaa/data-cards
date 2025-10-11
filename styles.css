@@ -2503,6 +2503,418 @@ body.light-theme {
     }
 }
 
+/* 🔮 СИСТЕМА РУН */
+.rune-container {
+    position: absolute;
+    z-index: 20;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border: 2px solid #0f3460;
+    border-radius: 15px;
+    padding: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.player-rune {
+    bottom: 2rem;
+    left: 2rem;
+    max-width: 300px;
+}
+
+.bot-rune {
+    top: 2rem;
+    right: 2rem;
+    max-width: 250px;
+}
+
+.rune-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.rune-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+    animation: runeGlow 2s ease-in-out infinite;
+}
+
+.rune-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #ffd700;
+    text-align: center;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+.rune-use-btn {
+    margin-top: 0.5rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+.rune-item.used {
+    opacity: 0.5;
+}
+
+.rune-item.used img {
+    filter: grayscale(100%);
+    animation: none;
+}
+
+/* Эффекты рун на картах */
+.invisible-card {
+    opacity: 0.5 !important;
+    filter: blur(2px);
+    border: 2px dashed #9370db !important;
+}
+
+.shielded-card {
+    box-shadow: 0 0 20px rgba(0, 191, 255, 0.8) !important;
+    border: 2px solid #00bfff !important;
+    animation: shieldPulse 1.5s ease-in-out infinite;
+}
+
+.rune-target {
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.9) !important;
+    border: 3px solid #ffd700 !important;
+    animation: runeTargetPulse 1s ease-in-out infinite;
+    cursor: pointer !important;
+}
+
+@keyframes runeGlow {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5)); }
+    50% { transform: scale(1.1); filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8)); }
+}
+
+@keyframes shieldPulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(0, 191, 255, 0.8); }
+    50% { box-shadow: 0 0 30px rgba(0, 191, 255, 1); }
+}
+
+@keyframes runeTargetPulse {
+    0%, 100% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.9); transform: scale(1); }
+    50% { box-shadow: 0 0 35px rgba(255, 215, 0, 1); transform: scale(1.05); }
+}
+
+/* КОНЕЦ СИСТЕМЫ РУН */
+
+/* ⚡ СИСТЕМА СКИЛЛОВ */
+
+.skill-btn {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    width: 35px;
+    height: 35px;
+    padding: 0;
+    background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    border: 2px solid #3498db;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 5;
+}
+
+.skill-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.skill-btn:hover:not(:disabled) {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(52, 152, 219, 0.8);
+    border-color: #ffd700;
+}
+
+.skill-btn.on-cooldown {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: #7f8c8d;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
+}
+
+.skill-target {
+    box-shadow: 0 0 30px rgba(138, 43, 226, 0.9) !important;
+    border: 3px solid #8a2be2 !important;
+    animation: skillTargetPulse 0.8s ease-in-out infinite;
+    cursor: crosshair !important;
+}
+
+@keyframes skillTargetPulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(138, 43, 226, 0.9); }
+    50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(138, 43, 226, 1); }
+}
+
+/* Анимации скиллов */
+
+/* Shadow Fiend - Requiem */
+.requiem-soul {
+    position: absolute;
+    font-size: 2rem;
+    pointer-events: none;
+    opacity: 0;
+    z-index: 100;
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.requiem-soul.flying {
+    opacity: 1;
+    left: var(--end-x) !important;
+    top: var(--end-y) !important;
+    transform: scale(1.5);
+}
+
+.requiem-flash {
+    animation: requiemFlash 1s ease-out;
+}
+
+@keyframes requiemFlash {
+    0% { background-color: transparent; }
+    50% { background-color: rgba(139, 0, 0, 0.3); }
+    100% { background-color: transparent; }
+}
+
+/* Pudge - Dismember */
+.dismember-shake {
+    animation: dismemberShake 0.1s ease-in-out 10;
+}
+
+@keyframes dismemberShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px) rotate(-2deg); }
+    75% { transform: translateX(5px) rotate(2deg); }
+}
+
+/* Invoker - Sun Strike */
+.sunstrike-beam {
+    position: absolute;
+    width: 100px;
+    height: 100%;
+    background: linear-gradient(180deg, 
+        rgba(255, 215, 0, 0) 0%,
+        rgba(255, 140, 0, 0.8) 40%,
+        rgba(255, 69, 0, 1) 60%,
+        rgba(255, 0, 0, 0.8) 80%,
+        rgba(139, 0, 0, 0) 100%
+    );
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+    z-index: 50;
+}
+
+.sunstrike-beam.active {
+    opacity: 1;
+    animation: sunstrikePulse 0.5s ease-in-out 3;
+}
+
+@keyframes sunstrikePulse {
+    0%, 100% { transform: translateX(-50%) scaleY(1); }
+    50% { transform: translateX(-50%) scaleY(1.2); }
+}
+
+.sunstrike-hit {
+    animation: sunstrikeFlash 0.5s ease-out;
+}
+
+@keyframes sunstrikeFlash {
+    0% { filter: brightness(1); }
+    50% { filter: brightness(3) saturate(2); }
+    100% { filter: brightness(1); }
+}
+
+/* Crystal Maiden - Frostbite */
+.frozen {
+    animation: frozenShake 0.5s ease-in-out;
+    border-color: #00bfff !important;
+    box-shadow: 0 0 20px rgba(0, 191, 255, 1) !important;
+}
+
+.ice-crystal {
+    position: absolute;
+    font-size: 1.5rem;
+    animation: iceFall 1.5s ease-out forwards;
+    pointer-events: none;
+    z-index: 10;
+}
+
+@keyframes iceFall {
+    0% { top: -20px; opacity: 1; transform: rotate(0deg); }
+    100% { top: 100%; opacity: 0; transform: rotate(360deg); }
+}
+
+@keyframes frozenShake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-3px); }
+    40% { transform: translateX(3px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(3px); }
+}
+
+/* Terrorblade - Sunder */
+.sunder-line {
+    position: absolute;
+    height: 4px;
+    background: linear-gradient(90deg, 
+        rgba(138, 43, 226, 0) 0%,
+        rgba(138, 43, 226, 1) 50%,
+        rgba(138, 43, 226, 0) 100%
+    );
+    transform-origin: left center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    z-index: 40;
+    box-shadow: 0 0 10px rgba(138, 43, 226, 0.8);
+}
+
+.sunder-line.active {
+    opacity: 1;
+    animation: sunderPulse 0.5s ease-in-out 3;
+}
+
+@keyframes sunderPulse {
+    0%, 100% { height: 4px; box-shadow: 0 0 10px rgba(138, 43, 226, 0.8); }
+    50% { height: 8px; box-shadow: 0 0 20px rgba(138, 43, 226, 1); }
+}
+
+.sunder-glow {
+    animation: sunderGlow 1.5s ease-in-out;
+}
+
+@keyframes sunderGlow {
+    0%, 100% { filter: brightness(1); box-shadow: none; }
+    50% { filter: brightness(2); box-shadow: 0 0 30px rgba(138, 43, 226, 1); }
+}
+
+/* Spirit Breaker - Charge */
+.charging {
+    animation: chargePulse 2s ease-in-out;
+    box-shadow: 0 0 25px rgba(255, 255, 0, 1) !important;
+}
+
+@keyframes chargePulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 25px rgba(255, 255, 0, 1); }
+    50% { transform: scale(1.1); box-shadow: 0 0 40px rgba(255, 255, 0, 1); }
+}
+
+/* Эффекты контроля */
+.fear-marker, .freeze-marker {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    padding: 0.3rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    white-space: nowrap;
+    z-index: 100;
+    animation: markerBounce 0.5s ease-out;
+    pointer-events: none;
+}
+
+.fear-marker {
+    background: rgba(139, 0, 0, 0.9);
+    border: 2px solid #ff0000;
+}
+
+.freeze-marker {
+    background: rgba(0, 100, 200, 0.9);
+    border: 2px solid #00bfff;
+}
+
+@keyframes markerBounce {
+    0% { top: -10px; opacity: 0; }
+    50% { top: -35px; opacity: 1; }
+    100% { top: -30px; }
+}
+
+/* Числа урона */
+.damage-number {
+    position: absolute;
+    top: 20%;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #ff0000;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 1.2s ease-out;
+}
+
+.damage-number.show {
+    opacity: 1;
+    top: -30%;
+    transform: scale(1.2);
+}
+
+.damage-number.crit {
+    font-size: 2rem;
+    color: #ffd700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 1);
+}
+
+.damage-number.blocked {
+    color: #00bfff;
+}
+
+/* Статусы контроля на картах */
+.frozen-status {
+    border-color: #00bfff !important;
+    box-shadow: 0 0 15px rgba(0, 191, 255, 0.6) !important;
+}
+
+.frozen-status::after {
+    content: '❄️';
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    font-size: 1.5rem;
+    z-index: 10;
+    animation: freezePulse 1s ease-in-out infinite;
+}
+
+.feared-status {
+    border-color: #dc143c !important;
+    box-shadow: 0 0 15px rgba(220, 20, 60, 0.6) !important;
+}
+
+.feared-status::after {
+    content: '😱';
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    font-size: 1.5rem;
+    z-index: 10;
+    animation: fearShake 0.5s ease-in-out infinite;
+}
+
+@keyframes freezePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+}
+
+@keyframes fearShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    75% { transform: translateX(2px); }
+}
+
+/* КОНЕЦ СИСТЕМЫ СКИЛЛОВ */
+
 .battle-top-bar {
     display: flex;
     justify-content: space-between;
@@ -5830,6 +6242,66 @@ textarea.form-input {
     .code-display {
         font-size: 1.8rem;
         letter-spacing: 0.3rem;
+    }
+    
+    /* 🔮 Руны на мобильных */
+    .rune-container {
+        padding: 0.5rem;
+        max-width: 200px !important;
+    }
+    
+    .player-rune {
+        bottom: 1rem;
+        left: 1rem;
+    }
+    
+    .bot-rune {
+        top: 1rem;
+        right: 1rem;
+    }
+    
+    .rune-item img {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .rune-name {
+        font-size: 0.75rem;
+    }
+    
+    .rune-use-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.75rem;
+    }
+    
+    /* ⚡ Скиллы на мобильных */
+    .skill-btn {
+        width: 30px;
+        height: 30px;
+        bottom: 3px;
+        right: 3px;
+    }
+    
+    .fear-marker, .freeze-marker {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.5rem;
+        top: -25px;
+    }
+    
+    .damage-number {
+        font-size: 1.2rem;
+    }
+    
+    .damage-number.crit {
+        font-size: 1.5rem;
+    }
+    
+    .requiem-soul {
+        font-size: 1.5rem;
+    }
+    
+    .ice-crystal {
+        font-size: 1.2rem;
     }
 }
 

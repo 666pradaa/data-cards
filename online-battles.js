@@ -9,6 +9,7 @@ class OnlineBattlesSystem {
         this.currentRoom = null;
         this.isHost = false;
         this.roomListener = null;
+        this.lastActionTimestamp = null; // Для отслеживания действий противника
     }
 
     async init() {
@@ -450,7 +451,17 @@ class OnlineBattlesSystem {
                 isOnline: true,
                 roomCode: roomCode,
                 lastPlayerCard: null,  // Карта которой ходил игрок в прошлом раунде
-                lastBotCard: null       // Карта которой ходил бот в прошлом раунде
+                lastBotCard: null,      // Карта которой ходил бот в прошлом раунде
+                // 🔮 Система рун
+                playerRune: this.gameData.generateRune(),
+                botRune: this.gameData.generateRune(),
+                runeUsedThisTurn: false,
+                invisibleCards: [],
+                shieldedCards: [],
+                // ⚡ Система скиллов
+                skillCooldowns: {},
+                frozenCards: [],
+                fearedCards: []
             };
             
             console.log('🎯 Состояние боя создано:', this.gameData.battleState);
@@ -569,7 +580,9 @@ class OnlineBattlesSystem {
                 image: cardData.image,
                 rarity: cardData.rarity,
                 upgrades: upgrades,
-                isDead: false
+                isDead: false,
+                skill: cardData.skill || null, // ⚡ Скилл карты
+                skillCooldown: 0 // Кулдаун скилла
             };
             
             console.log(`✅ Карта создана: ${card.name} (DMG ${card.damage}, HP ${card.health}/${card.maxHealth}, DEF ${card.defense}%, SPD ${card.speed})`);
@@ -598,6 +611,9 @@ class OnlineBattlesSystem {
             this.gameData.battleState.lastBotCard = null;
         }
         
+        // Подписываемся на изменения в комнате
+        this.listenToRoomUpdates(roomCode);
+        
         // Проверяем чей ход
         if (this.gameData.battleState.isPlayerTurn) {
             // Наш ход
@@ -607,28 +623,48 @@ class OnlineBattlesSystem {
             // Ход противника - ждём
             console.log('⏳ Ход противника - ожидаем');
             this.gameData.showBattleHint('Ход противника... Ожидайте');
-            
-            // Слушаем изменения в комнате
-            this.listenToRoomUpdates(roomCode);
         }
     }
 
     listenToRoomUpdates(roomCode) {
-        // Подписываемся на изменения хода
+        console.log('👂 Подписываемся на изменения комнаты:', roomCode);
+        
         if (this.gameData.useFirebase) {
             const roomRef = firebase.database().ref(`rooms/${roomCode}`);
-            roomRef.on('value', (snapshot) => {
+            
+            this.roomListener = roomRef.on('value', (snapshot) => {
                 const room = snapshot.val();
                 if (!room) return;
+                
+                console.log('📡 Обновление комнаты:', {
+                    isHostTurn: room.isHostTurn,
+                    weAreHost: this.isHost,
+                    currentAction: room.currentAction
+                });
                 
                 // Если ход сменился на наш
                 const isOurTurn = this.isHost ? room.isHostTurn : !room.isHostTurn;
                 
                 if (isOurTurn && !this.gameData.battleState.isPlayerTurn) {
                     // Теперь наш ход
+                    console.log('✅ Теперь наш ход!');
                     this.gameData.battleState.isPlayerTurn = true;
                     this.gameData.hideBattleHint();
+                    
+                    // Синхронизируем колоды перед нашим ходом
+                    if (room.hostDeck && room.guestDeck) {
+                        this.syncDecksFromRoom(room);
+                    }
+                    
                     this.gameData.startPlayerTurn();
+                    return;
+                }
+                
+                // Если ход противника и есть действие
+                if (!isOurTurn && room.currentAction && room.currentAction.timestamp !== this.lastActionTimestamp) {
+                    console.log('⚔️ Противник совершил действие:', room.currentAction);
+                    this.lastActionTimestamp = room.currentAction.timestamp;
+                    this.playOpponentAction(room.currentAction);
                 }
                 
                 // Синхронизируем состояние колод
@@ -636,6 +672,97 @@ class OnlineBattlesSystem {
                     this.syncDecksFromRoom(room);
                 }
             });
+        }
+    }
+
+    async endPlayerTurn() {
+        console.log('🔄 Завершаем свой ход, передаём ход противнику');
+        
+        const roomCode = this.gameData.battleState.roomCode;
+        if (!roomCode) {
+            console.error('❌ Нет кода комнаты!');
+            return;
+        }
+        
+        try {
+            // Подготавливаем данные колод
+            const myDeckData = this.gameData.battleState.playerDeck.map(card => ({
+                name: card.name,
+                health: card.health,
+                maxHealth: card.maxHealth,
+                isDead: card.isDead || card.health <= 0
+            }));
+            
+            const enemyDeckData = this.gameData.battleState.botDeck.map(card => ({
+                name: card.name,
+                health: card.health,
+                maxHealth: card.maxHealth,
+                isDead: card.isDead || card.health <= 0
+            }));
+            
+            // Обновляем данные в Firebase
+            if (this.gameData.useFirebase) {
+                const roomRef = firebase.database().ref(`rooms/${roomCode}`);
+                
+                if (this.isHost) {
+                    await roomRef.update({
+                        hostDeck: myDeckData,
+                        guestDeck: enemyDeckData,
+                        isHostTurn: false, // Передаём ход гостю
+                        lastActionTime: Date.now()
+                    });
+                } else {
+                    await roomRef.update({
+                        guestDeck: myDeckData,
+                        hostDeck: enemyDeckData,
+                        isHostTurn: true, // Передаём ход хосту
+                        lastActionTime: Date.now()
+                    });
+                }
+                
+                console.log('✅ Ход передан противнику');
+            }
+            
+            // Помечаем что сейчас не наш ход
+            this.gameData.battleState.isPlayerTurn = false;
+            this.gameData.showBattleHint('Ход противника... Ожидайте');
+            
+            // Проверяем окончание боя
+            if (this.gameData.checkBattleEnd()) {
+                console.log('🏁 Бой завершён');
+            }
+            
+        } catch (error) {
+            console.error('❌ Ошибка передачи хода:', error);
+        }
+    }
+    
+    playOpponentAction(action) {
+        console.log('🎬 Воспроизводим действие противника:', action);
+        
+        // Показываем визуальный эффект атаки
+        if (action.type === 'attack') {
+            const attackerCard = this.gameData.battleState.botDeck.find(c => c.name === action.attacker);
+            const targetCard = this.gameData.battleState.playerDeck.find(c => c.name === action.target);
+            
+            if (attackerCard && targetCard) {
+                // Подсвечиваем атакующую карту
+                const attackerEl = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${attackerCard.name}"]`);
+                if (attackerEl) {
+                    attackerEl.classList.add('selected');
+                    setTimeout(() => attackerEl.classList.remove('selected'), 800);
+                }
+                
+                // Подсвечиваем цель
+                const targetEl = document.querySelector(`.player-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
+                if (targetEl) {
+                    targetEl.classList.add('target-available');
+                    setTimeout(() => targetEl.classList.remove('target-available'), 800);
+                }
+                
+                // Показываем подсказку
+                this.gameData.showBattleHint(`${attackerCard.name} атакует ${targetCard.name}!`);
+            }
         }
     }
 
@@ -653,10 +780,15 @@ class OnlineBattlesSystem {
     }
 
     updateDeckHP(deck, deckData) {
+        if (!Array.isArray(deckData)) {
+            console.warn('⚠️ deckData не массив:', deckData);
+            return;
+        }
+        
         deck.forEach((card, index) => {
             if (deckData[index]) {
-                card.currentHealth = deckData[index].currentHealth || deckData[index].health;
-                card.isDead = deckData[index].isDead || false;
+                card.health = deckData[index].health || 0;
+                card.isDead = deckData[index].isDead || card.health <= 0;
             }
         });
     }

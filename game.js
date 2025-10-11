@@ -124,6 +124,28 @@ class GameData {
             'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/lion.png'
         ];
         
+        // 🔮 Система рун
+        this.runes = {
+            invisibility: {
+                name: 'Руна невидимости',
+                description: 'Карта не может быть атакована в этом раунде',
+                icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/3/38/Invis_Rune_icon.png',
+                type: 'invisibility'
+            },
+            shield: {
+                name: 'Руна щита',
+                description: '+40% защиты на раунд',
+                icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/b/b0/Haste_Rune_icon.png',
+                type: 'shield'
+            },
+            water: {
+                name: 'Руна воды',
+                description: 'Восстанавливает 20% здоровья',
+                icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/b/bf/Regen_Rune_icon.png',
+                type: 'water'
+            }
+        };
+        
         console.log('🎮 Режим работы:', this.useFirebase ? '☁️ Firebase' : '💾 localStorage');
         
         this.initData();
@@ -224,7 +246,13 @@ class GameData {
                 health: 110,
                 defense: 20,
                 speed: 20,
-                image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/terrorblade.png'
+                image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/terrorblade.png',
+                skill: {
+                    name: 'Sunder',
+                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/2/2f/Sunder_icon.png',
+                    description: 'Меняется HP с выбранной картой',
+                    cooldown: 2
+                }
             },
             'Crystal Maiden': {
                 name: 'Crystal Maiden',
@@ -233,7 +261,13 @@ class GameData {
                 health: 100,
                 defense: 25,
                 speed: 18,
-                image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/crystal_maiden.png'
+                image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/crystal_maiden.png',
+                skill: {
+                    name: 'Frostbite',
+                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/d/d5/Frostbite_icon.png',
+                    description: 'Заморозка: карта пропускает следующий ход',
+                    cooldown: 2
+                }
             },
             'Spirit Breaker': {
                 name: 'Spirit Breaker',
@@ -242,7 +276,13 @@ class GameData {
                 health: 120,
                 defense: 15,
                 speed: 16,
-                image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/spirit_breaker.png'
+                image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/spirit_breaker.png',
+                skill: {
+                    name: 'Charge of Darkness',
+                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/6/68/Charge_of_Darkness_icon.png',
+                    description: '+20 скорости на раунд, можно ударить любую карту',
+                    cooldown: 2
+                }
             },
             // Легендарные карты (сила ~190-220)
             'Shadow Fiend': {
@@ -252,7 +292,13 @@ class GameData {
                 health: 130,
                 defense: 22,
                 speed: 26,
-                image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/nevermore.png'
+                image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/nevermore.png',
+                skill: {
+                    name: 'Реквием душ',
+                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/9/90/Requiem_of_Souls_icon.png',
+                    description: '50 урона карте напротив, 20 остальным. Все в страхе (пропуск хода)',
+                    cooldown: 2
+                }
             },
             'Pudge': {
                 name: 'Pudge',
@@ -261,7 +307,13 @@ class GameData {
                 health: 160,
                 defense: 30,
                 speed: 12,
-                image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/pudge.png'
+                image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/pudge.png',
+                skill: {
+                    name: 'Dismember',
+                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/3/30/Dismember_icon.png',
+                    description: 'Снимает 50 HP врага, восстанавливает 25 HP',
+                    cooldown: 2
+                }
             },
             'Invoker': {
                 name: 'Invoker',
@@ -270,7 +322,13 @@ class GameData {
                 health: 120,
                 defense: 18,
                 speed: 32,
-                image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/invoker.png'
+                image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/invoker.png',
+                skill: {
+                    name: 'Sun Strike',
+                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/8/8f/Sun_Strike_icon.png',
+                    description: '100 урона + Cold Snap (пропуск следующего хода)',
+                    cooldown: 2
+                }
             }
         };
 
@@ -2425,7 +2483,9 @@ class GameData {
             image: card.image,
             rarity: card.rarity,
             upgrades: upgrades,
-            isDead: false
+            isDead: false,
+            skill: card.skill || null, // ⚡ Скилл карты
+            skillCooldown: 0 // Текущий кулдаун скилла
         };
     }
 
@@ -2488,7 +2548,9 @@ class GameData {
                 image: card.image,
                     rarity: card.rarity,
                     upgrades: [],
-                isDead: false
+                    isDead: false,
+                    skill: card.skill || null, // ⚡ Скилл карты
+                    skillCooldown: 0 // Кулдаун скилла
                 };
                 
                 // Если первый бой - делаем бота очень слабым (100% победа игрока)
@@ -2582,7 +2644,17 @@ class GameData {
             botName: botName,
             inProgress: true,
             lastPlayerCard: null,  // Карта которой ходил игрок в прошлом раунде
-            lastBotCard: null       // Карта которой ходил бот в прошлом раунде
+            lastBotCard: null,      // Карта которой ходил бот в прошлом раунде
+            // 🔮 Система рун
+            playerRune: this.generateRune(),
+            botRune: this.generateRune(),
+            runeUsedThisTurn: false,
+            invisibleCards: [], // Карты с руной невидимости
+            shieldedCards: [],  // Карты с руной щита
+            // ⚡ Система скиллов
+            skillCooldowns: {}, // Кулдауны скиллов {cardName: roundsLeft}
+            frozenCards: [],    // Замороженные карты (Cold Snap / Frostbite)
+            fearedCards: []     // Карты в страхе (Requiem)
         };
 
             console.log('Battle state set, rendering battle...');
@@ -2697,7 +2769,34 @@ class GameData {
                 ).join('')}
             </div>`;
             
-            cardDiv.className = `battle-card-new rarity-border-${card.rarity} ${isDead ? 'dead' : ''}`;
+            // ⚡ Проверяем наличие скилла и его кулдаун
+            const hasSkill = card.skill && (card.rarity === 'epic' || card.rarity === 'legendary');
+            const skillOnCooldown = card.skillCooldown > 0;
+            
+            // ⚡ Кнопка скилла (только для своих карт с скиллами)
+            let skillButtonHtml = '';
+            if (hasSkill && isPlayer && !isDead) {
+                const cooldownText = skillOnCooldown ? `(${card.skillCooldown})` : '';
+                skillButtonHtml = `
+                    <button class="skill-btn ${skillOnCooldown ? 'on-cooldown' : ''}" 
+                            data-card="${card.name}" 
+                            ${skillOnCooldown ? 'disabled' : ''}>
+                        <img src="${card.skill.icon}" alt="${card.skill.name}">
+                        ${cooldownText}
+                    </button>
+                `;
+            }
+            
+            // ⚡ Добавляем классы для замороженных и испуганных карт
+            let statusClasses = '';
+            if (this.battleState.frozenCards && this.battleState.frozenCards.includes(card.name)) {
+                statusClasses += ' frozen-status';
+            }
+            if (this.battleState.fearedCards && this.battleState.fearedCards.includes(card.name)) {
+                statusClasses += ' feared-status';
+            }
+            
+            cardDiv.className = `battle-card-new rarity-border-${card.rarity} ${isDead ? 'dead' : ''}${statusClasses}`;
             cardDiv.dataset.cardName = card.name;
             cardDiv.innerHTML = `
                 <div class="battle-card-image" style="background-image: url('${card.image}')"></div>
@@ -2715,9 +2814,21 @@ class GameData {
                         <div class="battle-health-text">${Math.max(0, Math.floor(card.health))}/${card.maxHealth}</div>
                 </div>
                 </div>
+                ${skillButtonHtml}
                 ${isDead ? '<div class="battle-dead-overlay"><div class="skull">💀</div></div>' : ''}
             `;
             container.appendChild(cardDiv);
+            
+            // ⚡ Добавляем обработчик на кнопку скилла
+            if (hasSkill && isPlayer && !isDead && !skillOnCooldown) {
+                const skillBtn = cardDiv.querySelector('.skill-btn');
+                if (skillBtn) {
+                    skillBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        this.useSkill(card);
+                    };
+                }
+            }
         });
     }
 
@@ -2747,25 +2858,72 @@ class GameData {
     startPlayerTurn() {
         if (this.battleEnded) return;
         
+        console.log('👤 Начало хода игрока');
+        
         this.isPlayerTurn = true;
         this.selectedEnemyCard = null;
+        
+        // Сбрасываем флаг использования руны
+        this.battleState.runeUsedThisTurn = false;
+        
+        // Очищаем эффекты рун прошлого раунда
+        this.clearRuneEffects();
+        
+        // ⚡ Уменьшаем кулдауны скиллов
+        this.decreaseSkillCooldowns();
+        
+        // Выдаем новую руну игроку
+        this.battleState.playerRune = this.generateRune();
+        console.log('🔮 Игроку выпала руна:', this.battleState.playerRune.name);
+        
+        // Отображаем руну
+        this.renderPlayerRune();
         
         // Получаем живые карты игрока
         const alivePlayerCards = this.battleState.playerDeck.filter(card => !card.isDead && card.health > 0);
         
-        // Фильтруем карты - убираем ту которой ходили в прошлом раунде
-        const availableCards = alivePlayerCards.filter(card => {
-            return !this.battleState.lastPlayerCard || card.name !== this.battleState.lastPlayerCard.name;
-        });
-        
-        // Если нет доступных карт (все отдыхают) - снимаем ограничение
-        const cardsToChoose = availableCards.length > 0 ? availableCards : alivePlayerCards;
-        
-        if (cardsToChoose.length === 0) {
+        if (alivePlayerCards.length === 0) {
             // Все карты мертвы - конец боя
             this.checkBattleEnd();
             return;
         }
+        
+        // Фильтруем карты - убираем ту которой ходили в прошлом раунде и замороженные
+        const availableCards = alivePlayerCards.filter(card => {
+            const notOnCooldown = !this.battleState.lastPlayerCard || card.name !== this.battleState.lastPlayerCard.name;
+            const notFrozen = !this.battleState.frozenCards.includes(card.name);
+            const notFeared = !this.battleState.fearedCards.includes(card.name);
+            
+            if (!notFrozen) console.log('❄️ Карта заморожена:', card.name);
+            if (!notFeared) console.log('😱 Карта в страхе:', card.name);
+            
+            return notOnCooldown && notFrozen && notFeared;
+        });
+        
+        // Если нет доступных карт (все на кулдауне) - пропускаем ход
+        if (availableCards.length === 0) {
+            console.log('⏳ Все карты на кулдауне, пропускаем ход игрока');
+            this.showBattleHint('Все ваши карты отдыхают! Ход пропущен.');
+            
+            // Сбрасываем lastPlayerCard чтобы в следующем раунде карты были доступны
+            this.battleState.lastPlayerCard = null;
+            
+            // Через 2 секунды передаем ход боту
+        setTimeout(() => {
+                this.hideBattleHint();
+                if (!this.checkBattleEnd()) {
+                    // Проверяем онлайн-бой
+                    if (this.battleState.isOnline && window.onlineBattlesSystem) {
+                        window.onlineBattlesSystem.endPlayerTurn();
+                    } else {
+                        this.startBotTurn();
+                    }
+                }
+            }, 2000);
+            return;
+        }
+        
+        const cardsToChoose = availableCards;
         
         // Убираем все подсветки
         document.querySelectorAll('.battle-card-new').forEach(c => {
@@ -2779,6 +2937,10 @@ class GameData {
                 usedCardElement.classList.add('used-last-round');
             }
         }
+        
+        // Обновляем отображение рун
+        this.renderPlayerRune();
+        this.renderBotRune();
         
         // Показываем выбор карты игроку
         this.showCardSelection(cardsToChoose);
@@ -2839,15 +3001,19 @@ class GameData {
     }
     
     showTargetSelection(attackerCard) {
-        // Подсвечиваем доступные цели
-        const aliveEnemyCards = this.battleState.botDeck.filter(card => !card.isDead && card.health > 0);
+        // Подсвечиваем доступные цели (исключая невидимые карты)
+        const aliveEnemyCards = this.battleState.botDeck.filter(card => {
+            const isAlive = !card.isDead && card.health > 0;
+            const isVisible = !this.battleState.invisibleCards.includes(card.name);
+            return isAlive && isVisible;
+        });
         
         // Показываем подсказку с учетом количества атак
         const attacksCount = Math.max(1, Math.floor(attackerCard.speed / 10));
         const attackText = attacksCount > 1 ? ` (${attacksCount} атаки)` : '';
         this.showBattleHint(`${attackerCard.name}${attackText} атакует! Выберите цель.`);
         
-        console.log('🎯 Подсвечиваем', aliveEnemyCards.length, 'целей');
+        console.log('🎯 Подсвечиваем', aliveEnemyCards.length, 'целей (исключая невидимых)');
         
         aliveEnemyCards.forEach(enemyCard => {
             const enemyElement = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${enemyCard.name}"]`);
@@ -2961,13 +3127,20 @@ class GameData {
                 // Сохраняем состояние боя
                 this.saveBattleState();
                 
-                // Переходим к ходу бота
+                // Проверяем онлайн-бой
+                if (this.battleState.isOnline && window.onlineBattlesSystem) {
+                    console.log('🌐 Онлайн-бой: передаём ход противнику');
+                    window.onlineBattlesSystem.endPlayerTurn();
+                    return;
+                }
+                
+                // Переходим к ходу бота (только для оффлайн-боев)
                 console.log('🤖 Переход к ходу бота через 1 сек...');
-                setTimeout(() => {
+            setTimeout(() => {
                     if (!this.checkBattleEnd()) {
                         this.startBotTurn();
                     }
-                }, 1000);
+            }, 1000);
                 return;
             }
             
@@ -3027,10 +3200,76 @@ class GameData {
             }
         }
         
-        // Выбираем карту для атаки с небольшой задержкой (визуализация "думает")
+        // 🔮 Выдаем новую руну боту
+        this.battleState.botRune = this.generateRune();
+        console.log('🔮 Боту выпала руна:', this.battleState.botRune.name);
+        this.renderBotRune();
+        
+        // 🔮 Бот использует руну (с задержкой для визуализации)
+        setTimeout(() => {
+            this.botUseRune();
+        }, 800);
+        
+        // Выбираем карту для атаки с небольшой задержкой
         setTimeout(() => {
             this.selectBotAttacker();
-        }, 800);
+        }, 1600);
+    }
+    
+    botUseRune() {
+        const rune = this.battleState.botRune;
+        if (!rune) return;
+        
+        const aliveBotCards = this.battleState.botDeck.filter(card => !card.isDead && card.health > 0);
+        if (aliveBotCards.length === 0) return;
+        
+        let targetCard = null;
+        
+        if (rune.type === 'invisibility') {
+            // Применяем на самую слабую карту
+            targetCard = aliveBotCards.reduce((weakest, card) => 
+                card.health < weakest.health ? card : weakest
+            );
+            this.battleState.invisibleCards.push(targetCard.name);
+            console.log('👻 Бот сделал карту невидимой:', targetCard.name);
+            
+            const cardEl = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
+            if (cardEl) {
+                cardEl.classList.add('invisible-card');
+                cardEl.style.opacity = '0.5';
+            }
+        } else if (rune.type === 'shield') {
+            // Применяем на карту с наибольшим HP
+            targetCard = aliveBotCards.reduce((strongest, card) => 
+                card.health > strongest.health ? card : strongest
+            );
+            this.battleState.shieldedCards.push(targetCard.name);
+            targetCard.tempDefense = (targetCard.tempDefense || 0) + 40;
+            console.log('🛡️ Бот дал щит карте:', targetCard.name);
+            
+            const cardEl = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
+            if (cardEl) {
+                cardEl.classList.add('shielded-card');
+            }
+        } else if (rune.type === 'water') {
+            // Применяем на раненую карту
+            const damagedCards = aliveBotCards.filter(card => card.health < card.maxHealth);
+            if (damagedCards.length > 0) {
+                targetCard = damagedCards.reduce((mostDamaged, card) => 
+                    (card.maxHealth - card.health) > (mostDamaged.maxHealth - mostDamaged.health) ? card : mostDamaged
+                );
+                const healAmount = Math.floor(targetCard.maxHealth * 0.2);
+                targetCard.health = Math.min(targetCard.maxHealth, targetCard.health + healAmount);
+                console.log('💧 Бот восстановил HP карте:', targetCard.name, '+', healAmount);
+                
+                this.renderBattle();
+            }
+        }
+        
+        if (targetCard) {
+            this.showBattleHint(`Бот использовал ${rune.name} на ${targetCard.name}!`);
+            setTimeout(() => this.showBattleHint('Ход противника... Ожидайте'), 2000);
+        }
     }
 
     selectBotAttacker() {
@@ -3039,26 +3278,62 @@ class GameData {
         
         if (aliveBotCards.length === 0 || alivePlayerCards.length === 0) {
             this.checkBattleEnd();
-            return;
-        }
+                return;
+            }
         
-        // Выбираем карту для атаки (не ту которой ходили в прошлом раунде)
+        // Выбираем карту для атаки (не ту которой ходили в прошлом раунде и не замороженные)
         let availableBotCards = aliveBotCards.filter(card => {
-            return !this.battleState.lastBotCard || card.name !== this.battleState.lastBotCard.name;
+            const notOnCooldown = !this.battleState.lastBotCard || card.name !== this.battleState.lastBotCard.name;
+            const notFrozen = !this.battleState.frozenCards.includes(card.name);
+            const notFeared = !this.battleState.fearedCards.includes(card.name);
+            
+            return notOnCooldown && notFrozen && notFeared;
         });
         
-        // Если нет доступных карт (все отдыхают) - снимаем ограничение
+        // Если нет доступных карт (все на кулдауне) - пропускаем ход
         if (availableBotCards.length === 0) {
-            availableBotCards = aliveBotCards;
-            console.log('⚠️ Все карты бота на кулдауне, снимаем ограничение');
-        }
+            console.log('⏳ Все карты бота на кулдауне, пропускаем ход');
+            this.showBattleHint('Карты противника отдыхают! Ход пропущен.');
+            
+            // Сбрасываем lastBotCard чтобы в следующем раунде карты были доступны
+            this.battleState.lastBotCard = null;
+            
+            // Увеличиваем раунд
+            this.battleState.round++;
+            this.updateRoundDisplay();
+            this.saveBattleState();
+            
+            // Через 2 секунды возвращаем ход игроку
+            setTimeout(() => {
+                this.hideBattleHint();
+                if (!this.checkBattleEnd()) {
+                    this.startPlayerTurn();
+                }
+            }, 2000);
+                return;
+            }
         
         console.log('🤖 Доступно карт бота:', availableBotCards.length);
         
         // Выбираем случайную карту
-        const attackerCard = availableBotCards[Math.floor(Math.random() * availableBotCards.length)];
+        let attackerCard = availableBotCards[Math.floor(Math.random() * availableBotCards.length)];
         
-        console.log('🟡 Бот выбрал карту:', attackerCard.name);
+        // ⚡ Проверяем есть ли карта со скиллом не на кулдауне (30% шанс использовать)
+        if (Math.random() < 0.3) {
+            const cardsWithSkill = availableBotCards.filter(c => c.skill && c.skillCooldown === 0);
+            if (cardsWithSkill.length > 0) {
+                attackerCard = cardsWithSkill[Math.floor(Math.random() * cardsWithSkill.length)];
+                console.log('⚡ Бот решил использовать скилл:', attackerCard.skill.name);
+                
+                // Используем скилл вместо обычной атаки
+                setTimeout(() => {
+                    this.botUseSkill(attackerCard);
+                }, 800);
+                return; // Выходим, не продолжаем обычную атаку
+            }
+        }
+        
+        console.log('🟡 Бот выбрал карту для атаки:', attackerCard.name);
         
         // Подсвечиваем выбранную карту бота
         const attackerElement = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${attackerCard.name}"]`);
@@ -3153,9 +3428,9 @@ class GameData {
             
             if (currentAlivePlayerCards.length === 0) {
                 console.log('💀 Все карты игрока мертвы');
-                this.checkBattleEnd();
-                return;
-            }
+            this.checkBattleEnd();
+            return;
+        }
         
             // Проверяем что цель еще жива, если нет - выбираем другую
             if (currentTarget.isDead || currentTarget.health <= 0) {
@@ -3164,14 +3439,14 @@ class GameData {
                 currentTarget = newTarget;
             }
         
-            // Выполняем атаку
+        // Выполняем атаку
             this.performAttack(attacker, currentTarget, true);
         
             attackIndex++;
             
             // Следующая атака через 1.2 секунды
-            setTimeout(() => {
-                if (!this.checkBattleEnd()) {
+        setTimeout(() => {
+            if (!this.checkBattleEnd()) {
                     performNextAttack();
                 }
             }, 1200);
@@ -3179,6 +3454,835 @@ class GameData {
         
         performNextAttack();
     }
+
+    // 🔮 ===== СИСТЕМА РУН =====
+    
+    generateRune() {
+        const runeTypes = Object.keys(this.runes);
+        const randomType = runeTypes[Math.floor(Math.random() * runeTypes.length)];
+        return { ...this.runes[randomType] };
+    }
+    
+    renderPlayerRune() {
+        const runeContainer = document.getElementById('player-rune-container');
+        if (!runeContainer) {
+            console.error('❌ Контейнер руны игрока не найден!');
+            return;
+        }
+        
+        const rune = this.battleState.playerRune;
+        if (!rune) return;
+        
+        runeContainer.innerHTML = `
+            <div class="rune-item ${this.battleState.runeUsedThisTurn ? 'used' : ''}" id="player-rune">
+                <img src="${rune.icon}" alt="${rune.name}" title="${rune.description}">
+                <span class="rune-name">${rune.name}</span>
+                <button class="rune-use-btn btn primary" ${this.battleState.runeUsedThisTurn ? 'disabled' : ''}>
+                    Использовать
+                </button>
+            </div>
+        `;
+        
+        // Добавляем обработчик на кнопку
+        if (!this.battleState.runeUsedThisTurn) {
+            const useBtn = runeContainer.querySelector('.rune-use-btn');
+            if (useBtn) {
+                useBtn.onclick = () => this.showRuneTargetSelection();
+            }
+        }
+    }
+    
+    renderBotRune() {
+        const runeContainer = document.getElementById('bot-rune-container');
+        if (!runeContainer) return;
+        
+        const rune = this.battleState.botRune;
+        if (!rune) return;
+        
+        runeContainer.innerHTML = `
+            <div class="rune-item">
+                <img src="${rune.icon}" alt="${rune.name}" title="${rune.description}">
+                <span class="rune-name">${rune.name}</span>
+            </div>
+        `;
+    }
+    
+    showRuneTargetSelection() {
+        console.log('🔮 Выбор цели для руны');
+        
+        const rune = this.battleState.playerRune;
+        if (!rune || this.battleState.runeUsedThisTurn) return;
+        
+        // Убираем подсветки атаки
+        document.querySelectorAll('.battle-card-new').forEach(c => {
+            c.classList.remove('target-available', 'hint-glow');
+        });
+        
+        // Получаем доступные цели в зависимости от типа руны
+        let targets = [];
+        let hint = '';
+        
+        if (rune.type === 'invisibility' || rune.type === 'shield') {
+            // Можно применить на свои карты
+            targets = this.battleState.playerDeck.filter(card => !card.isDead && card.health > 0);
+            hint = rune.type === 'invisibility' 
+                ? 'Выберите карту для невидимости' 
+                : 'Выберите карту для щита';
+        } else if (rune.type === 'water') {
+            // Можно применить только на поврежденные карты
+            targets = this.battleState.playerDeck.filter(card => 
+                !card.isDead && card.health > 0 && card.health < card.maxHealth
+            );
+            hint = 'Выберите карту для лечения';
+        }
+        
+        if (targets.length === 0) {
+            alert('Нет доступных целей для этой руны!');
+            return;
+        }
+        
+        // Подсвечиваем доступные цели
+        targets.forEach(card => {
+            const cardElement = document.querySelector(`.player-battle-side .battle-card-new[data-card-name="${card.name}"]`);
+            if (cardElement) {
+                cardElement.classList.add('rune-target');
+                cardElement.style.cursor = 'pointer';
+                cardElement.onclick = () => this.useRuneOnCard(card);
+            }
+        });
+        
+        this.showBattleHint(hint + ' (Руна не заберет ваш ход)');
+    }
+    
+    async useRuneOnCard(targetCard) {
+        console.log('🔮 Использование руны на:', targetCard.name);
+        
+        const rune = this.battleState.playerRune;
+        if (!rune || this.battleState.runeUsedThisTurn) return;
+        
+        // Убираем подсветки
+        document.querySelectorAll('.battle-card-new').forEach(c => {
+            c.classList.remove('rune-target');
+            c.style.cursor = '';
+            c.onclick = null;
+        });
+        
+        // Применяем эффект руны
+        if (rune.type === 'invisibility') {
+            this.battleState.invisibleCards.push(targetCard.name);
+            this.showBattleHint(`${targetCard.name} невидим! Не может быть атакован в этом раунде.`);
+            console.log('👻 Карта стала невидимой:', targetCard.name);
+            
+            // Визуальный эффект
+            const cardEl = document.querySelector(`.player-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
+            if (cardEl) {
+                cardEl.classList.add('invisible-card');
+                cardEl.style.opacity = '0.5';
+            }
+        } else if (rune.type === 'shield') {
+            this.battleState.shieldedCards.push(targetCard.name);
+            targetCard.tempDefense = (targetCard.tempDefense || 0) + 40;
+            this.showBattleHint(`${targetCard.name} получил щит! +40% защиты на раунд.`);
+            console.log('🛡️ Карта получила щит:', targetCard.name);
+            
+            // Визуальный эффект
+            const cardEl = document.querySelector(`.player-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
+            if (cardEl) {
+                cardEl.classList.add('shielded-card');
+            }
+        } else if (rune.type === 'water') {
+            const healAmount = Math.floor(targetCard.maxHealth * 0.2);
+            targetCard.health = Math.min(targetCard.maxHealth, targetCard.health + healAmount);
+            this.showBattleHint(`${targetCard.name} восстановил ${healAmount} HP!`);
+            console.log('💧 Карта восстановила HP:', targetCard.name, '+', healAmount);
+            
+            // Обновляем отображение
+            this.renderBattle();
+        }
+        
+        // Помечаем что руна использована
+        this.battleState.runeUsedThisTurn = true;
+        this.renderPlayerRune();
+        
+        // Через 1.5 секунды убираем подсказку и даем выбрать карту для атаки
+        setTimeout(() => {
+            this.hideBattleHint();
+            // Продолжаем ход - игрок может атаковать
+        }, 1500);
+    }
+    
+    clearRuneEffects() {
+        console.log('🧹 Очищаем эффекты рун');
+        
+        // Убираем невидимость
+        this.battleState.invisibleCards = [];
+        document.querySelectorAll('.invisible-card').forEach(el => {
+            el.classList.remove('invisible-card');
+            el.style.opacity = '';
+        });
+        
+        // Убираем щиты
+        this.battleState.shieldedCards.forEach(cardName => {
+            const card = this.battleState.playerDeck.find(c => c.name === cardName);
+            if (card) {
+                card.tempDefense = 0;
+            }
+        });
+        this.battleState.shieldedCards = [];
+        document.querySelectorAll('.shielded-card').forEach(el => {
+            el.classList.remove('shielded-card');
+        });
+    }
+    
+    // ===== КОНЕЦ СИСТЕМЫ РУН =====
+    
+    // ⚡ ===== СИСТЕМА СКИЛЛОВ =====
+    
+    useSkill(card) {
+        if (!card.skill || !this.isPlayerTurn || card.skillCooldown > 0) return;
+        
+        console.log('⚡ Использование скилла:', card.skill.name, 'от', card.name);
+        
+        // Убираем подсветки
+        document.querySelectorAll('.battle-card-new').forEach(c => {
+            c.classList.remove('hint-glow', 'target-available', 'rune-target');
+        });
+        
+        // В зависимости от скилла показываем выбор цели или применяем сразу
+        if (card.name === 'Shadow Fiend') {
+            this.useShadowFiendSkill(card);
+        } else if (card.name === 'Pudge') {
+            this.showSkillTargetSelection(card, 'enemy');
+        } else if (card.name === 'Invoker') {
+            this.showSkillTargetSelection(card, 'enemy');
+        } else if (card.name === 'Crystal Maiden') {
+            this.showSkillTargetSelection(card, 'enemy');
+        } else if (card.name === 'Terrorblade') {
+            this.showSkillTargetSelection(card, 'any');
+        } else if (card.name === 'Spirit Breaker') {
+            this.useSpiritBreakerSkill(card);
+        }
+    }
+    
+    showSkillTargetSelection(casterCard, targetType) {
+        console.log('🎯 Выбор цели для скилла:', casterCard.skill.name);
+        
+        let targets = [];
+        let hint = '';
+        
+        if (targetType === 'enemy') {
+            // Только враги (невидимость не защищает от большинства скиллов)
+            targets = this.battleState.botDeck.filter(card => !card.isDead && card.health > 0);
+            hint = `Выберите цель для ${casterCard.skill.name}`;
+        } else if (targetType === 'any') {
+            // Любые карты (свои и враги)
+            targets = [
+                ...this.battleState.playerDeck.filter(c => !c.isDead && c.health > 0),
+                ...this.battleState.botDeck.filter(c => !c.isDead && c.health > 0)
+            ];
+            hint = `Выберите карту для ${casterCard.skill.name}`;
+        }
+        
+        if (targets.length === 0) {
+            alert('Нет доступных целей!');
+            return;
+        }
+        
+        this.showBattleHint(hint + ' (использование скилла заменяет атаку)');
+        
+        // Подсвечиваем цели
+        targets.forEach(targetCard => {
+            const isPlayerCard = this.battleState.playerDeck.find(c => c.name === targetCard.name);
+            const side = isPlayerCard ? 'player' : 'enemy';
+            const cardElement = document.querySelector(`.${side}-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
+            
+            if (cardElement) {
+                cardElement.classList.add('skill-target');
+                cardElement.style.cursor = 'crosshair';
+                cardElement.onclick = () => this.castSkillOnTarget(casterCard, targetCard);
+            }
+        });
+    }
+    
+    castSkillOnTarget(casterCard, targetCard) {
+        console.log('⚡ Применение скилла:', casterCard.skill.name, 'на', targetCard.name);
+        
+        // Убираем подсветки
+        document.querySelectorAll('.battle-card-new').forEach(c => {
+            c.classList.remove('skill-target');
+            c.style.cursor = '';
+            c.onclick = null;
+        });
+        
+        // Применяем скилл в зависимости от героя
+        if (casterCard.name === 'Pudge') {
+            this.usePudgeSkill(casterCard, targetCard);
+        } else if (casterCard.name === 'Invoker') {
+            this.useInvokerSkill(casterCard, targetCard);
+        } else if (casterCard.name === 'Crystal Maiden') {
+            this.useCrystalMaidenSkill(casterCard, targetCard);
+        } else if (casterCard.name === 'Terrorblade') {
+            this.useTerrorbladeSkill(casterCard, targetCard);
+        }
+    }
+    
+    // Shadow Fiend - Requiem of Souls
+    useShadowFiendSkill(card) {
+        console.log('💀 Shadow Fiend использует Реквием душ!');
+        
+        // Устанавливаем кулдаун
+        card.skillCooldown = 2;
+        
+        // Помечаем что ходили этой картой
+        this.battleState.lastPlayerCard = { name: card.name };
+        
+        // Находим карту напротив (тот же индекс)
+        const casterIndex = this.battleState.playerDeck.findIndex(c => c.name === card.name);
+        const oppositeCard = this.battleState.botDeck[casterIndex];
+        
+        // Анимация душ
+        this.createRequiemAnimation(card, oppositeCard);
+        
+        setTimeout(() => {
+            // Наносим урон всем врагам
+            this.battleState.botDeck.forEach((enemy, idx) => {
+                if (!enemy.isDead && enemy.health > 0) {
+                    const damage = idx === casterIndex ? 50 : 20;
+                    enemy.health = Math.max(0, enemy.health - damage);
+                    
+                    if (enemy.health <= 0) {
+                        enemy.isDead = true;
+                    }
+                    
+                    // Добавляем всех в страх
+                    this.battleState.fearedCards.push(enemy.name);
+                    
+                    // Показываем урон
+                    this.showDamageNumber(enemy, damage, false, false);
+                }
+            });
+            
+            // Показываем эффект страха
+            this.showFearEffect();
+            
+            this.renderBattle();
+            this.showBattleHint('Все враги в страхе! Пропускают следующий ход.');
+            
+            setTimeout(() => {
+                this.hideBattleHint();
+                if (!this.checkBattleEnd()) {
+                    // Переходим к ходу бота (но он пропустит из-за страха)
+                    if (this.battleState.isOnline && window.onlineBattlesSystem) {
+                        window.onlineBattlesSystem.endPlayerTurn();
+                    } else {
+                        this.startBotTurn();
+                    }
+                }
+            }, 2000);
+        }, 1500);
+    }
+    
+    // Pudge - Dismember
+    usePudgeSkill(casterCard, targetCard) {
+        console.log('🩸 Pudge использует Dismember!');
+        
+        casterCard.skillCooldown = 2;
+        this.battleState.lastPlayerCard = { name: casterCard.name };
+        
+        // Анимация Dismember
+        this.createDismemberAnimation(casterCard, targetCard);
+        
+        setTimeout(() => {
+            // Снимаем 50 HP у цели
+            targetCard.health = Math.max(0, targetCard.health - 50);
+            if (targetCard.health <= 0) {
+                targetCard.isDead = true;
+            }
+            
+            // Восстанавливаем 25 HP Pudge
+            casterCard.health = Math.min(casterCard.maxHealth, casterCard.health + 25);
+            
+            this.showDamageNumber(targetCard, 50, false, false);
+            this.renderBattle();
+            this.showBattleHint(`Pudge пожирает врага! -50 HP цели, +25 HP Pudge`);
+            
+            setTimeout(() => {
+                this.hideBattleHint();
+                if (!this.checkBattleEnd()) {
+                    if (this.battleState.isOnline && window.onlineBattlesSystem) {
+                        window.onlineBattlesSystem.endPlayerTurn();
+                    } else {
+                        this.startBotTurn();
+                    }
+                }
+            }, 2000);
+        }, 1500);
+    }
+    
+    // Invoker - Sun Strike
+    useInvokerSkill(casterCard, targetCard) {
+        console.log('☀️ Invoker использует Sun Strike!');
+        
+        casterCard.skillCooldown = 2;
+        this.battleState.lastPlayerCard = { name: casterCard.name };
+        
+        // Анимация Sun Strike
+        this.createSunStrikeAnimation(targetCard);
+        
+        setTimeout(() => {
+            // Наносим 100 урона
+            targetCard.health = Math.max(0, targetCard.health - 100);
+            if (targetCard.health <= 0) {
+                targetCard.isDead = true;
+            }
+            
+            // Применяем Cold Snap (заморозка на следующий ход)
+            this.battleState.frozenCards.push(targetCard.name);
+            
+            this.showDamageNumber(targetCard, 100, false, false);
+            this.showColdSnapEffect(targetCard);
+            this.renderBattle();
+            this.showBattleHint(`Sun Strike! 100 урона + Cold Snap (пропуск хода)`);
+            
+            setTimeout(() => {
+                this.hideBattleHint();
+                if (!this.checkBattleEnd()) {
+                    if (this.battleState.isOnline && window.onlineBattlesSystem) {
+                        window.onlineBattlesSystem.endPlayerTurn();
+                    } else {
+                        this.startBotTurn();
+                    }
+                }
+            }, 2000);
+        }, 2000);
+    }
+    
+    // Crystal Maiden - Frostbite
+    useCrystalMaidenSkill(casterCard, targetCard) {
+        console.log('❄️ Crystal Maiden использует Frostbite!');
+        
+        casterCard.skillCooldown = 2;
+        this.battleState.lastPlayerCard = { name: casterCard.name };
+        
+        // Анимация Frostbite
+        this.createFrostbiteAnimation(targetCard);
+        
+        setTimeout(() => {
+            // Замораживаем цель
+            this.battleState.frozenCards.push(targetCard.name);
+            
+            this.showColdSnapEffect(targetCard);
+            this.showBattleHint(`${targetCard.name} заморожен! Пропускает следующий ход.`);
+            
+            setTimeout(() => {
+                this.hideBattleHint();
+                if (!this.checkBattleEnd()) {
+                    if (this.battleState.isOnline && window.onlineBattlesSystem) {
+                        window.onlineBattlesSystem.endPlayerTurn();
+                    } else {
+                        this.startBotTurn();
+                    }
+                }
+            }, 2000);
+        }, 1500);
+    }
+    
+    // Terrorblade - Sunder
+    useTerrorbladeSkill(casterCard, targetCard) {
+        console.log('🔄 Terrorblade использует Sunder!');
+        
+        casterCard.skillCooldown = 2;
+        this.battleState.lastPlayerCard = { name: casterCard.name };
+        
+        // Анимация Sunder
+        this.createSunderAnimation(casterCard, targetCard);
+        
+        setTimeout(() => {
+            // Меняем HP
+            const tempHealth = casterCard.health;
+            casterCard.health = targetCard.health;
+            targetCard.health = tempHealth;
+            
+            // Проверяем смерти
+            if (casterCard.health <= 0) casterCard.isDead = true;
+            if (targetCard.health <= 0) targetCard.isDead = true;
+            
+            this.renderBattle();
+            this.showBattleHint(`Sunder! ${casterCard.name} и ${targetCard.name} обменялись HP!`);
+            
+            setTimeout(() => {
+                this.hideBattleHint();
+                if (!this.checkBattleEnd()) {
+                    if (this.battleState.isOnline && window.onlineBattlesSystem) {
+                        window.onlineBattlesSystem.endPlayerTurn();
+                    } else {
+                        this.startBotTurn();
+                    }
+                }
+            }, 2000);
+        }, 1500);
+    }
+    
+    // Spirit Breaker - Charge
+    useSpiritBreakerSkill(card) {
+        console.log('⚡ Spirit Breaker использует Charge of Darkness!');
+        
+        card.skillCooldown = 2;
+        
+        // Даем +20 скорости на раунд
+        card.tempSpeed = 20;
+        
+        // Анимация Charge
+        this.createChargeAnimation(card);
+        
+        setTimeout(() => {
+            this.showBattleHint(`Spirit Breaker заряжается! +20 скорости, выберите цель!`);
+            
+            // Показываем выбор цели (можно атаковать любую, включая невидимые)
+            const allEnemies = this.battleState.botDeck.filter(c => !c.isDead && c.health > 0);
+            
+            allEnemies.forEach(enemy => {
+                const cardElement = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${enemy.name}"]`);
+                if (cardElement) {
+                    cardElement.classList.add('skill-target');
+                    cardElement.style.cursor = 'crosshair';
+                    cardElement.onclick = () => {
+                        // Убираем подсветки
+                        document.querySelectorAll('.battle-card-new').forEach(c => {
+                            c.classList.remove('skill-target');
+                            c.style.cursor = '';
+                            c.onclick = null;
+                        });
+                        
+                        // Атакуем с бонусной скоростью
+                        const attacksCount = Math.max(1, Math.floor((card.speed + card.tempSpeed) / 10));
+                        console.log('⚡ Spirit Breaker атакует с', attacksCount, 'ударами!');
+                        
+                        // Помечаем что ходили
+                        this.battleState.lastPlayerCard = { name: card.name };
+                        
+                        // Убираем бонусную скорость после атаки
+                        setTimeout(() => {
+                            card.tempSpeed = 0;
+                        }, attacksCount * 1200);
+                        
+                        // Выполняем атаки
+                        this.performMultipleAttacks(card, enemy, attacksCount);
+                    };
+                }
+            });
+        }, 1000);
+    }
+    
+    // ===== АНИМАЦИИ СКИЛЛОВ =====
+    
+    createRequiemAnimation(caster, oppositeCard) {
+        console.log('💀 Анимация Requiem of Souls');
+        
+        const arena = document.querySelector('.battle-arena');
+        
+        // Создаем 36 душ вокруг Shadow Fiend
+        for (let i = 0; i < 36; i++) {
+            const soul = document.createElement('div');
+            soul.className = 'requiem-soul';
+            soul.textContent = '👻';
+            
+            const angle = (i / 36) * Math.PI * 2;
+            const startX = 50; // Центр
+            const startY = 50;
+            const endX = 50 + Math.cos(angle) * 100;
+            const endY = 50 + Math.sin(angle) * 100;
+            
+            soul.style.left = startX + '%';
+            soul.style.top = startY + '%';
+            soul.style.setProperty('--end-x', endX + '%');
+            soul.style.setProperty('--end-y', endY + '%');
+            
+            arena.appendChild(soul);
+            
+            setTimeout(() => soul.classList.add('flying'), i * 20);
+            
+            setTimeout(() => {
+                if (arena.contains(soul)) arena.removeChild(soul);
+            }, 1500);
+        }
+        
+        // Красное свечение
+        arena.classList.add('requiem-flash');
+        setTimeout(() => arena.classList.remove('requiem-flash'), 1000);
+    }
+    
+    createDismemberAnimation(caster, target) {
+        console.log('🩸 Анимация Dismember');
+        
+        const targetEl = document.querySelector(`.battle-card-new[data-card-name="${target.name}"]`);
+        if (targetEl) {
+            targetEl.classList.add('dismember-shake');
+            setTimeout(() => targetEl.classList.remove('dismember-shake'), 1500);
+        }
+    }
+    
+    createSunStrikeAnimation(target) {
+        console.log('☀️ Анимация Sun Strike');
+        
+        const targetEl = document.querySelector(`.battle-card-new[data-card-name="${target.name}"]`);
+        if (!targetEl) return;
+        
+        const arena = document.querySelector('.battle-arena');
+        
+        // Луч света сверху
+        const beam = document.createElement('div');
+        beam.className = 'sunstrike-beam';
+        const rect = targetEl.getBoundingClientRect();
+        const arenaRect = arena.getBoundingClientRect();
+        
+        beam.style.left = (rect.left - arenaRect.left + rect.width / 2) + 'px';
+        beam.style.top = '0';
+        
+        arena.appendChild(beam);
+        
+        setTimeout(() => beam.classList.add('active'), 10);
+        setTimeout(() => {
+            if (arena.contains(beam)) arena.removeChild(beam);
+        }, 2000);
+        
+        // Вспышка на карте
+        targetEl.classList.add('sunstrike-hit');
+        setTimeout(() => targetEl.classList.remove('sunstrike-hit'), 1000);
+    }
+    
+    createFrostbiteAnimation(target) {
+        console.log('❄️ Анимация Frostbite');
+        
+        const targetEl = document.querySelector(`.battle-card-new[data-card-name="${target.name}"]`);
+        if (targetEl) {
+            targetEl.classList.add('frozen');
+            
+            // Создаем ледяные кристаллы
+            for (let i = 0; i < 10; i++) {
+                const crystal = document.createElement('div');
+                crystal.className = 'ice-crystal';
+                crystal.textContent = '❄';
+                crystal.style.left = Math.random() * 100 + '%';
+                crystal.style.animationDelay = (i * 0.1) + 's';
+                targetEl.appendChild(crystal);
+                
+                setTimeout(() => {
+                    if (targetEl.contains(crystal)) targetEl.removeChild(crystal);
+                }, 1500);
+            }
+        }
+    }
+    
+    createSunderAnimation(caster, target) {
+        console.log('🔄 Анимация Sunder');
+        
+        const casterEl = document.querySelector(`.battle-card-new[data-card-name="${caster.name}"]`);
+        const targetEl = document.querySelector(`.battle-card-new[data-card-name="${target.name}"]`);
+        
+        if (casterEl && targetEl) {
+            // Фиолетовая линия между картами
+            const arena = document.querySelector('.battle-arena');
+            const line = document.createElement('div');
+            line.className = 'sunder-line';
+            
+            arena.appendChild(line);
+            
+            const casterRect = casterEl.getBoundingClientRect();
+            const targetRect = targetEl.getBoundingClientRect();
+            const arenaRect = arena.getBoundingClientRect();
+            
+            const x1 = casterRect.left - arenaRect.left + casterRect.width / 2;
+            const y1 = casterRect.top - arenaRect.top + casterRect.height / 2;
+            const x2 = targetRect.left - arenaRect.left + targetRect.width / 2;
+            const y2 = targetRect.top - arenaRect.top + targetRect.height / 2;
+            
+            const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+            const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+            
+            line.style.width = length + 'px';
+            line.style.left = x1 + 'px';
+            line.style.top = y1 + 'px';
+            line.style.transform = `rotate(${angle}deg)`;
+            
+            setTimeout(() => line.classList.add('active'), 10);
+            setTimeout(() => {
+                if (arena.contains(line)) arena.removeChild(line);
+            }, 1500);
+            
+            casterEl.classList.add('sunder-glow');
+            targetEl.classList.add('sunder-glow');
+            setTimeout(() => {
+                casterEl.classList.remove('sunder-glow');
+                targetEl.classList.remove('sunder-glow');
+            }, 1500);
+        }
+    }
+    
+    createChargeAnimation(card) {
+        console.log('⚡ Анимация Charge of Darkness');
+        
+        const cardEl = document.querySelector(`.battle-card-new[data-card-name="${card.name}"]`);
+        if (cardEl) {
+            cardEl.classList.add('charging');
+            setTimeout(() => cardEl.classList.remove('charging'), 2000);
+        }
+    }
+    
+    showFearEffect() {
+        // Показываем хитмаркеры страха над всеми врагами
+        this.battleState.botDeck.forEach(enemy => {
+            if (!enemy.isDead) {
+                const cardEl = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${enemy.name}"]`);
+                if (cardEl) {
+                    const fearMarker = document.createElement('div');
+                    fearMarker.className = 'fear-marker';
+                    fearMarker.textContent = '😱 СТРАХ';
+                    cardEl.appendChild(fearMarker);
+                    
+                    setTimeout(() => {
+                        if (cardEl.contains(fearMarker)) cardEl.removeChild(fearMarker);
+                    }, 2000);
+                }
+            }
+        });
+    }
+    
+    showColdSnapEffect(target) {
+        const cardEl = document.querySelector(`.battle-card-new[data-card-name="${target.name}"]`);
+        if (cardEl) {
+            const freezeMarker = document.createElement('div');
+            freezeMarker.className = 'freeze-marker';
+            freezeMarker.textContent = '❄️ ЗАМОРОЖЕН';
+            cardEl.appendChild(freezeMarker);
+            
+            setTimeout(() => {
+                if (cardEl.contains(freezeMarker)) cardEl.removeChild(freezeMarker);
+            }, 2000);
+        }
+    }
+    
+    showDamageNumber(target, damage, isBlocked, isCrit) {
+        const targetEl = document.querySelector(`.battle-card-new[data-card-name="${target.name}"]`);
+        if (!targetEl) return;
+        
+        const dmgText = document.createElement('div');
+        dmgText.className = `damage-number ${isCrit ? 'crit' : ''} ${isBlocked ? 'blocked' : ''}`;
+        dmgText.textContent = isBlocked ? `БЛОК ${damage}` : `-${damage}`;
+        dmgText.style.left = Math.random() * 60 + 20 + '%';
+        
+        targetEl.appendChild(dmgText);
+        
+        setTimeout(() => dmgText.classList.add('show'), 10);
+        setTimeout(() => {
+            if (targetEl.contains(dmgText)) targetEl.removeChild(dmgText);
+        }, 1500);
+    }
+    
+    // Уменьшаем кулдауны в начале раунда
+    decreaseSkillCooldowns() {
+        this.battleState.playerDeck.forEach(card => {
+            if (card.skillCooldown > 0) {
+                card.skillCooldown--;
+                console.log('⏱️ Кулдаун', card.name, ':', card.skillCooldown);
+            }
+        });
+        
+        this.battleState.botDeck.forEach(card => {
+            if (card.skillCooldown > 0) {
+                card.skillCooldown--;
+            }
+        });
+        
+        // Очищаем эффекты контроля
+        this.battleState.frozenCards = [];
+        this.battleState.fearedCards = [];
+    }
+    
+    // Бот использует скиллы
+    botUseSkill(card) {
+        console.log('⚡ Бот использует скилл:', card.skill.name);
+        
+        // Устанавливаем кулдаун
+        card.skillCooldown = 2;
+        this.battleState.lastBotCard = { name: card.name };
+        
+        // Выбираем цель и используем скилл
+        const alivePlayerCards = this.battleState.playerDeck.filter(c => !c.isDead && c.health > 0);
+        
+        if (card.name === 'Shadow Fiend') {
+            // Requiem - на всех
+            this.botUseShadowFiendSkill(card);
+        } else if (card.name === 'Pudge') {
+            // Dismember - на самую сильную карту
+            const target = alivePlayerCards.reduce((strongest, c) => c.health > strongest.health ? c : strongest);
+            this.botUsePudgeSkill(card, target);
+        } else if (card.name === 'Invoker') {
+            // Sun Strike - на самую сильную карту
+            const target = alivePlayerCards.reduce((strongest, c) => c.health > strongest.health ? c : strongest);
+            this.botUseInvokerSkill(card, target);
+        } else if (card.name === 'Crystal Maiden') {
+            // Frostbite - на самую опасную (высокий урон)
+            const target = alivePlayerCards.reduce((strongest, c) => c.damage > strongest.damage ? c : strongest);
+            this.botUseCrystalMaidenSkill(card, target);
+        } else if (card.name === 'Terrorblade') {
+            // Sunder - на самую здоровую карту если Terrorblade ранен
+            if (card.health < card.maxHealth * 0.5) {
+                const target = alivePlayerCards.reduce((strongest, c) => c.health > strongest.health ? c : strongest);
+                this.botUseTerrorbladeSkill(card, target);
+            } else {
+                // Если здоров - просто атакуем
+                this.selectBotTarget(card, alivePlayerCards);
+            }
+        } else if (card.name === 'Spirit Breaker') {
+            // Charge - используем сразу
+            this.botUseSpiritBreakerSkill(card);
+        }
+    }
+    
+    botUseShadowFiendSkill(card) {
+        this.useShadowFiendSkill(card); // Используем ту же логику
+    }
+    
+    botUsePudgeSkill(casterCard, targetCard) {
+        this.usePudgeSkill(casterCard, targetCard);
+    }
+    
+    botUseInvokerSkill(casterCard, targetCard) {
+        this.useInvokerSkill(casterCard, targetCard);
+    }
+    
+    botUseCrystalMaidenSkill(casterCard, targetCard) {
+        this.useCrystalMaidenSkill(casterCard, targetCard);
+    }
+    
+    botUseTerrorbladeSkill(casterCard, targetCard) {
+        this.useTerrorbladeSkill(casterCard, targetCard);
+    }
+    
+    botUseSpiritBreakerSkill(card) {
+        // Сразу заряжаемся и атакуем
+        card.tempSpeed = 20;
+        this.createChargeAnimation(card);
+        
+        setTimeout(() => {
+            // Выбираем случайную цель
+            const alivePlayerCards = this.battleState.playerDeck.filter(c => !c.isDead && c.health > 0);
+            const target = alivePlayerCards[Math.floor(Math.random() * alivePlayerCards.length)];
+            
+            const attacksCount = Math.max(1, Math.floor((card.speed + card.tempSpeed) / 10));
+            console.log('⚡ Spirit Breaker (бот) атакует с', attacksCount, 'ударами!');
+            
+            this.showBattleHint(`Бот: Spirit Breaker заряжается!`);
+            
+            setTimeout(() => {
+                card.tempSpeed = 0;
+                this.performBotMultipleAttacks(card, target, attacksCount);
+            }, 800);
+        }, 1000);
+    }
+    
+    // ===== КОНЕЦ СИСТЕМЫ СКИЛЛОВ =====
 
     showBattleHint(text) {
         let hintElement = document.querySelector('.battle-hint');
@@ -3234,6 +4338,14 @@ class GameData {
     performAttack(attacker, target, isEnemyAttacking = false) {
         if (attacker.isDead || target.isDead) return;
 
+        // 🔮 Проверяем невидимость цели
+        if (this.battleState.invisibleCards.includes(target.name)) {
+            console.log('👻 Цель невидима! Атака не проходит');
+            this.showBattleHint(`${target.name} невидим! Атака промахнулась!`);
+            setTimeout(() => this.hideBattleHint(), 1500);
+            return;
+        }
+
         // Рассчитываем урон
         let damage = attacker.damage;
         let isBlocked = false;
@@ -3248,8 +4360,18 @@ class GameData {
             this.soundSystem.playSound('attack');
         }
         
+        // 🔮 Учитываем руну щита (+40% защиты)
+        let totalDefense = target.defense;
+        if (this.battleState.shieldedCards.includes(target.name)) {
+            totalDefense += 40;
+            console.log('🛡️ Цель под щитом! Защита:', totalDefense + '%');
+        }
+        if (target.tempDefense) {
+            totalDefense += target.tempDefense;
+        }
+        
         // Проверяем защиту
-        if (Math.random() * 100 < target.defense) {
+        if (Math.random() * 100 < totalDefense) {
             damage = Math.floor(damage * 0.3); // Защита снижает урон на 70%
             isBlocked = true;
         } else {
