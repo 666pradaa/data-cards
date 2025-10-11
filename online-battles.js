@@ -36,18 +36,73 @@ class OnlineBattlesSystem {
             console.error('❌ Кнопка online-battle-btn НЕ найдена в online-battles.js!');
         }
         
-        document.getElementById('close-online-battle')?.addEventListener('click', () => this.closeOnlineBattleModal());
+        const closeBtn = document.getElementById('close-online-battle');
+        if (closeBtn) {
+            console.log('✅ Кнопка закрытия найдена');
+            closeBtn.addEventListener('click', () => this.closeOnlineBattleModal());
+        } else {
+            console.error('❌ Кнопка close-online-battle НЕ найдена!');
+        }
         
         // Переключение табов
-        document.querySelectorAll('#online-battle-modal .tab-btn').forEach(btn => {
+        const tabBtns = document.querySelectorAll('#online-battle-modal .tab-btn');
+        console.log('📑 Найдено табов:', tabBtns.length);
+        tabBtns.forEach(btn => {
             btn.addEventListener('click', (e) => this.switchTab(e.target.dataset.tab));
         });
         
-        // Создание/вход в комнату
-        document.getElementById('create-room-btn')?.addEventListener('click', () => this.createRoom());
-        document.getElementById('join-room-btn')?.addEventListener('click', () => this.joinRoom());
-        document.getElementById('cancel-room-btn')?.addEventListener('click', () => this.cancelRoom());
-        document.getElementById('copy-room-code-btn')?.addEventListener('click', () => this.copyRoomCode());
+        // Создание/вход в комнату - добавляем обработчики сейчас
+        this.setupRoomButtons();
+    }
+    
+    setupRoomButtons() {
+        console.log('🎲 Настройка кнопок комнат...');
+        
+        const createBtn = document.getElementById('create-room-btn');
+        const joinBtn = document.getElementById('join-room-btn');
+        const cancelBtn = document.getElementById('cancel-room-btn');
+        const copyBtn = document.getElementById('copy-room-code-btn');
+        
+        console.log('Кнопка создания:', createBtn ? '✅ найдена' : '❌ НЕ найдена');
+        console.log('Кнопка входа:', joinBtn ? '✅ найдена' : '❌ НЕ найдена');
+        console.log('Кнопка отмены:', cancelBtn ? '✅ найдена' : '❌ НЕ найдена');
+        console.log('Кнопка копирования:', copyBtn ? '✅ найдена' : '❌ НЕ найдена');
+        
+        if (createBtn && !createBtn.dataset.listenerAdded) {
+            console.log('➕ Добавляем обработчик на кнопку создания комнаты');
+            createBtn.addEventListener('click', () => {
+                console.log('🔵 КЛИК НА СОЗДАНИЕ КОМНАТЫ');
+                this.createRoom();
+            });
+            createBtn.dataset.listenerAdded = 'true';
+        }
+        
+        if (joinBtn && !joinBtn.dataset.listenerAdded) {
+            console.log('➕ Добавляем обработчик на кнопку входа в комнату');
+            joinBtn.addEventListener('click', () => {
+                console.log('🔵 КЛИК НА ВХОД В КОМНАТУ');
+                this.joinRoom();
+            });
+            joinBtn.dataset.listenerAdded = 'true';
+        }
+        
+        if (cancelBtn && !cancelBtn.dataset.listenerAdded) {
+            console.log('➕ Добавляем обработчик на кнопку отмены');
+            cancelBtn.addEventListener('click', () => {
+                console.log('🔵 КЛИК НА ОТМЕНУ');
+                this.cancelRoom();
+            });
+            cancelBtn.dataset.listenerAdded = 'true';
+        }
+        
+        if (copyBtn && !copyBtn.dataset.listenerAdded) {
+            console.log('➕ Добавляем обработчик на кнопку копирования');
+            copyBtn.addEventListener('click', () => {
+                console.log('🔵 КЛИК НА КОПИРОВАНИЕ');
+                this.copyRoomCode();
+            });
+            copyBtn.dataset.listenerAdded = 'true';
+        }
     }
 
     openOnlineBattleModal() {
@@ -67,6 +122,12 @@ class OnlineBattlesSystem {
             console.log('✅ Модальное окно найдено, открываем');
             modal.style.display = 'flex';
             setTimeout(() => modal.classList.add('active'), 10);
+            
+            // Переустанавливаем обработчики после открытия модального окна
+            setTimeout(() => {
+                console.log('🔄 Переустановка обработчиков кнопок комнат...');
+                this.setupRoomButtons();
+            }, 100);
         } else {
             console.error('❌ Модальное окно online-battle-modal НЕ найдено!');
         }
