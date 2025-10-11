@@ -150,6 +150,10 @@ class ClansSystem {
 
     async loadUserClan() {
         const user = this.gameData.getUser();
+        
+        // Всегда загружаем приглашения
+        await this.loadClanInvites();
+        
         if (!user || !user.clanId) {
             this.showNoClanView();
             return;
@@ -504,33 +508,154 @@ class ClansSystem {
         }
         
         try {
-            const updatedMembers = [...this.currentClan.members, userId];
+            // Проверяем что у игрока нет клана
+            const targetUser = await this.gameData.getUserById(userId);
+            if (targetUser.clanId) {
+                alert('Этот игрок уже состоит в клане!');
+                return;
+            }
             
+            // Проверяем нет ли уже приглашения
+            const existingInvites = targetUser.clanInvites || [];
+            if (existingInvites.some(inv => inv.clanId === this.currentClan.id)) {
+                alert('Приглашение уже отправлено!');
+                return;
+            }
+            
+            // Создаем приглашение
+            const invite = {
+                clanId: this.currentClan.id,
+                clanTag: this.currentClan.tag,
+                clanName: this.currentClan.name,
+                invitedBy: this.gameData.currentUser,
+                inviterNick: this.gameData.getUser().nickname || this.gameData.getUser().username,
+                timestamp: Date.now()
+            };
+            
+            const updatedInvites = [...existingInvites, invite];
+            
+            // Сохраняем приглашение у пользователя
             if (this.gameData.useFirebase) {
-                await firebase.database().ref(`clans/${this.currentClan.id}/members`).set(updatedMembers);
-                await firebase.database().ref(`users/${userId}/clanId`).set(this.currentClan.id);
+                await firebase.database().ref(`users/${userId}/clanInvites`).set(updatedInvites);
             } else {
-                const clans = JSON.parse(localStorage.getItem('clans') || '{}');
-                if (clans[this.currentClan.id]) {
-                    clans[this.currentClan.id].members = updatedMembers;
-                    localStorage.setItem('clans', JSON.stringify(clans));
-                }
-                
                 const users = JSON.parse(localStorage.getItem('dotaCardsUsers') || '{}');
                 if (users[userId]) {
-                    users[userId].clanId = this.currentClan.id;
+                    users[userId].clanInvites = updatedInvites;
                     localStorage.setItem('dotaCardsUsers', JSON.stringify(users));
                 }
             }
             
-            alert('Игрок добавлен в клан!');
+            alert(`✅ Приглашение отправлено игроку!`);
             this.closeAddMemberModal();
-            await this.loadUserClan();
             
         } catch (error) {
-            console.error('Ошибка добавления участника:', error);
+            console.error('Ошибка отправки приглашения:', error);
             alert('Ошибка: ' + error.message);
         }
+    }
+    
+    async loadClanInvites() {
+        const user = this.gameData.getUser();
+        if (!user) return;
+        
+        const invites = user.clanInvites || [];
+        
+        // Показываем уведомление если есть приглашения
+        const invitesContainer = document.getElementById('clan-invites-container');
+        if (invitesContainer) {
+            if (invites.length === 0) {
+                invitesContainer.style.display = 'none';
+                return;
+            }
+            
+            invitesContainer.style.display = 'block';
+            invitesContainer.innerHTML = `
+                <div class="clan-invites-header">
+                    <h3>📬 Приглашения в кланы (${invites.length})</h3>
+                </div>
+                ${invites.map((invite, index) => `
+                    <div class="clan-invite-item">
+                        <div class="invite-info">
+                            <strong>[${invite.clanTag}] ${invite.clanName}</strong>
+                            <br>
+                            <small>От: ${invite.inviterNick}</small>
+                        </div>
+                        <div class="invite-actions">
+                            <button class="btn small primary" onclick="window.clansSystem.acceptClanInvite(${index})">✅ Принять</button>
+                            <button class="btn small secondary" onclick="window.clansSystem.rejectClanInvite(${index})">❌ Отказать</button>
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+        }
+    }
+    
+    async acceptClanInvite(inviteIndex) {
+        const user = this.gameData.getUser();
+        const invites = user.clanInvites || [];
+        
+        if (!invites[inviteIndex]) {
+            alert('Приглашение не найдено');
+            return;
+        }
+        
+        const invite = invites[inviteIndex];
+        
+        try {
+            // Проверяем что клан еще существует
+            const clan = await this.getClanById(invite.clanId);
+            if (!clan) {
+                alert('Клан больше не существует');
+                // Удаляем приглашение
+                await this.rejectClanInvite(inviteIndex);
+                return;
+            }
+            
+            // Добавляем в клан
+            const updatedMembers = [...(clan.members || []), this.gameData.currentUser];
+            
+            if (this.gameData.useFirebase) {
+                await firebase.database().ref(`clans/${invite.clanId}/members`).set(updatedMembers);
+            } else {
+                const clans = JSON.parse(localStorage.getItem('clans') || '{}');
+                if (clans[invite.clanId]) {
+                    clans[invite.clanId].members = updatedMembers;
+                    localStorage.setItem('clans', JSON.stringify(clans));
+                }
+            }
+            
+            // Удаляем приглашение и сохраняем clanId
+            const remainingInvites = invites.filter((_, i) => i !== inviteIndex);
+            await this.gameData.saveUser({
+                clanId: invite.clanId,
+                clanInvites: remainingInvites
+            });
+            
+            alert(`✅ Вы вступили в клан [${invite.clanTag}] ${invite.clanName}!`);
+            await this.loadUserClan();
+            await this.gameData.updateNicknameWithClanTag(user);
+            
+        } catch (error) {
+            console.error('Ошибка принятия приглашения:', error);
+            alert('Ошибка: ' + error.message);
+        }
+    }
+    
+    async rejectClanInvite(inviteIndex) {
+        const user = this.gameData.getUser();
+        const invites = user.clanInvites || [];
+        
+        if (!invites[inviteIndex]) {
+            alert('Приглашение не найдено');
+            return;
+        }
+        
+        // Удаляем приглашение
+        const remainingInvites = invites.filter((_, i) => i !== inviteIndex);
+        await this.gameData.saveUser({ clanInvites: remainingInvites });
+        
+        alert('Приглашение отклонено');
+        await this.loadClanInvites();
     }
 
     async removeMember(userId) {
@@ -645,7 +770,7 @@ class ClansSystem {
     async updateClanUI() {
         console.log('🔄 Обновление UI кланов...');
         try {
-            // Загружаем клан пользователя
+            // Загружаем клан пользователя и приглашения
             await this.loadUserClan();
         } catch (error) {
             console.error('❌ Ошибка обновления UI кланов:', error);

@@ -922,6 +922,7 @@ class GameData {
                     nickname: randomNickname,
                     userid: userid,
                     avatar: this.avatars[0],
+                    clanInvites: [],
                     tutorialCompleted: false
                 });
                 
@@ -972,6 +973,7 @@ class GameData {
             avatar: this.avatars[0],
             friends: [],
             friendRequests: { incoming: [], outgoing: [] },
+            clanInvites: [],
             tutorialCompleted: false
         };
 
@@ -1352,6 +1354,13 @@ class GameData {
         // Удаляем активный класс со всех вкладок
         document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        
+        // Если переключились на вкладку кланов - загружаем приглашения
+        if (tabName === 'clans' && window.clansSystem) {
+            setTimeout(() => {
+                window.clansSystem.loadClanInvites();
+            }, 100);
+        }
 
         // Активируем выбранную вкладку
         document.getElementById(`${tabName}-tab`).classList.add('active');
@@ -2571,7 +2580,9 @@ class GameData {
             isPlayerTurn: true,
             playerName: user.nickname || user.username,
             botName: botName,
-            inProgress: true
+            inProgress: true,
+            lastPlayerCard: null,  // Карта которой ходил игрок в прошлом раунде
+            lastBotCard: null       // Карта которой ходил бот в прошлом раунде
         };
 
             console.log('Battle state set, rendering battle...');
@@ -2739,30 +2750,102 @@ class GameData {
         if (this.battleEnded) return;
         
         this.isPlayerTurn = true;
-        this.currentPlayerAttacker = 0;
         this.selectedEnemyCard = null;
         
-        // Создаём список всех атак игрока с учётом скорости
-        // 0-19 speed = 1 атака, 20-29 = 2 атаки, 30-39 = 3 атаки
+        // Получаем живые карты игрока
         const alivePlayerCards = this.battleState.playerDeck.filter(card => !card.isDead && card.health > 0);
-        this.playerAttacks = [];
-        alivePlayerCards.forEach(card => {
-            const attacksCount = Math.max(1, Math.floor(card.speed / 10));
-            for (let i = 0; i < attacksCount; i++) {
-                this.playerAttacks.push(card);
-            }
+        
+        // Фильтруем карты - убираем ту которой ходили в прошлом раунде
+        const availableCards = alivePlayerCards.filter(card => {
+            return !this.battleState.lastPlayerCard || card.name !== this.battleState.lastPlayerCard.name;
         });
+        
+        // Если нет доступных карт (все отдыхают) - снимаем ограничение
+        const cardsToChoose = availableCards.length > 0 ? availableCards : alivePlayerCards;
+        
+        if (cardsToChoose.length === 0) {
+            // Все карты мертвы - конец боя
+            this.checkBattleEnd();
+            return;
+        }
         
         // Убираем все подсветки
         document.querySelectorAll('.battle-card-new').forEach(c => {
-            c.classList.remove('selected', 'target-available', 'hint-glow');
+            c.classList.remove('selected', 'target-available', 'hint-glow', 'used-last-round');
         });
         
-        // Начинаем атаку первой картой игрока
-        this.selectNextPlayerCard();
+        // Помечаем карты которые не могут атаковать
+        if (this.battleState.lastPlayerCard) {
+            const usedCardElement = document.querySelector(`.player-battle-side .battle-card-new[data-card-name="${this.battleState.lastPlayerCard.name}"]`);
+            if (usedCardElement && availableCards.length > 0) {
+                usedCardElement.classList.add('used-last-round');
+            }
+        }
+        
+        // Показываем выбор карты игроку
+        this.showCardSelection(cardsToChoose);
+    }
+    
+    showCardSelection(availableCards) {
+        // Показываем подсказку
+        this.showBattleHint('Выберите карту для атаки');
+        
+        // Подсвечиваем доступные карты игрока
+        availableCards.forEach(card => {
+            const cardElement = document.querySelector(`.player-battle-side .battle-card-new[data-card-name="${card.name}"]`);
+            if (cardElement) {
+                cardElement.classList.add('hint-glow');
+                cardElement.style.pointerEvents = 'auto';
+                cardElement.style.cursor = 'pointer';
+                
+                // Добавляем обработчик выбора карты
+                cardElement.onclick = () => {
+                    this.selectPlayerAttacker(card);
+                };
+            }
+        });
+    }
+    
+    selectPlayerAttacker(selectedCard) {
+        // Запоминаем выбранную карту
+        this.currentAttacker = selectedCard;
+        
+        // Убираем подсветку с карт игрока
+        document.querySelectorAll('.player-battle-side .battle-card-new').forEach(c => {
+            c.classList.remove('hint-glow');
+            c.style.pointerEvents = 'none';
+            c.onclick = null;
+        });
+        
+        // Подсвечиваем выбранную карту
+        const attackerElement = document.querySelector(`.player-battle-side .battle-card-new[data-card-name="${selectedCard.name}"]`);
+        if (attackerElement) {
+            attackerElement.classList.add('selected');
+        }
+        
+        // Показываем цели
+        this.showTargetSelection(selectedCard);
+    }
+    
+    showTargetSelection(attackerCard) {
+        // Подсвечиваем доступные цели
+        const aliveEnemyCards = this.battleState.botDeck.filter(card => !card.isDead && card.health > 0);
+        
+        // Показываем подсказку с учетом количества атак
+        const attacksCount = Math.max(1, Math.floor(attackerCard.speed / 10));
+        const attackText = attacksCount > 1 ? ` (${attacksCount} атаки)` : '';
+        this.showBattleHint(`${attackerCard.name}${attackText} атакует! Выберите цель.`);
+        
+        aliveEnemyCards.forEach(enemyCard => {
+            const enemyElement = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${enemyCard.name}"]`);
+            if (enemyElement) {
+                enemyElement.classList.add('target-available');
+            }
+        });
     }
 
-    selectNextPlayerCard() {
+    // СТАРАЯ ФУНКЦИЯ - больше не используется, удалить можно
+    selectNextPlayerCard_OLD() {
         if (this.battleEnded) return;
         
         // Если все атаки игрока выполнены - переходим к ходу бота
@@ -2806,44 +2889,72 @@ class GameData {
     }
 
     selectTarget(targetCard) {
-        // Получаем текущую атакующую карту игрока из списка атак
-        if (this.currentPlayerAttacker >= this.playerAttacks.length) return;
-        
-        const attackerCard = this.playerAttacks[this.currentPlayerAttacker];
-        
-        // Дополнительная проверка что карта жива
-        if (attackerCard.isDead || attackerCard.health <= 0) {
-            this.currentPlayerAttacker++;
-            this.selectNextPlayerCard();
-            return;
-        }
+        if (!this.currentAttacker) return;
         
         // Звук выбора цели
         this.soundSystem.playSound('whoosh', 0.5);
         
         // Убираем подсветку целей
         document.querySelectorAll('.battle-card-new').forEach(c => {
-            c.classList.remove('target-available', 'hint-glow');
+            c.classList.remove('target-available', 'hint-glow', 'selected');
         });
         
         // Убираем подсказку
         this.hideBattleHint();
         
-        // Выполняем атаку
-        this.performAttack(attackerCard, targetCard, false);
+        // Выполняем все атаки выбранной картой с учетом скорости
+        const attacksCount = Math.max(1, Math.floor(this.currentAttacker.speed / 10));
         
-        // Увеличиваем счетчик атакующей карты
-        this.currentPlayerAttacker++;
+        this.performMultipleAttacks(this.currentAttacker, targetCard, attacksCount);
+    }
+    
+    performMultipleAttacks(attacker, initialTarget, attacksCount) {
+        let attackIndex = 0;
+        let currentTarget = initialTarget;
         
-        // Сохраняем состояние боя
-        this.saveBattleState();
-        
-        // После небольшой задержки переходим к следующей карте или ходу бота
-        setTimeout(() => {
-            if (!this.checkBattleEnd()) {
-                this.selectNextPlayerCard();
+        const performNextAttack = () => {
+            if (attackIndex >= attacksCount) {
+                // Все атаки выполнены
+                // Сохраняем карту которой ходили
+                this.battleState.lastPlayerCard = { name: attacker.name };
+                
+                // Сохраняем состояние боя
+                this.saveBattleState();
+                
+                // Переходим к ходу бота
+                setTimeout(() => {
+                    if (!this.checkBattleEnd()) {
+                        this.startBotTurn();
+                    }
+                }, 1000);
+                return;
             }
-        }, 1000);
+            
+            // Проверяем что цель еще жива, если нет - выбираем другую
+            if (currentTarget.isDead || currentTarget.health <= 0) {
+                const aliveEnemies = this.battleState.botDeck.filter(c => !c.isDead && c.health > 0);
+                if (aliveEnemies.length === 0) {
+                    // Все враги мертвы
+                    this.checkBattleEnd();
+                    return;
+                }
+                currentTarget = aliveEnemies[0]; // Выбираем первого живого
+            }
+            
+            // Выполняем атаку
+            this.performAttack(attacker, currentTarget, false);
+            
+            attackIndex++;
+            
+            // Следующая атака через 1 секунду
+            setTimeout(() => {
+                if (!this.checkBattleEnd()) {
+                    performNextAttack();
+                }
+            }, 1000);
+        };
+        
+        performNextAttack();
     }
 
     startBotTurn() {
@@ -2856,14 +2967,24 @@ class GameData {
         
         // Убираем все подсветки
         document.querySelectorAll('.battle-card-new').forEach(c => {
-            c.classList.remove('selected', 'target-available', 'hint-glow');
+            c.classList.remove('selected', 'target-available', 'hint-glow', 'used-last-round');
         });
         
-        // Выполняем все атаки бота по очереди
-        this.performBotAttacks();
+        // Помечаем карту которой ходили в прошлом раунде
+        if (this.battleState.lastBotCard) {
+            const usedCardElement = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${this.battleState.lastBotCard.name}"]`);
+            if (usedCardElement) {
+                usedCardElement.classList.add('used-last-round');
+            }
+        }
+        
+        // Выполняем атаку бота
+        setTimeout(() => {
+            this.performBotAttack();
+        }, 500);
     }
 
-    performBotAttacks() {
+    performBotAttack() {
         const alivePlayerCards = this.battleState.playerDeck.filter(card => !card.isDead && card.health > 0);
         const aliveBotCards = this.battleState.botDeck.filter(card => !card.isDead && card.health > 0);
         
@@ -2872,31 +2993,49 @@ class GameData {
             return;
         }
         
-        // Создаём список всех атак с учётом скорости
-        // 0-19 speed = 1 атака, 20-29 = 2 атаки, 30-39 = 3 атаки
-        const botAttacks = [];
-        aliveBotCards.forEach(card => {
-            const attacksCount = Math.max(1, Math.floor(card.speed / 10));
-            for (let i = 0; i < attacksCount; i++) {
-                botAttacks.push(card);
-            }
+        // Выбираем карту для атаки (не ту которой ходили в прошлом раунде)
+        let availableBotCards = aliveBotCards.filter(card => {
+            return !this.battleState.lastBotCard || card.name !== this.battleState.lastBotCard.name;
         });
         
-        let attackIndex = 0;
+        // Если нет доступных карт (все отдыхают) - снимаем ограничение
+        if (availableBotCards.length === 0) {
+            availableBotCards = aliveBotCards;
+        }
         
-        const performNextBotAttack = () => {
+        // Выбираем случайную карту
+        const attackerCard = availableBotCards[Math.floor(Math.random() * availableBotCards.length)];
+        
+        // Выбираем случайную цель
+        const targetCard = alivePlayerCards[Math.floor(Math.random() * alivePlayerCards.length)];
+        
+        // Количество атак зависит от скорости
+        const attacksCount = Math.max(1, Math.floor(attackerCard.speed / 10));
+        
+        // Выполняем все атаки выбранной картой
+        this.performBotMultipleAttacks(attackerCard, targetCard, attacksCount);
+    }
+    
+    performBotMultipleAttacks(attacker, initialTarget, attacksCount) {
+        let attackIndex = 0;
+        let currentTarget = initialTarget;
+        
+        const performNextAttack = () => {
             if (this.battleEnded) return;
             
-            const currentAlivePlayerCards = this.battleState.playerDeck.filter(card => !card.isDead && card.health > 0);
-            
-            if (attackIndex >= botAttacks.length || currentAlivePlayerCards.length === 0) {
-                // Все боты атаковали, возвращаем ход игроку
-                // Увеличиваем раунд
+            if (attackIndex >= attacksCount) {
+                // Все атаки выполнены
+                // Сохраняем карту которой ходили
+                this.battleState.lastBotCard = { name: attacker.name };
+                
+                // Увеличиваем раунд после хода бота
                 if (this.battleState) {
                     this.battleState.round++;
                     this.updateRoundDisplay();
                     this.saveBattleState();
                 }
+                
+                // Возвращаем ход игроку
                 setTimeout(() => {
                     if (!this.checkBattleEnd()) {
                         this.startPlayerTurn();
@@ -2905,29 +3044,32 @@ class GameData {
                 return;
             }
             
-            const attacker = botAttacks[attackIndex];
+            const currentAlivePlayerCards = this.battleState.playerDeck.filter(card => !card.isDead && card.health > 0);
             
-            // Проверяем что карта ещё жива
-            if (attacker.isDead || attacker.health <= 0) {
-                attackIndex++;
-                performNextBotAttack();
+            if (currentAlivePlayerCards.length === 0) {
+                this.checkBattleEnd();
                 return;
             }
             
-            const target = currentAlivePlayerCards[Math.floor(Math.random() * currentAlivePlayerCards.length)];
+            // Проверяем что цель еще жива, если нет - выбираем другую
+            if (currentTarget.isDead || currentTarget.health <= 0) {
+                currentTarget = currentAlivePlayerCards[Math.floor(Math.random() * currentAlivePlayerCards.length)];
+            }
             
-            this.performAttack(attacker, target, true);
+            // Выполняем атаку
+            this.performAttack(attacker, currentTarget, true);
             
             attackIndex++;
             
+            // Следующая атака через 1.2 секунды
             setTimeout(() => {
                 if (!this.checkBattleEnd()) {
-                    performNextBotAttack();
-            }
-        }, 1200);
+                    performNextAttack();
+                }
+            }, 1200);
         };
         
-        setTimeout(() => performNextBotAttack(), 500);
+        performNextAttack();
     }
 
     showBattleHint(text) {

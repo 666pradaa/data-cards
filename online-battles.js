@@ -98,11 +98,28 @@ class OnlineBattlesSystem {
 
     async createRoom() {
         const user = this.gameData.getUser();
+        console.log('🏠 Создание комнаты хостом:', user.nickname || user.username);
+        
+        // Проверяем колоду
+        if (!user.deck || user.deck.length !== 3) {
+            alert('Сначала соберите колоду из 3 карт!');
+            return;
+        }
+        
+        console.log('🃏 Колода хоста:', user.deck);
+        
         const roomCode = this.generateRoomCode();
+        console.log('🔑 Сгенерирован код комнаты:', roomCode);
+        
+        const currentUserId = this.gameData.useFirebase ? 
+            (firebase.auth().currentUser?.uid || this.gameData.currentUser) :
+            this.gameData.currentUser;
+        
+        console.log('👤 ID хоста:', currentUserId);
         
         const roomData = {
             code: roomCode,
-            host: this.gameData.currentUser,
+            host: currentUserId,
             hostNick: user.nickname || user.username,
             guest: null,
             guestNick: null,
@@ -115,14 +132,18 @@ class OnlineBattlesSystem {
             createdAt: Date.now()
         };
         
+        console.log('📦 Данные комнаты:', roomData);
+        
         try {
             if (this.gameData.useFirebase) {
                 await firebase.database().ref(`rooms/${roomCode}`).set(roomData);
+                console.log('✅ Комната создана в Firebase');
             } else {
                 // localStorage для тестирования
                 const rooms = JSON.parse(localStorage.getItem('onlineRooms') || '{}');
                 rooms[roomCode] = roomData;
                 localStorage.setItem('onlineRooms', JSON.stringify(rooms));
+                console.log('✅ Комната создана в localStorage');
             }
             
             this.currentRoom = roomData;
@@ -133,11 +154,14 @@ class OnlineBattlesSystem {
             document.getElementById('room-created').style.display = 'block';
             document.getElementById('room-code-display').textContent = roomCode;
             
+            console.log('🎉 Комната успешно создана! Код:', roomCode);
+            console.log('⏳ Ожидание гостя...');
+            
             // Начинаем слушать изменения
             this.listenToRoom(roomCode);
             
         } catch (error) {
-            console.error('Ошибка создания комнаты:', error);
+            console.error('❌ Ошибка создания комнаты:', error);
             alert('Ошибка создания комнаты: ' + error.message);
         }
     }
@@ -150,58 +174,92 @@ class OnlineBattlesSystem {
             return;
         }
         
+        console.log('🔍 Попытка войти в комнату:', roomCode);
+        
         try {
             let roomData;
             
             if (this.gameData.useFirebase) {
                 const snapshot = await firebase.database().ref(`rooms/${roomCode}`).once('value');
                 roomData = snapshot.val();
+                console.log('📦 Данные комнаты из Firebase:', roomData);
             } else {
                 const rooms = JSON.parse(localStorage.getItem('onlineRooms') || '{}');
                 roomData = rooms[roomCode];
+                console.log('📦 Данные комнаты из localStorage:', roomData);
             }
             
             if (!roomData) {
-                alert('Комната не найдена!');
+                alert('Комната не найдена! Проверьте код.');
+                console.error('❌ Комната не найдена');
                 return;
             }
             
             if (roomData.guest) {
                 alert('Комната уже занята!');
+                console.error('❌ Комната занята');
                 return;
             }
             
             const user = this.gameData.getUser();
+            console.log('👤 Пользователь заходит:', user.nickname || user.username);
+            
+            // Проверяем колоду
+            if (!user.deck || user.deck.length !== 3) {
+                alert('Сначала соберите колоду из 3 карт!');
+                return;
+            }
+            
+            console.log('🃏 Колода гостя:', user.deck);
+            
+            // Получаем правильный ID гостя
+            const currentUserId = this.gameData.useFirebase ? 
+                (firebase.auth().currentUser?.uid || this.gameData.currentUser) :
+                this.gameData.currentUser;
+            
+            console.log('👤 ID гостя:', currentUserId);
             
             // Присоединяемся как guest
             const updates = {
-                guest: this.gameData.currentUser,
+                guest: currentUserId,
                 guestNick: user.nickname || user.username,
                 guestDeck: user.deck,
                 status: 'ready'
             };
             
+            console.log('💾 Обновляем комнату данными гостя:', updates);
+            
             if (this.gameData.useFirebase) {
                 await firebase.database().ref(`rooms/${roomCode}`).update(updates);
+                console.log('✅ Комната обновлена в Firebase');
             } else {
                 const rooms = JSON.parse(localStorage.getItem('onlineRooms') || '{}');
                 Object.assign(rooms[roomCode], updates);
                 localStorage.setItem('onlineRooms', JSON.stringify(rooms));
+                console.log('✅ Комната обновлена в localStorage');
             }
             
             this.currentRoom = { ...roomData, ...updates };
             this.isHost = false;
             
+            console.log('🎮 Закрываем модальное окно и начинаем бой');
+            
             this.closeOnlineBattleModal();
-            this.startOnlineBattle(roomCode);
+            
+            // Небольшая задержка перед началом
+            setTimeout(() => {
+                this.startOnlineBattle(roomCode);
+            }, 300);
             
         } catch (error) {
-            console.error('Ошибка входа в комнату:', error);
+            console.error('❌ Ошибка входа в комнату:', error);
             alert('Ошибка входа: ' + error.message);
         }
     }
 
     listenToRoom(roomCode) {
+        console.log('👂 Начинаем слушать комнату:', roomCode);
+        
         if (!this.gameData.useFirebase) {
             // Для localStorage проверяем раз в секунду
             const interval = setInterval(async () => {
@@ -209,11 +267,15 @@ class OnlineBattlesSystem {
                 const room = rooms[roomCode];
                 
                 if (!room) {
+                    console.log('❌ Комната удалена');
                     clearInterval(interval);
                     return;
                 }
                 
+                console.log('🔄 Проверка комнаты (localStorage):', room.status);
+                
                 if (room.status === 'ready' && this.isHost) {
+                    console.log('✅ Гость присоединился! Запускаем бой...');
                     clearInterval(interval);
                     this.closeOnlineBattleModal();
                     this.startOnlineBattle(roomCode);
@@ -223,20 +285,42 @@ class OnlineBattlesSystem {
         }
         
         // Firebase real-time listener
+        console.log('🔥 Создаем Firebase listener для комнаты');
         this.roomListener = firebase.database().ref(`rooms/${roomCode}`);
         this.roomListener.on('value', (snapshot) => {
             const room = snapshot.val();
             
             if (!room) {
-                console.log('Комната удалена');
+                console.log('❌ Комната удалена или не найдена');
                 this.closeOnlineBattleModal();
+                if (this.roomListener) {
+                    this.roomListener.off();
+                    this.roomListener = null;
+                }
                 return;
             }
             
+            console.log('🔔 Обновление комнаты:', {
+                status: room.status,
+                isHost: this.isHost,
+                hasGuest: !!room.guest,
+                hasBattleState: !!this.gameData.battleState
+            });
+            
             if (room.status === 'ready' && this.isHost && !this.gameData.battleState) {
-                console.log('Противник присоединился! Начинаем бой...');
+                console.log('🎉 Гость присоединился! Начинаем бой...');
                 this.closeOnlineBattleModal();
-                this.startOnlineBattle(roomCode);
+                
+                // Отключаем слушатель для избежания повторного запуска
+                if (this.roomListener) {
+                    this.roomListener.off();
+                    this.roomListener = null;
+                }
+                
+                // Небольшая задержка перед началом
+                setTimeout(() => {
+                    this.startOnlineBattle(roomCode);
+                }, 300);
             }
             
             // Обновляем текущую комнату
@@ -250,24 +334,43 @@ class OnlineBattlesSystem {
     }
 
     async startOnlineBattle(roomCode) {
-        console.log('=== Начало онлайн-боя ===', roomCode);
+        console.log('=== 🎮 Начало онлайн-боя ===');
+        console.log('Код комнаты:', roomCode);
+        console.log('Роль игрока:', this.isHost ? 'ХОСТ' : 'ГОСТЬ');
         
         try {
             const roomData = await this.getRoomData(roomCode);
+            console.log('📦 Данные комнаты:', roomData);
             
-            if (!roomData || !roomData.hostDeck || !roomData.guestDeck) {
-                alert('Ошибка: не все данные загружены');
+            if (!roomData) {
+                alert('Ошибка: комната не найдена');
+                console.error('❌ roomData is null');
                 return;
             }
             
+            if (!roomData.hostDeck || !roomData.guestDeck) {
+                alert('Ошибка: не все колоды загружены');
+                console.error('❌ Отсутствуют колоды:', {
+                    hostDeck: roomData.hostDeck,
+                    guestDeck: roomData.guestDeck
+                });
+                return;
+            }
+            
+            console.log('🃏 Колода хоста:', roomData.hostDeck);
+            console.log('🃏 Колода гостя:', roomData.guestDeck);
+            
             // Создаём полные колоды с данными карт
             const playerDeck = this.isHost ? 
-                this.createBattleDeck(roomData.hostDeck) :
-                this.createBattleDeck(roomData.guestDeck);
+                await this.createBattleDeck(roomData.hostDeck, roomData.host) :
+                await this.createBattleDeck(roomData.guestDeck, roomData.guest);
                 
             const opponentDeck = this.isHost ?
-                this.createBattleDeck(roomData.guestDeck) :
-                this.createBattleDeck(roomData.hostDeck);
+                await this.createBattleDeck(roomData.guestDeck, roomData.guest) :
+                await this.createBattleDeck(roomData.hostDeck, roomData.host);
+            
+            console.log('✅ Колода игрока создана:', playerDeck.length, 'карт');
+            console.log('✅ Колода противника создана:', opponentDeck.length, 'карт');
             
             // Переходим на экран боя
             document.getElementById('main-menu').classList.remove('active');
@@ -284,37 +387,85 @@ class OnlineBattlesSystem {
                 botName: this.isHost ? roomData.guestNick : roomData.hostNick,
                 inProgress: true,
                 isOnline: true,
-                roomCode: roomCode
+                roomCode: roomCode,
+                lastPlayerCard: null,  // Карта которой ходил игрок в прошлом раунде
+                lastBotCard: null       // Карта которой ходил бот в прошлом раунде
             };
+            
+            console.log('🎯 Состояние боя создано:', this.gameData.battleState);
             
             // Обновляем статус комнаты
             await this.updateRoomStatus(roomCode, 'playing');
+            console.log('✅ Статус комнаты обновлен на "playing"');
             
             // Рендерим бой
             this.gameData.renderBattle();
+            console.log('✅ Бой отрендерен');
             
             // Запускаем онлайн-логику вместо обычной
             this.startOnlineBattleLogic(roomCode);
+            console.log('✅ Онлайн-логика запущена');
             
         } catch (error) {
-            console.error('Ошибка запуска онлайн-боя:', error);
+            console.error('❌ Ошибка запуска онлайн-боя:', error);
             alert('Ошибка запуска боя: ' + error.message);
         }
     }
 
-    createBattleDeck(deckCardNames) {
-        return deckCardNames.map(cardName => {
+    async createBattleDeck(deckCardNames, userId = null) {
+        console.log('🔨 Создание боевой колоды из:', deckCardNames);
+        console.log('👤 Для пользователя:', userId || 'текущий');
+        
+        if (!deckCardNames || !Array.isArray(deckCardNames)) {
+            console.error('❌ deckCardNames не массив:', deckCardNames);
+            return [];
+        }
+        
+        // Получаем данные нужного пользователя
+        let userData;
+        if (userId && this.gameData.useFirebase) {
+            // Для Firebase получаем данные другого пользователя
+            userData = await this.gameData.getUserById(userId);
+        } else {
+            // Для текущего пользователя или localStorage
+            userData = this.gameData.getUser();
+        }
+        
+        const userCards = userData?.cards || {};
+        console.log('📦 Карты пользователя:', Object.keys(userCards).length);
+        
+        const battleDeck = deckCardNames.map(cardName => {
             const cardData = this.gameData.cards[cardName];
             if (!cardData) {
-                console.error('Карта не найдена:', cardName);
+                console.error('❌ Карта не найдена в базе:', cardName);
                 return null;
             }
-            return {
-                ...cardData,
-                currentHealth: cardData.health,
+            
+            // Получаем улучшения карты пользователя
+            const userCard = userCards[cardName] || { upgrades: [] };
+            const upgrades = userCard.upgrades || [];
+            
+            const card = {
+                name: cardData.name,
+                damage: cardData.damage + this.gameData.getUpgradeBonus(upgrades, 'damage'),
+                health: cardData.health + this.gameData.getUpgradeBonus(upgrades, 'health'),
+                maxHealth: cardData.health + this.gameData.getUpgradeBonus(upgrades, 'health'),
+                defense: cardData.defense + this.gameData.getUpgradeBonus(upgrades, 'defense'),
+                speed: cardData.speed + this.gameData.getUpgradeBonus(upgrades, 'speed'),
+                image: cardData.image,
+                rarity: cardData.rarity,
+                upgrades: upgrades,
                 isDead: false
             };
+            
+            console.log(`✅ Карта создана: ${card.name} (DMG ${card.damage}, HP ${card.health})`);
+            
+            return card;
         }).filter(card => card !== null);
+        
+        console.log('✅ Боевая колода создана:', battleDeck.length, 'карт');
+        
+        return battleDeck;
     }
 
     startOnlineBattleLogic(roomCode) {
