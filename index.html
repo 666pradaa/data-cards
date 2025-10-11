@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOTA CARDS</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+</head>
+<body>
+    <div id="app">
+        <!-- Экран авторизации -->
+        <div id="auth-screen" class="screen active">
+            <div class="auth-container">
+                <h1 class="game-title">DOTA CARDS</h1>
+                <div class="auth-form">
+                    <div class="form-group">
+                        <input type="text" id="username" placeholder="Логин" required>
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="password" placeholder="Пароль" required>
+                    </div>
+                    <div class="auth-buttons">
+                        <button id="login-btn" class="btn primary">Войти</button>
+                        <button id="register-btn" class="btn secondary">Регистрация</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Главное меню -->
+        <div id="main-menu" class="screen">
+            <div class="menu-container">
+                <header class="game-header">
+                    <h1 class="game-title">DOTA CARDS</h1>
+                    <div class="user-info">
+                        <div class="level-info">
+                            <div class="experience-bar">
+                                <div class="exp-level-badge" id="exp-level-badge">1</div>
+                                <div class="exp-fill" id="exp-fill"></div>
+                                <span class="exp-text" id="exp-text">0/30</span>
+                            </div>
+                        </div>
+                        <div class="currency">
+                            <span id="gold-amount">0</span> <span class="currency-icon">🪙</span>
+                            <span id="gems-amount">0</span> <span class="currency-icon">💎</span>
+                        </div>
+                        <div class="code-input-section">
+                            <input type="text" id="promo-code" placeholder="Промо-код">
+                            <button id="use-code-btn" class="btn small">Использовать</button>
+                        </div>
+                        <button id="music-toggle" class="btn small" title="Фоновая музыка">🎵</button>
+                        <button id="sound-toggle" class="btn small" title="Звуковые эффекты">🔊</button>
+                        <button id="theme-toggle" class="btn small" title="Сменить тему">🌙</button>
+                        <button id="logout-btn" class="btn small">Выйти</button>
+                    </div>
+                </header>
+
+                <nav class="main-nav">
+                    <button class="nav-btn" data-tab="profile">Профиль</button>
+                    <button class="nav-btn active" data-tab="battle">Бои</button>
+                    <button class="nav-btn" data-tab="cards">Карты</button>
+                    <button class="nav-btn" data-tab="deck">Колода</button>
+                    <button class="nav-btn" data-tab="cases">Кейсы</button>
+                    <button class="nav-btn" data-tab="upgrades">Улучшения</button>
+                    <button class="nav-btn" data-tab="clans">Кланы</button>
+                    <button class="nav-btn" data-tab="friends">Друзья</button>
+                </nav>
+
+                <!-- Вкладка Профиль -->
+                <div id="profile-tab" class="tab-content">
+                    <div class="profile-container">
+                        <div class="profile-header">
+                            <h2>Мой профиль</h2>
+                        </div>
+                        <div class="profile-content">
+                            <div class="profile-avatar-section">
+                                <div class="avatar-display" id="avatar-display">
+                                    <img id="user-avatar" src="" alt="Avatar">
+                                </div>
+                                <button class="btn primary" id="change-avatar-btn">Сменить аватар</button>
+                            </div>
+                            <div class="profile-info-section">
+                                <div class="profile-field">
+                                    <label>Никнейм</label>
+                                    <div class="field-display">
+                                        <span id="display-nickname"></span>
+                                        <button class="edit-btn" data-field="nickname">✎</button>
+                                    </div>
+                                </div>
+                                <div class="profile-field">
+                                    <label>ID игрока</label>
+                                    <div class="field-display">
+                                        <span id="display-userid"></span>
+                                        <button class="edit-btn" data-field="userid">✎</button>
+                                    </div>
+                                </div>
+                                <div class="profile-stats">
+                                    <div class="stat-item">
+                                        <div class="stat-label">Уровень</div>
+                                        <div class="stat-value" id="profile-level">1</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-label">Золото</div>
+                                        <div class="stat-value" id="profile-gold">0</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-label">Гемы</div>
+                                        <div class="stat-value" id="profile-gems">0</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-label">Карт</div>
+                                        <div class="stat-value" id="profile-cards">0</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Вкладка Бои -->
+                <div id="battle-tab" class="tab-content active">
+                    <div class="battle-categories">
+                        <div class="battle-category">
+                            <button class="mode-info-btn" data-info="bot">i</button>
+                            <h3>🤖 Против ботов</h3>
+                            <p>Сражайся с ботами и получай награды!</p>
+                            <button id="bot-battle-btn" class="btn primary">Начать бой</button>
+                        </div>
+
+                        <div class="battle-category">
+                            <button class="mode-info-btn" data-info="online">i</button>
+                            <h3>👥 Онлайн бой</h3>
+                            <p>Сражайся с другими игроками!</p>
+                            <button id="online-battle-btn" class="btn primary">Создать/Войти</button>
+                        </div>
+
+                        <div class="battle-category disabled">
+                            <button class="mode-info-btn" data-info="ranked">i</button>
+                            <h3>🏆 Ранговые бои</h3>
+                            <p>Соревнуйся и повышай звание!</p>
+                            <div class="coming-soon-badge">Скоро будет добавлено</div>
+                            <button class="btn primary" disabled>Скоро</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Вкладка Карты -->
+                <div id="cards-tab" class="tab-content">
+                    <div class="cards-container">
+                        <div class="cards-filter">
+                            <button class="filter-btn active" data-rarity="all">Все</button>
+                            <button class="filter-btn" data-rarity="common">Обычные</button>
+                            <button class="filter-btn" data-rarity="rare">Редкие</button>
+                            <button class="filter-btn" data-rarity="epic">Эпические</button>
+                            <button class="filter-btn" data-rarity="legendary">Легендарные</button>
+                        </div>
+                        <div class="cards-filter">
+                            <button class="filter-btn active" data-stars="all">Все улучшения</button>
+                            <button class="filter-btn" data-stars="0">Без звезд</button>
+                            <button class="filter-btn" data-stars="1">⭐</button>
+                            <button class="filter-btn" data-stars="2">⭐⭐</button>
+                            <button class="filter-btn" data-stars="3">⭐⭐⭐</button>
+                        </div>
+                        <div id="cards-grid" class="cards-grid">
+                            <!-- Карты будут добавлены через JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Вкладка Колода -->
+                <div id="deck-tab" class="tab-content">
+                    <div class="deck-container">
+                        <div class="deck-header">
+                            <h2>Ваша колода для боя</h2>
+                            <p>Выберите до 3 карт для участия в боях</p>
+                        </div>
+                        <div class="deck-slots" id="deck-slots">
+                            <!-- Слоты колоды -->
+                        </div>
+                        <div class="deck-divider"></div>
+                        <div class="deck-available">
+                            <h3>Доступные карты</h3>
+                            <div class="cards-filter">
+                                <button class="filter-btn active" data-rarity="all">Все</button>
+                                <button class="filter-btn" data-rarity="common">Обычные</button>
+                                <button class="filter-btn" data-rarity="rare">Редкие</button>
+                                <button class="filter-btn" data-rarity="epic">Эпические</button>
+                                <button class="filter-btn" data-rarity="legendary">Легендарные</button>
+                            </div>
+                            <div class="cards-filter">
+                                <button class="filter-btn active" data-stars="all">Все улучшения</button>
+                                <button class="filter-btn" data-stars="0">Без звезд</button>
+                                <button class="filter-btn" data-stars="1">⭐</button>
+                                <button class="filter-btn" data-stars="2">⭐⭐</button>
+                                <button class="filter-btn" data-stars="3">⭐⭐⭐</button>
+                            </div>
+                            <div id="deck-available-cards" class="cards-grid">
+                                <!-- Доступные карты -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Вкладка Кейсы -->
+                <div id="cases-tab" class="tab-content">
+                    <div class="cases-container">
+                        <div class="case-item">
+                            <button class="case-info-btn" data-case="normal">i</button>
+                            <h3>Обычный кейс</h3>
+                            <p>100 🪙</p>
+                            <button class="btn primary buy-case" data-case="normal">Купить</button>
+                        </div>
+                        <div class="case-item">
+                            <button class="case-info-btn" data-case="mega">i</button>
+                            <h3>Мега бокс</h3>
+                            <p>10 💎</p>
+                            <button class="btn primary buy-case" data-case="mega">Купить</button>
+                        </div>
+                        <div class="case-item">
+                            <button class="case-info-btn" data-case="upgrades">i</button>
+                            <h3>Улучшения</h3>
+                            <p>250 🪙</p>
+                            <button class="btn primary buy-case" data-case="upgrades">Купить</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Вкладка Улучшения -->
+                <div id="upgrades-tab" class="tab-content">
+                    <div class="upgrades-section">
+                        <div class="upgrades-info">
+                            <h2>Улучшения</h2>
+                            <p>Применяйте улучшения к своим картам для увеличения характеристик!</p>
+                        </div>
+                        <div class="upgrades-container" id="upgrades-container">
+                            <!-- Улучшения будут добавлены через JavaScript -->
+                        </div>
+                        <div class="upgrade-divider"></div>
+                        <div class="cards-to-upgrade">
+                            <h3>Выберите карту для улучшения</h3>
+                            <div id="upgrade-cards-grid" class="cards-grid">
+                                <!-- Карты для улучшения -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Вкладка Друзья -->
+                <div id="friends-tab" class="tab-content">
+                    <div class="friends-section">
+                        <div class="friends-nav">
+                            <button class="friends-nav-btn active" data-friends-tab="my-friends">Мои друзья</button>
+                            <button class="friends-nav-btn" data-friends-tab="search">Поиск</button>
+                            <button class="friends-nav-btn" data-friends-tab="requests">Запросы</button>
+                        </div>
+
+                        <!-- Подвкладка: Мои друзья -->
+                        <div id="my-friends-tab" class="friends-content-tab active">
+                            <div class="friends-header">
+                                <h2>Мои друзья</h2>
+                                <p class="friends-count">У вас <span id="friends-count">0</span> друзей</p>
+                            </div>
+                            <div id="friends-list" class="friends-list">
+                                <!-- Список друзей -->
+                            </div>
+                        </div>
+
+                        <!-- Подвкладка: Поиск -->
+                        <div id="search-tab" class="friends-content-tab">
+                            <div class="friends-header">
+                                <h2>Поиск игроков</h2>
+                                <p>Найдите друзей по никнейму или ID</p>
+                            </div>
+                            <div class="search-container">
+                                <div class="search-box">
+                                    <input type="text" id="friend-search-input" placeholder="Введите никнейм или ID игрока...">
+                                    <button id="friend-search-btn" class="btn primary">Найти</button>
+                                </div>
+                                <div id="search-results" class="search-results">
+                                    <!-- Результаты поиска -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Подвкладка: Запросы -->
+                        <div id="requests-tab" class="friends-content-tab">
+                            <div class="friends-header">
+                                <h2>Запросы в друзья</h2>
+                            </div>
+                            <div class="requests-section">
+                                <div class="requests-group">
+                                    <h3>Входящие запросы (<span id="incoming-count">0</span>)</h3>
+                                    <div id="incoming-requests" class="requests-list">
+                                        <!-- Входящие запросы -->
+                                    </div>
+                                </div>
+                                <div class="requests-divider"></div>
+                                <div class="requests-group">
+                                    <h3>Отправленные запросы (<span id="outgoing-count">0</span>)</h3>
+                                    <div id="outgoing-requests" class="requests-list">
+                                        <!-- Исходящие запросы -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Вкладка Кланы -->
+                <div id="clans-tab" class="tab-content">
+                    <div class="clans-section">
+                        <div class="clans-header">
+                            <h2>⚔️ Кланы</h2>
+                            <p>Создай клан или вступи в существующий!</p>
+                        </div>
+
+                        <!-- Если нет клана -->
+                        <div id="no-clan-view" style="display: none;">
+                            <div class="clan-actions">
+                                <button id="create-clan-btn" class="btn primary">
+                                    ✨ Создать клан (25 💎)
+                                </button>
+                                <button id="find-clan-btn" class="btn secondary">
+                                    🔍 Найти клан
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Просмотр клана -->
+                        <div id="clan-view" style="display: none;">
+                            <div class="clan-card">
+                                <div class="clan-avatar" id="clan-avatar-display"></div>
+                                <div class="clan-info">
+                                    <div class="clan-tag" id="clan-tag-display"></div>
+                                    <h3 id="clan-name-display"></h3>
+                                    <p id="clan-description-display"></p>
+                                    <div class="clan-stats">
+                                        <div class="stat-item">
+                                            <span class="stat-label">Уровень</span>
+                                            <span class="stat-value" id="clan-level"></span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">Опыт</span>
+                                            <span class="stat-value" id="clan-exp"></span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">Членов</span>
+                                            <span class="stat-value" id="clan-members-count"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="clan-members-list">
+                                <h3>Участники</h3>
+                                <button id="add-member-btn" class="btn small">➕ Добавить участника</button>
+                                <div id="clan-members-container"></div>
+                            </div>
+
+                            <div class="clan-actions-buttons">
+                                <button class="btn primary" disabled>🏆 Ранговые бои клана (Скоро)</button>
+                                <button id="leave-clan-btn" class="btn secondary">Покинуть клан</button>
+                            </div>
+                        </div>
+
+                        <!-- Поиск кланов -->
+                        <div id="find-clan-view" style="display: none;">
+                            <div class="search-container">
+                                <div class="search-box">
+                                    <input type="text" id="clan-search" placeholder="🔍 Поиск по тегу или названию клана..." class="form-input">
+                                    <button id="clan-search-btn" class="btn primary">Найти</button>
+                                </div>
+                                <div id="clans-search-results" class="search-results"></div>
+                            </div>
+                            <button id="back-from-search-btn" class="btn secondary">← Назад</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Экран боя -->
+        <div id="battle-screen" class="screen">
+            <div class="battle-arena">
+                <div class="battle-top-bar">
+                    <div class="battle-round">Раунд <span id="battle-round-num">1</span></div>
+                    <div class="battle-vs">VS</div>
+                </div>
+                <div class="battle-field-new">
+                    <div class="battle-side player-battle-side">
+                        <div class="side-label">ВАША КОМАНДА</div>
+                        <div id="player-cards" class="battle-cards-row">
+                            <!-- Карты игрока -->
+                        </div>
+                    </div>
+                    <div class="battle-center-line"></div>
+                    <div class="battle-side enemy-battle-side">
+                        <div class="side-label">ПРОТИВНИК</div>
+                        <div id="enemy-cards" class="battle-cards-row">
+                            <!-- Карты противника -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Модальное окно выбора аватара -->
+        <div id="avatar-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Выберите аватар</h2>
+                    <button class="modal-close" id="close-avatar-modal">×</button>
+                </div>
+                <div class="avatar-upload-section">
+                    <input type="file" id="avatar-file-input" accept="image/*" style="display: none;">
+                    <button class="btn primary" id="upload-avatar-btn">📁 Загрузить свое фото</button>
+                </div>
+                <div class="avatar-divider">или выберите готовый аватар</div>
+                <div class="avatar-grid" id="avatar-grid">
+                    <!-- Аватары будут добавлены через JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Модальное окно редактирования поля -->
+        <div id="edit-modal" class="modal">
+            <div class="modal-content modal-small">
+                <div class="modal-header">
+                    <h2 id="edit-modal-title">Изменить</h2>
+                    <button class="modal-close" id="close-edit-modal">×</button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="edit-field-input" placeholder="Введите значение">
+                    <button class="btn primary" id="save-edit-btn">Сохранить</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Модальное окно информации о кейсе -->
+        <div id="case-info-modal" class="modal">
+            <div class="modal-content modal-small">
+                <div class="modal-header">
+                    <h2 id="case-info-title">Информация о кейсе</h2>
+                    <button class="modal-close" id="close-case-info-modal">×</button>
+                </div>
+                <div class="modal-body" id="case-info-content">
+                    <!-- Информация о шансах -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Админ панель -->
+        <div id="admin-panel" class="screen">
+            <div class="admin-container">
+                <div class="admin-profile-bar">
+                    <div class="admin-user-display">
+                        <img id="admin-avatar" src="" alt="Avatar" class="admin-avatar-img">
+                        <div class="admin-user-name" id="admin-user-name"></div>
+                    </div>
+                    <button id="close-admin" class="btn small">Закрыть</button>
+                </div>
+                <div class="admin-header">
+                    <h2>Админ панель</h2>
+                </div>
+                <div class="admin-search-bar">
+                    <input type="text" id="admin-search" placeholder="🔍 Поиск по логину или ID...">
+                </div>
+                <div class="admin-content">
+                    <div class="users-list">
+                        <h3>Управление пользователями</h3>
+                        <div id="users-container">
+                            <!-- Список пользователей -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно создания клана -->
+    <div id="create-clan-modal" class="modal">
+        <div class="modal-content large">
+            <span class="close" id="close-create-clan">&times;</span>
+            <h2>Создание клана</h2>
+            
+            <div class="clan-creator">
+                <!-- Конструктор аватарки -->
+                <div class="avatar-constructor">
+                    <h3>Аватарка клана</h3>
+                    <div class="avatar-preview" id="clan-avatar-preview"></div>
+                    
+                    <div class="avatar-parts">
+                        <div class="part-section">
+                            <h4>Фон</h4>
+                            <div class="part-options" id="bg-options"></div>
+                        </div>
+                        <div class="part-section">
+                            <h4>Символ</h4>
+                            <div class="part-options" id="symbol-options"></div>
+                        </div>
+                        <div class="part-section">
+                            <h4>Цвет</h4>
+                            <div class="part-options" id="color-options"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Информация о клане -->
+                <div class="clan-info-form">
+                    <label>Тег клана (2-5 символов)</label>
+                    <input type="text" id="clan-tag-input" maxlength="5" placeholder="TAG" class="form-input">
+                    
+                    <label>Название клана</label>
+                    <input type="text" id="clan-name-input" maxlength="30" placeholder="Название" class="form-input">
+                    
+                    <label>Описание</label>
+                    <textarea id="clan-description-input" maxlength="200" placeholder="Описание клана..." class="form-input"></textarea>
+                    
+                    <div class="clan-create-cost">
+                        <span>Стоимость: 25 💎</span>
+                    </div>
+                    
+                    <button id="confirm-create-clan-btn" class="btn primary">Создать клан</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно добавления участника -->
+    <div id="add-member-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-add-member">&times;</span>
+            <h2>Добавить участника</h2>
+            
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" id="member-search-input" placeholder="🔍 Введите ID или никнейм игрока..." class="form-input">
+                    <button id="search-member-btn" class="btn primary">Найти</button>
+                </div>
+            </div>
+            
+            <div id="member-search-results" class="search-results"></div>
+        </div>
+    </div>
+
+    <!-- Модальное окно онлайн боя -->
+    <div id="online-battle-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-online-battle">&times;</span>
+            <h2>Онлайн бой</h2>
+            
+            <div class="online-battle-tabs">
+                <button class="tab-btn active" data-tab="create-room">Создать комнату</button>
+                <button class="tab-btn" data-tab="join-room">Войти в комнату</button>
+            </div>
+
+            <!-- Создание комнаты -->
+            <div id="create-room-tab" class="online-tab active">
+                <p>Создайте комнату и поделитесь кодом с другом!</p>
+                <button id="create-room-btn" class="btn primary">Создать комнату</button>
+                
+                <div id="room-created" style="display: none;">
+                    <h3>Комната создана!</h3>
+                    <div class="room-code">
+                        <span>Код комнаты:</span>
+                        <div class="code-display" id="room-code-display"></div>
+                        <button id="copy-room-code-btn" class="btn small">Копировать</button>
+                    </div>
+                    <p>Ожидание противника...</p>
+                    <div id="opponent-status">Ожидание...</div>
+                    <button id="cancel-room-btn" class="btn secondary">Отменить</button>
+                </div>
+            </div>
+
+            <!-- Вход в комнату -->
+            <div id="join-room-tab" class="online-tab">
+                <p>Введите код комнаты, чтобы присоединиться:</p>
+                <input type="text" id="room-code-input" placeholder="Введите код" class="form-input">
+                <button id="join-room-btn" class="btn primary">Присоединиться</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно информации о режимах боя -->
+    <div id="battle-mode-info-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="close-battle-mode-info">&times;</span>
+            <h2 id="battle-mode-info-title">Информация</h2>
+            <div id="battle-mode-info-content" class="case-info-content">
+                <!-- Контент заполняется динамически -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Оверлей обучения -->
+    <div id="tutorial-overlay" class="tutorial-overlay" style="display: none;">
+        <button id="skip-tutorial-btn" class="btn secondary skip-tutorial-btn">Пропустить</button>
+        
+        <div class="tutorial-box">
+            <!-- Мультяшный Shadow Fiend (SVG) -->
+            <div class="sf-character">
+                <svg viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg" id="sf-cartoon">
+                    <!-- Тело -->
+                    <ellipse cx="100" cy="180" rx="50" ry="60" fill="#2a0a0a"/>
+                    <ellipse cx="100" cy="180" rx="45" ry="55" fill="#4a0e0e"/>
+                    
+                    <!-- Голова -->
+                    <circle cx="100" cy="100" r="60" fill="#3a0c0c"/>
+                    <circle cx="100" cy="100" r="50" fill="#5a1010"/>
+                    
+                    <!-- Рога -->
+                    <path d="M 60 80 Q 40 60 30 40 L 35 45 Q 45 65 60 85 Z" fill="#2a0a0a"/>
+                    <path d="M 140 80 Q 160 60 170 40 L 165 45 Q 155 65 140 85 Z" fill="#2a0a0a"/>
+                    
+                    <!-- Глаза (красные светящиеся) -->
+                    <ellipse cx="80" cy="95" rx="12" ry="18" fill="#ff0000">
+                        <animate attributeName="opacity" values="1;0.7;1" dur="2s" repeatCount="indefinite"/>
+                    </ellipse>
+                    <ellipse cx="120" cy="95" rx="12" ry="18" fill="#ff0000">
+                        <animate attributeName="opacity" values="1;0.7;1" dur="2s" repeatCount="indefinite"/>
+                    </ellipse>
+                    
+                    <!-- Зрачки -->
+                    <circle cx="80" cy="95" r="6" fill="#ffaa00"/>
+                    <circle cx="120" cy="95" r="6" fill="#ffaa00"/>
+                    
+                    <!-- Улыбка -->
+                    <path d="M 70 120 Q 100 135 130 120" stroke="#ff0000" stroke-width="3" fill="none"/>
+                    
+                    <!-- Руки -->
+                    <ellipse cx="50" cy="160" rx="15" ry="40" fill="#4a0e0e" transform="rotate(-20 50 160)"/>
+                    <ellipse cx="150" cy="160" rx="15" ry="40" fill="#4a0e0e" transform="rotate(20 150 160)"/>
+                    
+                    <!-- Когти -->
+                    <path d="M 45 195 L 40 210 L 43 195 L 38 210 L 41 195" fill="#ff0000"/>
+                    <path d="M 155 195 L 160 210 L 157 195 L 162 210 L 159 195" fill="#ff0000"/>
+                </svg>
+            </div>
+            
+            <div class="speech-bubble">
+                <div class="bubble-text" id="tutorial-text">Загрузка...</div>
+            </div>
+            
+            <div class="tutorial-controls">
+                <button id="tutorial-prev-btn" class="btn secondary" style="display: none;">← Назад</button>
+                <div class="tutorial-counter" id="tutorial-step-counter">1 / 5</div>
+                <button id="tutorial-next-btn" class="btn primary">Далее →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase конфигурация должна загружаться ПЕРЕД game.js -->
+    <script src="firebase-config.js"></script>
+    <script src="game.js"></script>
+    <script src="clans-system.js"></script>
+    <script src="online-battles.js"></script>
+</body>
+</html>
