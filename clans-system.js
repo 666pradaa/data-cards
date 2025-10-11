@@ -198,6 +198,9 @@ class ClansSystem {
         // Список участников
         this.loadClanMembers(clan);
         
+        // Загружаем запросы на вступление (если лидер)
+        this.loadJoinRequests();
+        
         // Подключаем обработчик кнопки добавления участника
         setTimeout(() => {
             const addBtn = document.getElementById('add-member-btn');
@@ -764,7 +767,176 @@ class ClansSystem {
     }
 
     async requestJoinClan(clanId) {
-        alert('Отправка запроса на вступление в клан будет добавлена в следующем обновлении!');
+        try {
+            const clan = await this.getClanById(clanId);
+            if (!clan) {
+                alert('Клан не найден');
+                return;
+            }
+            
+            const user = this.gameData.getUser();
+            
+            // Проверяем что у игрока нет клана
+            if (user.clanId) {
+                alert('Вы уже состоите в клане!');
+                return;
+            }
+            
+            // Проверяем нет ли уже запроса
+            const existingRequests = clan.joinRequests || [];
+            if (existingRequests.some(req => req.userId === this.gameData.currentUser)) {
+                alert('Запрос уже отправлен!');
+                return;
+            }
+            
+            // Создаем запрос
+            const request = {
+                userId: this.gameData.currentUser,
+                userNick: user.nickname || user.username,
+                userLevel: user.level || 1,
+                userId_display: user.userid,
+                timestamp: Date.now()
+            };
+            
+            const updatedRequests = [...existingRequests, request];
+            
+            // Сохраняем запрос в клане
+            if (this.gameData.useFirebase) {
+                await firebase.database().ref(`clans/${clanId}/joinRequests`).set(updatedRequests);
+            } else {
+                const clans = JSON.parse(localStorage.getItem('clans') || '{}');
+                if (clans[clanId]) {
+                    clans[clanId].joinRequests = updatedRequests;
+                    localStorage.setItem('clans', JSON.stringify(clans));
+                }
+            }
+            
+            alert(`✅ Запрос на вступление в [${clan.tag}] ${clan.name} отправлен!`);
+            this.closeFindClans();
+            
+        } catch (error) {
+            console.error('Ошибка отправки запроса:', error);
+            alert('Ошибка: ' + error.message);
+        }
+    }
+    
+    async loadJoinRequests() {
+        if (!this.currentClan) return;
+        
+        // Проверяем что мы лидер
+        const user = this.gameData.getUser();
+        if (this.currentClan.leader !== this.gameData.currentUser) {
+            return; // Только лидер видит запросы
+        }
+        
+        const requests = this.currentClan.joinRequests || [];
+        const requestsContainer = document.getElementById('clan-join-requests');
+        
+        if (!requestsContainer) return;
+        
+        if (requests.length === 0) {
+            requestsContainer.style.display = 'none';
+            return;
+        }
+        
+        requestsContainer.style.display = 'block';
+        requestsContainer.innerHTML = `
+            <div class="join-requests-header">
+                <h3>📝 Запросы на вступление (${requests.length})</h3>
+            </div>
+            ${requests.map((request, index) => `
+                <div class="join-request-item">
+                    <div class="request-info">
+                        <strong>${request.userNick}</strong>
+                        <br>
+                        <small>ID: ${request.userId_display} • Уровень: ${request.userLevel}</small>
+                    </div>
+                    <div class="request-actions">
+                        <button class="btn small primary" onclick="window.clansSystem.acceptJoinRequest(${index})">✅ Принять</button>
+                        <button class="btn small secondary" onclick="window.clansSystem.rejectJoinRequest(${index})">❌ Отклонить</button>
+                    </div>
+                </div>
+            `).join('')}
+        `;
+    }
+    
+    async acceptJoinRequest(requestIndex) {
+        if (!this.currentClan) return;
+        
+        const requests = this.currentClan.joinRequests || [];
+        if (!requests[requestIndex]) {
+            alert('Запрос не найден');
+            return;
+        }
+        
+        const request = requests[requestIndex];
+        
+        try {
+            // Проверяем что игрок еще не в клане
+            const targetUser = await this.gameData.getUserById(request.userId);
+            if (targetUser.clanId) {
+                alert('Этот игрок уже вступил в другой клан');
+                await this.rejectJoinRequest(requestIndex);
+                return;
+            }
+            
+            // Добавляем в клан
+            const updatedMembers = [...(this.currentClan.members || []), request.userId];
+            const remainingRequests = requests.filter((_, i) => i !== requestIndex);
+            
+            if (this.gameData.useFirebase) {
+                await firebase.database().ref(`clans/${this.currentClan.id}/members`).set(updatedMembers);
+                await firebase.database().ref(`clans/${this.currentClan.id}/joinRequests`).set(remainingRequests);
+                await firebase.database().ref(`users/${request.userId}/clanId`).set(this.currentClan.id);
+            } else {
+                const clans = JSON.parse(localStorage.getItem('clans') || '{}');
+                if (clans[this.currentClan.id]) {
+                    clans[this.currentClan.id].members = updatedMembers;
+                    clans[this.currentClan.id].joinRequests = remainingRequests;
+                    localStorage.setItem('clans', JSON.stringify(clans));
+                }
+                
+                const users = JSON.parse(localStorage.getItem('dotaCardsUsers') || '{}');
+                if (users[request.userId]) {
+                    users[request.userId].clanId = this.currentClan.id;
+                    localStorage.setItem('dotaCardsUsers', JSON.stringify(users));
+                }
+            }
+            
+            alert(`✅ Игрок ${request.userNick} принят в клан!`);
+            await this.loadUserClan();
+            
+        } catch (error) {
+            console.error('Ошибка принятия запроса:', error);
+            alert('Ошибка: ' + error.message);
+        }
+    }
+    
+    async rejectJoinRequest(requestIndex) {
+        if (!this.currentClan) return;
+        
+        const requests = this.currentClan.joinRequests || [];
+        if (!requests[requestIndex]) return;
+        
+        const remainingRequests = requests.filter((_, i) => i !== requestIndex);
+        
+        try {
+            if (this.gameData.useFirebase) {
+                await firebase.database().ref(`clans/${this.currentClan.id}/joinRequests`).set(remainingRequests);
+            } else {
+                const clans = JSON.parse(localStorage.getItem('clans') || '{}');
+                if (clans[this.currentClan.id]) {
+                    clans[this.currentClan.id].joinRequests = remainingRequests;
+                    localStorage.setItem('clans', JSON.stringify(clans));
+                }
+            }
+            
+            alert('Запрос отклонен');
+            await this.loadUserClan();
+            
+        } catch (error) {
+            console.error('Ошибка отклонения запроса:', error);
+        }
     }
 
     async updateClanUI() {

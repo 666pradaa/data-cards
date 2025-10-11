@@ -2673,8 +2673,16 @@ class GameData {
         deck.forEach((card, index) => {
             // Проверяем что карта валидна
             if (!card || !card.name || card.damage === undefined) {
-                console.error('Invalid card in deck:', card);
+                console.error('❌ Invalid card in deck:', card);
                 return;
+            }
+            
+            // Проверяем наличие HP
+            if (card.health === undefined || card.maxHealth === undefined) {
+                console.error('❌ У карты нет HP:', card.name, 'health:', card.health, 'maxHealth:', card.maxHealth);
+                // Устанавливаем дефолтные значения
+                card.health = card.health || 100;
+                card.maxHealth = card.maxHealth || 100;
             }
             
             const cardDiv = document.createElement('div');

@@ -3591,6 +3591,79 @@ body.light-theme {
 }
 
 /* Мобильные телефоны (до 768px) */
+/* Очень маленькие телефоны */
+@media (max-width: 480px) {
+    body {
+        overflow-x: hidden;
+        font-size: 14px;
+    }
+    
+    .menu-container {
+        padding: 0.3rem;
+        max-width: 100%;
+    }
+    
+    .profile-card {
+        padding: 1rem;
+        gap: 1rem;
+    }
+    
+    .user-avatar {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .user-info h2 {
+        font-size: 1.2rem;
+    }
+    
+    /* Кейсы компактнее */
+    .cases-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .case {
+        padding: 1rem;
+    }
+    
+    .case h3 {
+        font-size: 1.1rem;
+    }
+    
+    /* Модальные окна */
+    .modal-content {
+        width: 95%;
+        max-height: 90vh;
+        padding: 1rem;
+    }
+    
+    /* Карты меньше */
+    .cards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 0.5rem;
+    }
+    
+    .card {
+        padding: 0.8rem;
+        min-width: 140px;
+    }
+    
+    .card-name {
+        font-size: 0.9rem;
+    }
+    
+    /* Колода */
+    .deck-container {
+        gap: 1rem;
+    }
+    
+    .deck-slot {
+        width: 140px;
+        height: 200px;
+    }
+}
+
 @media (max-width: 768px) {
     /* Общие настройки */
     body {
@@ -3605,6 +3678,16 @@ body.light-theme {
     .auth-container {
         min-width: 90vw;
         padding: 1.5rem;
+    }
+    
+    .auth-form input {
+        font-size: 1rem;
+        padding: 0.8rem;
+    }
+    
+    .auth-buttons .btn {
+        font-size: 1rem;
+        padding: 0.8rem 1.5rem;
     }
     
     .game-title {
@@ -4871,6 +4954,58 @@ body.light-theme {
     min-width: 90px;
 }
 
+/* Запросы на вступление в клан (для лидера) */
+#clan-join-requests {
+    background: rgba(100, 150, 255, 0.1);
+    border: 2px solid rgba(100, 150, 255, 0.3);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.join-requests-header h3 {
+    margin: 0 0 1rem 0;
+    color: #6496ff;
+    text-align: center;
+}
+
+.join-request-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.light-theme .join-request-item {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.request-info strong {
+    color: #6496ff;
+    font-size: 1.1rem;
+}
+
+.request-info small {
+    opacity: 0.8;
+    font-size: 0.9rem;
+}
+
+.request-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.request-actions .btn {
+    min-width: 90px;
+}
+
 .clan-card {
     background: rgba(255, 255, 255, 0.1);
     border-radius: 20px;
@@ -5625,9 +5760,62 @@ textarea.form-input {
         gap: 0.8rem;
     }
     
-    .invite-actions {
+    .join-request-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.8rem;
+    }
+    
+    .invite-actions,
+    .request-actions {
         width: 100%;
         justify-content: center;
+    }
+    
+    /* Поля ввода на телефонах */
+    .form-input,
+    .search-box input {
+        font-size: 0.9rem;
+        padding: 0.7rem;
+    }
+    
+    /* Онлайн бои на телефонах */
+    .code-display {
+        font-size: 1.5rem;
+        letter-spacing: 0.2rem;
+        padding: 1rem;
+    }
+    
+    /* Модальные окна на телефонах */
+    .modal-content.large {
+        width: 95%;
+        max-height: 85vh;
+        padding: 1.5rem 1rem;
+    }
+    
+    /* Кланы на телефонах */
+    .clan-actions {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+    
+    .clan-actions .btn {
+        width: 100%;
+    }
+    
+    /* Аватар клана меньше на телефонах */
+    .clan-avatar-display {
+        width: 80px;
+        height: 80px;
+        font-size: 3rem;
+    }
+    
+    .avatar-bg {
+        font-size: 3.5rem;
+    }
+    
+    .avatar-symbol {
+        font-size: 2.5rem;
     }
     
     .clan-creator {

@@ -425,14 +425,30 @@ class OnlineBattlesSystem {
         let userData;
         if (userId && this.gameData.useFirebase) {
             // Для Firebase получаем данные другого пользователя
+            console.log('🔍 Загрузка данных пользователя из Firebase:', userId);
             userData = await this.gameData.getUserById(userId);
+            console.log('📦 Данные пользователя загружены:', userData ? 'OK' : 'NULL');
+        } else if (userId) {
+            // localStorage - получаем другого пользователя
+            console.log('🔍 Загрузка данных пользователя из localStorage:', userId);
+            const allUsers = JSON.parse(localStorage.getItem('dotaCardsUsers') || '{}');
+            userData = allUsers[userId];
+            console.log('📦 Данные пользователя загружены:', userData ? 'OK' : 'NULL');
         } else {
-            // Для текущего пользователя или localStorage
+            // Для текущего пользователя
+            console.log('🔍 Получение данных текущего пользователя');
             userData = this.gameData.getUser();
+            console.log('📦 Данные пользователя:', userData ? 'OK' : 'NULL');
         }
         
-        const userCards = userData?.cards || {};
+        if (!userData) {
+            console.error('❌ userData is null! userId:', userId);
+            return [];
+        }
+        
+        const userCards = userData.cards || {};
         console.log('📦 Карты пользователя:', Object.keys(userCards).length);
+        console.log('📋 Список карт:', Object.keys(userCards));
         
         const battleDeck = deckCardNames.map(cardName => {
             const cardData = this.gameData.cards[cardName];
@@ -441,24 +457,62 @@ class OnlineBattlesSystem {
                 return null;
             }
             
+            console.log('📋 Базовые данные карты:', cardName, {
+                name: cardData.name,
+                damage: cardData.damage,
+                health: cardData.health,
+                defense: cardData.defense,
+                speed: cardData.speed
+            });
+            
+            if (!cardData.health || !cardData.damage) {
+                console.error('❌ У карты отсутствуют базовые статы!', cardName, cardData);
+            }
+            
             // Получаем улучшения карты пользователя
             const userCard = userCards[cardName] || { upgrades: [] };
             const upgrades = userCard.upgrades || [];
             
+            console.log('🎯 Улучшения карты:', upgrades);
+            
+            const damageBonus = this.gameData.getUpgradeBonus(upgrades, 'damage');
+            const healthBonus = this.gameData.getUpgradeBonus(upgrades, 'health');
+            const defenseBonus = this.gameData.getUpgradeBonus(upgrades, 'defense');
+            const speedBonus = this.gameData.getUpgradeBonus(upgrades, 'speed');
+            
+            console.log('💪 Бонусы от улучшений:', { damageBonus, healthBonus, defenseBonus, speedBonus });
+            
+            const finalDamage = (cardData.damage || 50) + damageBonus;
+            const finalHealth = (cardData.health || 100) + healthBonus;
+            const finalDefense = (cardData.defense || 10) + defenseBonus;
+            const finalSpeed = (cardData.speed || 10) + speedBonus;
+            
+            console.log('📊 Финальные статы:', {
+                damage: finalDamage,
+                health: finalHealth,
+                defense: finalDefense,
+                speed: finalSpeed
+            });
+            
             const card = {
                 name: cardData.name,
-                damage: cardData.damage + this.gameData.getUpgradeBonus(upgrades, 'damage'),
-                health: cardData.health + this.gameData.getUpgradeBonus(upgrades, 'health'),
-                maxHealth: cardData.health + this.gameData.getUpgradeBonus(upgrades, 'health'),
-                defense: cardData.defense + this.gameData.getUpgradeBonus(upgrades, 'defense'),
-                speed: cardData.speed + this.gameData.getUpgradeBonus(upgrades, 'speed'),
+                damage: finalDamage,
+                health: finalHealth,
+                maxHealth: finalHealth,
+                defense: finalDefense,
+                speed: finalSpeed,
                 image: cardData.image,
                 rarity: cardData.rarity,
                 upgrades: upgrades,
                 isDead: false
             };
             
-            console.log(`✅ Карта создана: ${card.name} (DMG ${card.damage}, HP ${card.health})`);
+            console.log(`✅ Карта создана: ${card.name} (DMG ${card.damage}, HP ${card.health}/${card.maxHealth}, DEF ${card.defense}%, SPD ${card.speed})`);
+            
+            // Проверка валидности
+            if (!card.health || !card.maxHealth) {
+                console.error('❌ Некорректные HP у карты:', card);
+            }
             
             return card;
         }).filter(card => card !== null);
@@ -469,12 +523,24 @@ class OnlineBattlesSystem {
     }
 
     startOnlineBattleLogic(roomCode) {
+        console.log('🎯 Запуск онлайн-логики, isPlayerTurn:', this.gameData.battleState.isPlayerTurn);
+        
+        // Инициализируем переменные для онлайн-боя
+        if (!this.gameData.battleState.lastPlayerCard) {
+            this.gameData.battleState.lastPlayerCard = null;
+        }
+        if (!this.gameData.battleState.lastBotCard) {
+            this.gameData.battleState.lastBotCard = null;
+        }
+        
         // Проверяем чей ход
         if (this.gameData.battleState.isPlayerTurn) {
             // Наш ход
+            console.log('✅ Наш ход - запускаем startPlayerTurn');
             this.gameData.startPlayerTurn();
         } else {
             // Ход противника - ждём
+            console.log('⏳ Ход противника - ожидаем');
             this.gameData.showBattleHint('Ход противника... Ожидайте');
             
             // Слушаем изменения в комнате
