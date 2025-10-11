@@ -781,13 +781,33 @@ class OnlineBattlesSystem {
     }
 
     syncDecksFromRoom(room) {
-        // Обновляем HP карт из комнаты
+        console.log('🔄 syncDecksFromRoom вызван, isHost:', this.isHost);
+        console.log('📦 room.hostDeck:', room.hostDeck);
+        console.log('📦 room.guestDeck:', room.guestDeck);
+        
+        // НЕ обновляем HP если данные в Firebase - это просто названия карт (начало боя)
+        const isStartOfBattle = !room.lastActionTime;
+        
+        if (isStartOfBattle) {
+            console.log('⚠️ Начало боя - НЕ синхронизируем HP (данные только названия)');
+            return;
+        }
+        
+        // Обновляем HP карт из комнаты (только после первого хода)
         if (this.isHost) {
-            this.updateDeckHP(this.gameData.battleState.playerDeck, room.hostDeck);
-            this.updateDeckHP(this.gameData.battleState.botDeck, room.guestDeck);
+            if (Array.isArray(room.hostDeck) && room.hostDeck[0]?.health !== undefined) {
+                this.updateDeckHP(this.gameData.battleState.playerDeck, room.hostDeck);
+            }
+            if (Array.isArray(room.guestDeck) && room.guestDeck[0]?.health !== undefined) {
+                this.updateDeckHP(this.gameData.battleState.botDeck, room.guestDeck);
+            }
         } else {
-            this.updateDeckHP(this.gameData.battleState.playerDeck, room.guestDeck);
-            this.updateDeckHP(this.gameData.battleState.botDeck, room.hostDeck);
+            if (Array.isArray(room.guestDeck) && room.guestDeck[0]?.health !== undefined) {
+                this.updateDeckHP(this.gameData.battleState.playerDeck, room.guestDeck);
+            }
+            if (Array.isArray(room.hostDeck) && room.hostDeck[0]?.health !== undefined) {
+                this.updateDeckHP(this.gameData.battleState.botDeck, room.hostDeck);
+            }
         }
         
         this.gameData.renderBattle();
@@ -799,10 +819,26 @@ class OnlineBattlesSystem {
             return;
         }
         
+        console.log('🔄 Синхронизация колоды, deckData:', deckData.map(c => ({name: c?.name, hp: c?.health})));
+        
         deck.forEach((card, index) => {
             if (deckData[index]) {
-                card.health = deckData[index].health || 0;
-                card.isDead = deckData[index].isDead || card.health <= 0;
+                const newHealth = deckData[index].health;
+                const newIsDead = deckData[index].isDead;
+                
+                console.log(`🔄 Обновление ${card.name}: ${card.health} → ${newHealth}, isDead: ${card.isDead} → ${newIsDead}`);
+                
+                // Обновляем только если данные валидны
+                if (newHealth !== undefined && newHealth !== null) {
+                    card.health = newHealth;
+                }
+                
+                if (newIsDead !== undefined && newIsDead !== null) {
+                    card.isDead = newIsDead;
+                } else {
+                    // Если isDead не передан, определяем по HP
+                    card.isDead = card.health <= 0;
+                }
                 
                 // Синхронизируем кулдауны скиллов
                 if (deckData[index].skillCooldown !== undefined) {

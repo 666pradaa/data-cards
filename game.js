@@ -129,19 +129,19 @@ class GameData {
             invisibility: {
                 name: 'Руна невидимости',
                 description: 'Карта не может быть атакована в этом раунде',
-                icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/3/38/Invis_Rune_icon.png',
+                icon: 'https://i.imgur.com/8YqZ5Uw.png',
                 type: 'invisibility'
             },
             shield: {
                 name: 'Руна щита',
                 description: '+40% защиты на раунд',
-                icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/b/b0/Haste_Rune_icon.png',
+                icon: 'https://i.imgur.com/nJ3ZYQW.png',
                 type: 'shield'
             },
             water: {
                 name: 'Руна воды',
                 description: 'Восстанавливает 20% здоровья',
-                icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/b/bf/Regen_Rune_icon.png',
+                icon: 'https://i.imgur.com/vXrT5oY.png',
                 type: 'water'
             }
         };
@@ -249,7 +249,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/terrorblade.png',
                 skill: {
                     name: 'Sunder',
-                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/2/2f/Sunder_icon.png',
+                    icon: 'https://i.imgur.com/YqK8wZL.png',
                     description: 'Меняется HP с выбранной картой',
                     cooldown: 2
                 }
@@ -264,7 +264,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/crystal_maiden.png',
                 skill: {
                     name: 'Frostbite',
-                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/d/d5/Frostbite_icon.png',
+                    icon: 'https://i.imgur.com/TqBvN8r.png',
                     description: 'Заморозка: карта пропускает следующий ход',
                     cooldown: 2
                 }
@@ -279,7 +279,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/spirit_breaker.png',
                 skill: {
                     name: 'Charge of Darkness',
-                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/6/68/Charge_of_Darkness_icon.png',
+                    icon: 'https://i.imgur.com/Jp4M6Kx.png',
                     description: '+20 скорости на раунд, можно ударить любую карту',
                     cooldown: 2
                 }
@@ -295,7 +295,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/nevermore.png',
                 skill: {
                     name: 'Реквием душ',
-                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/9/90/Requiem_of_Souls_icon.png',
+                    icon: 'https://i.imgur.com/KqH7XkO.png',
                     description: '50 урона карте напротив, 20 остальным. Все в страхе (пропуск хода)',
                     cooldown: 2
                 }
@@ -310,7 +310,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/pudge.png',
                 skill: {
                     name: 'Dismember',
-                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/3/30/Dismember_icon.png',
+                    icon: 'https://i.imgur.com/zNjR7yM.png',
                     description: 'Снимает 50 HP врага, восстанавливает 25 HP',
                     cooldown: 2
                 }
@@ -325,7 +325,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/invoker.png',
                 skill: {
                     name: 'Sun Strike',
-                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/8/8f/Sun_Strike_icon.png',
+                    icon: 'https://i.imgur.com/hNjQx3L.png',
                     description: '100 урона + Cold Snap (пропуск следующего хода)',
                     cooldown: 2
                 }
@@ -1456,8 +1456,19 @@ class GameData {
         
         try {
             // Получаем всех пользователей
-            const allUsers = await this.getAllUsers();
+            let allUsers = null;
+            
+            if (this.useFirebase) {
+                console.log('☁️ Загрузка пользователей из Firebase...');
+                const snapshot = await firebase.database().ref('users').once('value');
+                allUsers = snapshot.val() || {};
+            } else {
+                console.log('💾 Загрузка пользователей из localStorage...');
+                allUsers = JSON.parse(localStorage.getItem('dotaCardsUsers') || '{}');
+            }
+            
             console.log('📊 Всего пользователей:', Object.keys(allUsers).length);
+            console.log('📋 Первые 3 пользователя:', Object.keys(allUsers).slice(0, 3));
             
             // Преобразуем в массив
             let usersArray = Object.entries(allUsers).map(([id, userData]) => ({
@@ -3280,11 +3291,11 @@ class GameData {
                 
                 // Переходим к ходу бота (ТОЛЬКО для оффлайн-боев)
                 console.log('🤖 Переход к ходу бота через 1 сек...');
-                setTimeout(() => {
+            setTimeout(() => {
                     if (!this.checkBattleEnd()) {
                         this.startBotTurn();
                     }
-                }, 1000);
+            }, 1000);
                 return;
             }
             
