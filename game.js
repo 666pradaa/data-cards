@@ -3200,9 +3200,6 @@ class GameData {
         // Сбрасываем флаг использования руны
         this.battleState.runeUsedThisTurn = false;
         
-        // Очищаем эффекты рун прошлого раунда
-        this.clearRuneEffects();
-        
         // ⚡ Уменьшаем кулдауны скиллов
         this.decreaseSkillCooldowns();
         
@@ -3592,8 +3589,8 @@ class GameData {
                 card.health < weakest.health ? card : weakest
             );
             this.battleState.invisibleCards.push(targetCard.name);
-            this.battleState.runeDurations[targetCard.name] = 2; // 2 хода
-            console.log('👻 Бот сделал карту невидимой на 2 хода:', targetCard.name);
+            this.battleState.runeDurations[targetCard.name] = 1; // 1 раунд (бот + игрок)
+            console.log('👻 Бот сделал карту невидимой на 1 раунд:', targetCard.name);
             
             const cardEl = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
             if (cardEl) {
@@ -3606,9 +3603,9 @@ class GameData {
                 card.health > strongest.health ? card : strongest
             );
             this.battleState.shieldedCards.push(targetCard.name);
-            this.battleState.runeDurations[targetCard.name] = 2; // 2 хода
+            this.battleState.runeDurations[targetCard.name] = 1; // 1 раунд (бот + игрок)
             targetCard.tempDefense = (targetCard.tempDefense || 0) + 40;
-            console.log('🛡️ Бот дал щит карте на 2 хода:', targetCard.name);
+            console.log('🛡️ Бот дал щит карте на 1 раунд:', targetCard.name);
             
             const cardEl = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
             if (cardEl) {
@@ -3665,6 +3662,10 @@ class GameData {
             const oldRound = this.battleState.round;
             this.battleState.round++;
             console.log('📊 Раунд увеличен (пропуск бота):', oldRound, '→', this.battleState.round);
+            
+            // Уменьшаем длительность рун ПОСЛЕ ПОЛНОГО РАУНДА
+            this.decreaseRuneDurations();
+            
             this.updateRoundDisplay();
             this.saveBattleState();
             
@@ -3774,6 +3775,10 @@ class GameData {
                     const oldRound = this.battleState.round;
                     this.battleState.round++;
                     console.log('📊 Раунд увеличен:', oldRound, '→', this.battleState.round);
+                    
+                    // Уменьшаем длительность рун ПОСЛЕ ПОЛНОГО РАУНДА
+                    this.decreaseRuneDurations();
+                    
                     this.updateRoundDisplay();
                     this.saveBattleState();
                 }
@@ -4004,9 +4009,9 @@ class GameData {
         // Применяем эффект руны
         if (rune.type === 'invisibility') {
             this.battleState.invisibleCards.push(targetCard.name);
-            this.battleState.runeDurations[targetCard.name] = 2; // 2 хода
-            this.showBattleHint(`${targetCard.name} невидим! Не может быть атакован 2 хода.`);
-            console.log('👻 Карта стала невидимой на 2 хода:', targetCard.name);
+            this.battleState.runeDurations[targetCard.name] = 1; // 1 раунд (игрок + бот)
+            this.showBattleHint(`${targetCard.name} невидим! Не может быть атакован этот раунд.`);
+            console.log('👻 Карта стала невидимой на 1 раунд:', targetCard.name);
             
             // Визуальный эффект
             const cardEl = document.querySelector(`.player-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
@@ -4016,10 +4021,10 @@ class GameData {
             }
         } else if (rune.type === 'shield') {
             this.battleState.shieldedCards.push(targetCard.name);
-            this.battleState.runeDurations[targetCard.name] = 2; // 2 хода
+            this.battleState.runeDurations[targetCard.name] = 1; // 1 раунд (игрок + бот)
             targetCard.tempDefense = (targetCard.tempDefense || 0) + 40;
-            this.showBattleHint(`${targetCard.name} получил щит! +40% защиты на 2 хода.`);
-            console.log('🛡️ Карта получила щит на 2 хода:', targetCard.name);
+            this.showBattleHint(`${targetCard.name} получил щит! +40% защиты на этот раунд.`);
+            console.log('🛡️ Карта получила щит на 1 раунд:', targetCard.name);
             
             // Визуальный эффект
             const cardEl = document.querySelector(`.player-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
@@ -4047,8 +4052,32 @@ class GameData {
         }, 1500);
     }
     
+    decreaseRuneDurations() {
+        console.log('⏱️ Уменьшаем длительность рун (конец раунда)');
+        
+        if (!this.battleState) return;
+        
+        // Инициализируем счетчики если их нет
+        if (!this.battleState.runeDurations) {
+            this.battleState.runeDurations = {};
+            return;
+        }
+        
+        // Уменьшаем длительность рун и убираем истекшие
+        Object.keys(this.battleState.runeDurations).forEach(cardName => {
+            const oldDuration = this.battleState.runeDurations[cardName];
+            this.battleState.runeDurations[cardName]--;
+            console.log(`⏱️ Руна на ${cardName}: ${oldDuration} → ${this.battleState.runeDurations[cardName]} раундов`);
+            
+            if (this.battleState.runeDurations[cardName] <= 0) {
+                delete this.battleState.runeDurations[cardName];
+                console.log(`⏱️ Длительность руны на ${cardName} истекла!`);
+            }
+        });
+    }
+    
     clearRuneEffects() {
-        console.log('🧹 Очищаем эффекты рун');
+        console.log('🧹 Очищаем эффекты истекших рун');
         
         if (!this.battleState) return;
         
@@ -4057,37 +4086,37 @@ class GameData {
             this.battleState.runeDurations = {};
         }
         
-        // Уменьшаем длительность рун и убираем истекшие
-        Object.keys(this.battleState.runeDurations).forEach(cardName => {
-            this.battleState.runeDurations[cardName]--;
-            if (this.battleState.runeDurations[cardName] <= 0) {
-                delete this.battleState.runeDurations[cardName];
-            }
-        });
-        
-        // Убираем невидимость (истекшие)
+        // Убираем невидимость (только истекшие, не уменьшаем счетчик)
         if (this.battleState.invisibleCards) {
-            this.battleState.invisibleCards = this.battleState.invisibleCards.filter(cardName => 
-                this.battleState.runeDurations[cardName] > 0
-            );
+            this.battleState.invisibleCards = this.battleState.invisibleCards.filter(cardName => {
+                const hasEffect = this.battleState.runeDurations[cardName] && this.battleState.runeDurations[cardName] > 0;
+                if (!hasEffect) {
+                    console.log('👻 Невидимость истекла:', cardName);
+                }
+                return hasEffect;
+            });
         }
         document.querySelectorAll('.invisible-card').forEach(el => {
             const cardName = el.dataset.cardName;
-            if (!this.battleState.runeDurations[cardName]) {
+            if (!this.battleState.runeDurations[cardName] || this.battleState.runeDurations[cardName] <= 0) {
                 el.classList.remove('invisible-card');
                 el.style.opacity = '';
             }
         });
         
-        // Убираем щиты (истекшие)
+        // Убираем щиты (только истекшие, не уменьшаем счетчик)
         if (this.battleState.shieldedCards) {
-            this.battleState.shieldedCards = this.battleState.shieldedCards.filter(cardName => 
-                this.battleState.runeDurations[cardName] > 0
-            );
+            this.battleState.shieldedCards = this.battleState.shieldedCards.filter(cardName => {
+                const hasEffect = this.battleState.runeDurations[cardName] && this.battleState.runeDurations[cardName] > 0;
+                if (!hasEffect) {
+                    console.log('🛡️ Щит истек:', cardName);
+                }
+                return hasEffect;
+            });
         }
         document.querySelectorAll('.shielded-card').forEach(el => {
             const cardName = el.dataset.cardName;
-            if (!this.battleState.runeDurations[cardName]) {
+            if (!this.battleState.runeDurations[cardName] || this.battleState.runeDurations[cardName] <= 0) {
                 el.classList.remove('shielded-card');
             }
         });
