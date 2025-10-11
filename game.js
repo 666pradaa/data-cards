@@ -17,7 +17,14 @@ class SoundSystem {
             'victory': 'sounds/victory.mp3',
             'defeat': 'sounds/defeat.mp3',
             'upgrade': 'sounds/upgrade.mp3',
-            'backgroundMusic': 'sounds/background_music.mp3'
+            'backgroundMusic': 'sounds/background_music.mp3',
+            // Звуки скиллов
+            'shadow_fiend_requiem': 'sounds/skills/shadow_fiend_requiem.mp3',
+            'pudge_dismember': 'sounds/skills/pudge_dismember.mp3',
+            'invoker_sunstrike': 'sounds/skills/invoker_sunstrike.mp3',
+            'crystal_maiden_frostbite': 'sounds/skills/crystal_maiden_frostbite.mp3',
+            'terrorblade_sunder': 'sounds/skills/terrorblade_sunder.mp3',
+            'spirit_breaker_charge': 'sounds/skills/spirit_breaker_charge.mp3'
         };
     }
 
@@ -2935,10 +2942,9 @@ class GameData {
                 skillButtonHtml = `
                     <button class="skill-btn ${skillOnCooldown ? 'on-cooldown' : ''}" 
                             data-card="${card.name}" 
-                            title="${card.skill.name}: ${card.skill.description}"
                             ${skillOnCooldown ? 'disabled' : ''}>
-                        <img src="${card.skill.icon}" alt="${card.skill.name}" 
-                             onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)'; this.parentElement.innerHTML='⚡';">
+                        <img src="${card.skill.icon}" alt="${card.skill.name}" crossorigin="anonymous"
+                             onerror="console.error('Ошибка загрузки скилла:', this.src); this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)'; this.parentElement.innerHTML='⚡' + (${skillOnCooldown} ? '${cooldownText}' : '');">
                         ${cooldownText ? '<span class="skill-cooldown">' + cooldownText + '</span>' : ''}
                     </button>
                 `;
@@ -3067,15 +3073,15 @@ class GameData {
         });
         
         // Если нет доступных карт (все на кулдауне) - пропускаем ход
-        if (availableCards.length === 0) {
-            console.log('⏳ Все карты на кулдауне, пропускаем ход игрока');
+        if (availableCards.length === 0 && alivePlayerCards.length > 0) {
+            console.log('⏳ Все карты на кулдауне (живых:', alivePlayerCards.length, '), пропускаем ход игрока');
             this.showBattleHint('Все ваши карты отдыхают! Ход пропущен.');
             
             // Сбрасываем lastPlayerCard чтобы в следующем раунде карты были доступны
             this.battleState.lastPlayerCard = null;
             
             // Через 2 секунды передаем ход боту
-        setTimeout(() => {
+            setTimeout(() => {
                 this.hideBattleHint();
                 if (!this.checkBattleEnd()) {
                     // Проверяем онлайн-бой
@@ -3470,8 +3476,8 @@ class GameData {
         });
         
         // Если нет доступных карт (все на кулдауне) - пропускаем ход
-        if (availableBotCards.length === 0) {
-            console.log('⏳ Все карты бота на кулдауне, пропускаем ход');
+        if (availableBotCards.length === 0 && aliveBotCards.length > 0) {
+            console.log('⏳ Все карты бота на кулдауне (живых:', aliveBotCards.length, '), пропускаем ход');
             this.showBattleHint('Карты противника отдыхают! Ход пропущен.');
             
             // Сбрасываем lastBotCard чтобы в следующем раунде карты были доступны
@@ -3489,8 +3495,8 @@ class GameData {
                     this.startPlayerTurn();
                 }
             }, 2000);
-                return;
-            }
+            return;
+        }
         
         console.log('🤖 Доступно карт бота:', availableBotCards.length);
         
@@ -3668,12 +3674,12 @@ class GameData {
         const fallbackIcon = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="40" fill="%23FFD700"/%3E%3Ctext x="50" y="65" font-size="40" text-anchor="middle" fill="%23000"%3E🔮%3C/text%3E%3C/svg%3E';
         
         runeContainer.innerHTML = `
-            <div class="rune-item ${this.battleState.runeUsedThisTurn ? 'used' : ''}" id="player-rune" data-desc="${rune.description}">
-                <img src="${rune.icon}" alt="${rune.name}" title="${rune.description}" 
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+            <div class="rune-item ${this.battleState.runeUsedThisTurn ? 'used' : ''}" id="player-rune">
+                <img src="${rune.icon}" alt="${rune.name}" crossorigin="anonymous"
+                     onerror="console.error('Ошибка загрузки руны:', this.src); this.style.display='none'; this.nextElementSibling.style.display='flex';">
                 <div class="rune-icon-fallback" style="display: none; width: 60px; height: 60px; background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%); border-radius: 50%; align-items: center; justify-content: center; font-size: 2rem;">🔮</div>
-                <span class="rune-name" title="${rune.description}">${rune.name}</span>
-                <button class="rune-use-btn btn primary" ${this.battleState.runeUsedThisTurn ? 'disabled' : ''} title="${rune.description}">
+                <span class="rune-name">${rune.name}</span>
+                <button class="rune-use-btn btn primary" ${this.battleState.runeUsedThisTurn ? 'disabled' : ''}>
                     Использовать
                 </button>
             </div>
@@ -3712,11 +3718,11 @@ class GameData {
         
         runeContainer.style.display = 'block';
         runeContainer.innerHTML = `
-            <div class="rune-item" data-desc="${rune.description}">
-                <img src="${rune.icon}" alt="${rune.name}" title="${rune.description}" 
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="rune-item">
+                <img src="${rune.icon}" alt="${rune.name}" crossorigin="anonymous"
+                     onerror="console.error('Ошибка загрузки руны бота:', this.src); this.style.display='none'; this.nextElementSibling.style.display='flex';">
                 <div class="rune-icon-fallback" style="display: none; width: 60px; height: 60px; background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%); border-radius: 50%; align-items: center; justify-content: center; font-size: 2rem;">🔮</div>
-                <span class="rune-name" title="${rune.description}">${rune.name}</span>
+                <span class="rune-name">${rune.name}</span>
             </div>
         `;
         console.log('✅ HTML руны бота установлен, icon:', rune.icon);
@@ -3951,6 +3957,9 @@ class GameData {
     useShadowFiendSkill(card) {
         console.log('💀 Shadow Fiend использует Реквием душ!');
         
+        // Воспроизводим звук
+        this.soundSystem.playSound('shadow_fiend_requiem', 1.2);
+        
         // Устанавливаем кулдаун
         card.skillCooldown = 2;
         
@@ -4009,6 +4018,9 @@ class GameData {
     usePudgeSkill(casterCard, targetCard) {
         console.log('🩸 Pudge использует Dismember!');
         
+        // Воспроизводим звук
+        this.soundSystem.playSound('pudge_dismember', 1.2);
+        
         casterCard.skillCooldown = 2;
         this.battleState.lastPlayerCard = { name: casterCard.name };
         
@@ -4046,6 +4058,9 @@ class GameData {
     // Invoker - Sun Strike
     useInvokerSkill(casterCard, targetCard) {
         console.log('☀️ Invoker использует Sun Strike!');
+        
+        // Воспроизводим звук
+        this.soundSystem.playSound('invoker_sunstrike', 1.2);
         
         casterCard.skillCooldown = 2;
         this.battleState.lastPlayerCard = { name: casterCard.name };
@@ -4086,6 +4101,9 @@ class GameData {
     useCrystalMaidenSkill(casterCard, targetCard) {
         console.log('❄️ Crystal Maiden использует Frostbite!');
         
+        // Воспроизводим звук
+        this.soundSystem.playSound('crystal_maiden_frostbite', 1.2);
+        
         casterCard.skillCooldown = 2;
         this.battleState.lastPlayerCard = { name: casterCard.name };
         
@@ -4116,6 +4134,9 @@ class GameData {
     // Terrorblade - Sunder
     useTerrorbladeSkill(casterCard, targetCard) {
         console.log('🔄 Terrorblade использует Sunder!');
+        
+        // Воспроизводим звук
+        this.soundSystem.playSound('terrorblade_sunder', 1.2);
         
         casterCard.skillCooldown = 2;
         this.battleState.lastPlayerCard = { name: casterCard.name };
@@ -4153,6 +4174,9 @@ class GameData {
     // Spirit Breaker - Charge
     useSpiritBreakerSkill(card) {
         console.log('⚡ Spirit Breaker использует Charge of Darkness!');
+        
+        // Воспроизводим звук
+        this.soundSystem.playSound('spirit_breaker_charge', 1.2);
         
         card.skillCooldown = 2;
         
@@ -4208,39 +4232,60 @@ class GameData {
         
         const arena = document.querySelector('.battle-arena');
         
-        // Создаем 40 красных светящихся точек вокруг Shadow Fiend
-        for (let i = 0; i < 40; i++) {
+        // Создаем 36 душ, разлетающихся по кругу от Shadow Fiend
+        const soulCount = 36;
+        for (let i = 0; i < soulCount; i++) {
             const soul = document.createElement('div');
             soul.className = 'requiem-soul';
             
-            // Случайный размер точки
-            const size = 8 + Math.random() * 12; // 8-20px
-            soul.style.width = size + 'px';
-            soul.style.height = size + 'px';
+            // Создаем внутреннюю часть души (светящееся ядро)
+            const soulCore = document.createElement('div');
+            soulCore.className = 'soul-core';
             
-            const angle = (i / 40) * Math.PI * 2 + (Math.random() * 0.2 - 0.1);
-            const startX = 50; // Центр
+            // Создаем шлейф души
+            const soulTrail = document.createElement('div');
+            soulTrail.className = 'soul-trail';
+            
+            soul.appendChild(soulCore);
+            soul.appendChild(soulTrail);
+            
+            // Угол для равномерного распределения по кругу
+            const angle = (i / soulCount) * Math.PI * 2;
+            const startX = 50; // Центр арены
             const startY = 50;
-            const endX = 50 + Math.cos(angle) * 120;
-            const endY = 50 + Math.sin(angle) * 120;
             
+            // Конечная точка - дальше от центра
+            const distance = 100 + Math.random() * 30; // 100-130%
+            const endX = 50 + Math.cos(angle) * distance;
+            const endY = 50 + Math.sin(angle) * distance;
+            
+            // Устанавливаем начальную позицию
             soul.style.left = startX + '%';
             soul.style.top = startY + '%';
             soul.style.setProperty('--end-x', endX + '%');
             soul.style.setProperty('--end-y', endY + '%');
             
+            // Добавляем небольшую случайность во время старта
+            const delay = i * 20 + Math.random() * 10;
+            
             arena.appendChild(soul);
             
-            setTimeout(() => soul.classList.add('flying'), i * 15);
-            
+            // Запускаем анимацию с задержкой
             setTimeout(() => {
-                if (arena.contains(soul)) arena.removeChild(soul);
-            }, 1800);
+                soul.classList.add('flying');
+            }, delay);
+            
+            // Удаляем душу после завершения анимации
+            setTimeout(() => {
+                if (arena.contains(soul)) {
+                    arena.removeChild(soul);
+                }
+            }, 2000 + delay);
         }
         
-        // Красное свечение
+        // Красное свечение арены
         arena.classList.add('requiem-flash');
-        setTimeout(() => arena.classList.remove('requiem-flash'), 1000);
+        setTimeout(() => arena.classList.remove('requiem-flash'), 1200);
     }
     
     createDismemberAnimation(caster, target) {

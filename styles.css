@@ -2542,50 +2542,12 @@ body.light-theme {
     cursor: help;
 }
 
-.rune-item img:hover::after,
-.rune-name:hover::after {
-    content: attr(title);
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 0.5rem 1rem;
-    background: rgba(0, 0, 0, 0.95);
-    color: #ffd700;
-    border: 2px solid #ffd700;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    white-space: nowrap;
-    z-index: 1000;
-    pointer-events: none;
-}
-
 .rune-name {
     font-size: 0.9rem;
     font-weight: 600;
     color: #ffd700;
     text-align: center;
     text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
-    cursor: help;
-    position: relative;
-}
-
-.rune-container:hover .rune-item::before {
-    content: attr(data-desc);
-    position: absolute;
-    top: -60px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 0.6rem 1rem;
-    background: rgba(0, 0, 0, 0.95);
-    color: #ffd700;
-    border: 2px solid #ffd700;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    white-space: nowrap;
-    z-index: 1000;
-    pointer-events: none;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
 }
 
 .rune-use-btn {
@@ -2695,23 +2657,6 @@ body.light-theme {
     background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
 }
 
-.skill-btn:hover:not(:disabled)::after {
-    content: attr(title);
-    position: absolute;
-    bottom: calc(100% + 10px);
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 0.6rem 1rem;
-    background: rgba(0, 0, 0, 0.95);
-    color: #3b82f6;
-    border: 2px solid #3b82f6;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    white-space: nowrap;
-    z-index: 1000;
-    pointer-events: none;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
-}
 
 .skill-btn.on-cooldown {
     opacity: 0.4;
@@ -2739,32 +2684,89 @@ body.light-theme {
 /* Shadow Fiend - Requiem */
 .requiem-soul {
     position: absolute;
+    width: 40px;
+    height: 40px;
     pointer-events: none;
     opacity: 0;
     z-index: 100;
-    transition: all 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    /* Красная светящаяся точка */
+    filter: blur(0px);
+}
+
+.soul-core {
+    position: absolute;
+    width: 100%;
+    height: 100%;
     background: radial-gradient(circle, 
-        rgba(220, 38, 38, 1) 0%,
-        rgba(239, 68, 68, 0.8) 50%,
-        rgba(220, 38, 38, 0) 100%
+        rgba(255, 50, 50, 1) 0%,
+        rgba(220, 38, 38, 0.9) 30%,
+        rgba(150, 20, 20, 0.7) 60%,
+        rgba(100, 10, 10, 0) 100%
     );
     border-radius: 50%;
     box-shadow: 
-        0 0 20px rgba(220, 38, 38, 1),
-        0 0 40px rgba(220, 38, 38, 0.6),
-        inset 0 0 10px rgba(255, 100, 100, 0.8);
+        0 0 20px rgba(255, 50, 50, 1),
+        0 0 40px rgba(220, 38, 38, 0.8),
+        inset 0 0 15px rgba(255, 100, 100, 0.6);
+    animation: soulPulse 0.3s ease-in-out infinite alternate;
+}
+
+.soul-trail {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse, 
+        rgba(220, 38, 38, 0.6) 0%,
+        rgba(150, 20, 20, 0.3) 50%,
+        rgba(100, 10, 10, 0) 100%
+    );
+    border-radius: 50%;
+    transform: scale(1.5);
+    opacity: 0.5;
 }
 
 .requiem-soul.flying {
     opacity: 1;
     left: var(--end-x) !important;
     top: var(--end-y) !important;
-    transform: scale(2);
-    box-shadow: 
-        0 0 30px rgba(220, 38, 38, 1),
-        0 0 60px rgba(220, 38, 38, 0.8),
-        inset 0 0 15px rgba(255, 150, 150, 1);
+    animation: soulFly 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes soulFly {
+    0% {
+        transform: scale(0.5) rotate(0deg);
+        filter: blur(0px);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2) rotate(180deg);
+        filter: blur(1px);
+    }
+    80% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1.8) rotate(360deg);
+        filter: blur(3px);
+        opacity: 0;
+    }
+}
+
+@keyframes soulPulse {
+    0% {
+        transform: scale(0.9);
+        box-shadow: 
+            0 0 15px rgba(255, 50, 50, 0.8),
+            0 0 30px rgba(220, 38, 38, 0.6);
+    }
+    100% {
+        transform: scale(1.1);
+        box-shadow: 
+            0 0 25px rgba(255, 50, 50, 1),
+            0 0 50px rgba(220, 38, 38, 0.9);
+    }
 }
 
 .requiem-flash {
@@ -3489,16 +3491,16 @@ body.light-theme {
 .battle-health-fill {
     height: 100%;
     background: linear-gradient(90deg, 
-        #dc2626 0%,
-        #ef4444 50%,
-        #f87171 100%
+        #e0e0e0 0%,
+        #f5f5f5 50%,
+        #ffffff 100%
     );
     transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 8px;
     box-shadow: 
-        0 0 20px rgba(220, 38, 38, 0.8),
-        inset 0 2px 4px rgba(255, 255, 255, 0.4),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.4);
+        0 0 15px rgba(255, 255, 255, 0.6),
+        inset 0 2px 4px rgba(255, 255, 255, 0.8),
+        inset 0 -2px 4px rgba(200, 200, 200, 0.6);
     position: relative;
 }
 
@@ -3506,7 +3508,7 @@ body.light-theme {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, transparent 50%, rgba(0, 0, 0, 0.3) 100%);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, transparent 50%, rgba(200, 200, 200, 0.4) 100%);
     border-radius: 8px;
     pointer-events: none;
 }
@@ -3518,11 +3520,10 @@ body.light-theme {
     transform: translate(-50%, -50%);
     font-size: 0.85rem;
     font-weight: 900;
-    color: #fff;
+    color: #000;
     text-shadow: 
-        0 0 8px rgba(0, 0, 0, 1),
-        2px 2px 4px rgba(0, 0, 0, 0.9),
-        -1px -1px 2px rgba(0, 0, 0, 0.8);
+        0 0 3px rgba(255, 255, 255, 0.8),
+        1px 1px 2px rgba(255, 255, 255, 0.6);
     z-index: 2;
     letter-spacing: 0.5px;
 }
