@@ -2943,9 +2943,14 @@ class GameData {
                     <button class="skill-btn ${skillOnCooldown ? 'on-cooldown' : ''}" 
                             data-card="${card.name}" 
                             ${skillOnCooldown ? 'disabled' : ''}>
-                        <img src="${card.skill.icon}" alt="${card.skill.name}" crossorigin="anonymous"
-                             onerror="console.error('Ошибка загрузки скилла:', this.src); this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)'; this.parentElement.innerHTML='⚡' + (${skillOnCooldown} ? '${cooldownText}' : '');">
+                        <img src="${card.skill.icon}" alt="${card.skill.name}"
+                             onerror="this.style.display='none'; this.nextElementSibling.nextElementSibling.style.display='block';">
                         ${cooldownText ? '<span class="skill-cooldown">' + cooldownText + '</span>' : ''}
+                        <span class="skill-icon-fallback" style="display: none;">⚡</span>
+                        <div class="skill-tooltip">
+                            <strong>${card.skill.name}</strong><br>
+                            ${card.skill.description}
+                        </div>
                     </button>
                 `;
                 console.log(`✅ Кнопка скилла добавлена для ${card.name}`);
@@ -3675,9 +3680,12 @@ class GameData {
         
         runeContainer.innerHTML = `
             <div class="rune-item ${this.battleState.runeUsedThisTurn ? 'used' : ''}" id="player-rune">
-                <img src="${rune.icon}" alt="${rune.name}" crossorigin="anonymous"
-                     onerror="console.error('Ошибка загрузки руны:', this.src); this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="rune-icon-fallback" style="display: none; width: 60px; height: 60px; background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%); border-radius: 50%; align-items: center; justify-content: center; font-size: 2rem;">🔮</div>
+                <div class="rune-icon-wrapper">
+                    <img src="${rune.icon}" alt="${rune.name}"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="rune-icon-fallback" style="display: none;">🔮</div>
+                    <div class="rune-tooltip">${rune.description}</div>
+                </div>
                 <span class="rune-name">${rune.name}</span>
                 <button class="rune-use-btn btn primary" ${this.battleState.runeUsedThisTurn ? 'disabled' : ''}>
                     Использовать
@@ -3691,7 +3699,25 @@ class GameData {
         if (!this.battleState.runeUsedThisTurn) {
             const useBtn = runeContainer.querySelector('.rune-use-btn');
             if (useBtn) {
-                useBtn.onclick = () => this.showRuneTargetSelection();
+                useBtn.onclick = () => {
+                    // Проверяем, не пропускает ли игрок ход
+                    const alivePlayerCards = this.battleState.playerDeck.filter(card => !card.isDead && card.health > 0);
+                    const availableCards = alivePlayerCards.filter(card => {
+                        const notOnCooldown = !this.battleState.lastPlayerCard || card.name !== this.battleState.lastPlayerCard.name;
+                        const notFrozen = !this.battleState.frozenCards.includes(card.name);
+                        const notFeared = !this.battleState.fearedCards.includes(card.name);
+                        return notOnCooldown && notFrozen && notFeared;
+                    });
+                    
+                    // Если нет доступных карт - руну нельзя использовать
+                    if (availableCards.length === 0 && alivePlayerCards.length > 0) {
+                        this.showBattleHint('⏳ Ваши карты отдыхают! Нельзя использовать руну во время пропуска хода.');
+                        setTimeout(() => this.hideBattleHint(), 2000);
+                        return;
+                    }
+                    
+                    this.showRuneTargetSelection();
+                };
                 console.log('✅ Обработчик кнопки руны добавлен');
             } else {
                 console.error('❌ Кнопка использования руны не найдена!');
@@ -3719,9 +3745,12 @@ class GameData {
         runeContainer.style.display = 'block';
         runeContainer.innerHTML = `
             <div class="rune-item">
-                <img src="${rune.icon}" alt="${rune.name}" crossorigin="anonymous"
-                     onerror="console.error('Ошибка загрузки руны бота:', this.src); this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                <div class="rune-icon-fallback" style="display: none; width: 60px; height: 60px; background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%); border-radius: 50%; align-items: center; justify-content: center; font-size: 2rem;">🔮</div>
+                <div class="rune-icon-wrapper">
+                    <img src="${rune.icon}" alt="${rune.name}"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="rune-icon-fallback" style="display: none;">🔮</div>
+                    <div class="rune-tooltip">${rune.description}</div>
+                </div>
                 <span class="rune-name">${rune.name}</span>
             </div>
         `;

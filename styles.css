@@ -2533,6 +2533,11 @@ body.light-theme {
     gap: 0.5rem;
 }
 
+.rune-icon-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
 .rune-item img {
     width: 60px;
     height: 60px;
@@ -2540,6 +2545,43 @@ body.light-theme {
     filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
     animation: runeGlow 2s ease-in-out infinite;
     cursor: help;
+}
+
+.rune-icon-fallback {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+}
+
+.rune-tooltip {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.8rem 1.2rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 240, 240, 0.95) 100%);
+    color: #000;
+    border: 2px solid #ffd700;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    text-shadow: none;
+    font-weight: 600;
+}
+
+.rune-icon-wrapper:hover .rune-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-5px);
 }
 
 .rune-name {
@@ -2657,6 +2699,43 @@ body.light-theme {
     background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
 }
 
+.skill-tooltip {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.8rem 1.2rem;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 240, 240, 0.95) 100%);
+    color: #000;
+    border: 2px solid #3b82f6;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    text-shadow: none;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.skill-btn:hover:not(:disabled) .skill-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-5px);
+}
+
+.skill-tooltip strong {
+    display: block;
+    margin-bottom: 0.3rem;
+    color: #1e3a8a;
+    font-weight: 700;
+}
+
+.skill-icon-fallback {
+    font-size: 1.5rem;
+}
 
 .skill-btn.on-cooldown {
     opacity: 0.4;
