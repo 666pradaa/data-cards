@@ -2560,28 +2560,42 @@ body.light-theme {
 
 .rune-tooltip {
     position: absolute;
-    bottom: calc(100% + 10px);
+    bottom: calc(100% + 15px);
     left: 50%;
     transform: translateX(-50%);
-    padding: 0.8rem 1.2rem;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 240, 240, 0.95) 100%);
-    color: #000;
-    border: 2px solid #ffd700;
-    border-radius: 10px;
-    font-size: 0.85rem;
-    white-space: nowrap;
+    padding: 1.2rem 1.5rem;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #ffd700;
+    border: 3px solid #ffd700;
+    border-radius: 15px;
+    font-size: 1rem;
+    white-space: normal;
+    max-width: 300px;
+    min-width: 250px;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease, transform 0.3s ease;
-    z-index: 1000;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    text-shadow: none;
-    font-weight: 600;
+    z-index: 10000;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 215, 0, 0.3);
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    font-weight: 700;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.rune-tooltip::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 10px solid transparent;
+    border-top-color: #ffd700;
 }
 
 .rune-icon-wrapper:hover .rune-tooltip {
     opacity: 1;
-    transform: translateX(-50%) translateY(-5px);
+    transform: translateX(-50%) translateY(-10px);
 }
 
 .rune-name {
@@ -2701,36 +2715,53 @@ body.light-theme {
 
 .skill-tooltip {
     position: absolute;
-    bottom: calc(100% + 10px);
+    bottom: calc(100% + 15px);
     left: 50%;
     transform: translateX(-50%);
-    padding: 0.8rem 1.2rem;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 240, 240, 0.95) 100%);
-    color: #000;
-    border: 2px solid #3b82f6;
-    border-radius: 10px;
-    font-size: 0.85rem;
-    white-space: nowrap;
+    padding: 1.2rem 1.5rem;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: #60a5fa;
+    border: 3px solid #3b82f6;
+    border-radius: 15px;
+    font-size: 1rem;
+    white-space: normal;
+    max-width: 320px;
+    min-width: 280px;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease, transform 0.3s ease;
-    z-index: 1000;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    text-shadow: none;
-    font-weight: 500;
-    line-height: 1.4;
+    z-index: 10000;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(59, 130, 246, 0.3);
+    text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.6;
+}
+
+.skill-tooltip::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 10px solid transparent;
+    border-top-color: #3b82f6;
 }
 
 .skill-btn:hover:not(:disabled) .skill-tooltip {
     opacity: 1;
-    transform: translateX(-50%) translateY(-5px);
+    transform: translateX(-50%) translateY(-10px);
 }
 
 .skill-tooltip strong {
     display: block;
-    margin-bottom: 0.3rem;
-    color: #1e3a8a;
-    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #fbbf24;
+    font-weight: 900;
+    font-size: 1.15rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 0 15px rgba(251, 191, 36, 0.8);
 }
 
 .skill-icon-fallback {

@@ -29,21 +29,30 @@ class SoundSystem {
     }
 
     playSound(type, volume = 1) {
-        if (!this.soundEnabled) return;
+        console.log('🔊 playSound вызван:', type, 'soundEnabled:', this.soundEnabled);
+        
+        if (!this.soundEnabled) {
+            console.log('❌ Звуки отключены в настройках');
+            return;
+        }
         
         const soundPath = this.soundPaths[type];
         if (soundPath) {
+            console.log('✅ Путь к звуку:', soundPath);
             try {
                 const audio = new Audio(soundPath);
                 audio.volume = this.masterVolume * volume;
-                audio.play().catch((err) => {
-                    console.log(`Звук ${type} не воспроизведен:`, err.message);
-                });
+                console.log('🎵 Попытка воспроизведения, громкость:', audio.volume);
+                audio.play()
+                    .then(() => console.log('✅ Звук воспроизведен:', type))
+                    .catch((err) => {
+                        console.error('❌ Звук не воспроизведен:', type, err.message);
+                    });
             } catch (e) {
-                console.log(`Ошибка создания аудио ${type}:`, e.message);
+                console.error('❌ Ошибка создания аудио:', type, e.message);
             }
         } else {
-            console.log(`Звук ${type} не найден в soundPaths`);
+            console.error('❌ Звук не найден в soundPaths:', type);
         }
     }
 
@@ -140,19 +149,19 @@ class GameData {
             invisibility: {
                 name: 'Руна невидимости',
                 description: 'Карта не может быть атакована в этом раунде',
-                icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/3/38/Invis_Rune_icon.png',
+                icon: 'https://i.imgur.com/6vYxZQe.png',
                 type: 'invisibility'
             },
             shield: {
                 name: 'Руна щита',
                 description: '+40% защиты на раунд',
-                icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/b/b0/Haste_Rune_icon.png',
+                icon: 'https://i.imgur.com/5mKZ0Xr.png',
                 type: 'shield'
             },
             water: {
                 name: 'Руна воды',
                 description: 'Восстанавливает 20% здоровья',
-                icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/b/bf/Regen_Rune_icon.png',
+                icon: 'https://i.imgur.com/3VhN8zK.png',
                 type: 'water'
             }
         };
@@ -260,7 +269,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/terrorblade.png',
                 skill: {
                     name: 'Sunder',
-                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/2/2f/Sunder_icon.png',
+                    icon: 'https://i.imgur.com/yvPZ8Qm.png',
                     description: 'Меняется HP с выбранной картой',
                     cooldown: 2
                 }
@@ -275,7 +284,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/crystal_maiden.png',
                 skill: {
                     name: 'Frostbite',
-                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/d/d5/Frostbite_icon.png',
+                    icon: 'https://i.imgur.com/kZxN5Ry.png',
                     description: 'Заморозка: карта пропускает следующий ход',
                     cooldown: 2
                 }
@@ -290,7 +299,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/spirit_breaker.png',
                 skill: {
                     name: 'Charge of Darkness',
-                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/6/68/Charge_of_Darkness_icon.png',
+                    icon: 'https://i.imgur.com/Tj8mQF3.png',
                     description: '+20 скорости на раунд, можно ударить любую карту',
                     cooldown: 2
                 }
@@ -306,7 +315,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/nevermore.png',
                 skill: {
                     name: 'Реквием душ',
-                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/9/90/Requiem_of_Souls_icon.png',
+                    icon: 'https://i.imgur.com/9Z7xQfK.png',
                     description: '50 урона карте напротив, 20 остальным. Все в страхе (пропуск хода)',
                     cooldown: 2
                 }
@@ -321,7 +330,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/pudge.png',
                 skill: {
                     name: 'Dismember',
-                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/3/30/Dismember_icon.png',
+                    icon: 'https://i.imgur.com/J8KqW7m.png',
                     description: 'Снимает 50 HP врага, восстанавливает 25 HP',
                     cooldown: 2
                 }
@@ -336,7 +345,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/invoker.png',
                 skill: {
                     name: 'Sun Strike',
-                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/8/8f/Sun_Strike_icon.png',
+                    icon: 'https://i.imgur.com/Lm8VqZ3.png',
                     description: '100 урона + Cold Snap (пропуск следующего хода)',
                     cooldown: 2
                 }
