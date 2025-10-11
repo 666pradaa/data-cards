@@ -70,6 +70,7 @@
                     <button class="nav-btn" data-tab="upgrades">Улучшения</button>
                     <button class="nav-btn" data-tab="clans">Кланы</button>
                     <button class="nav-btn" data-tab="friends">Друзья</button>
+                    <button class="nav-btn" data-tab="leaderboard">🏆 Топ</button>
                 </nav>
 
                 <!-- Вкладка Профиль -->
@@ -385,6 +386,24 @@
                                 <div id="clans-search-results" class="search-results"></div>
                             </div>
                             <button id="back-from-search-btn" class="btn secondary">← Назад</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Вкладка Топ -->
+                <div id="leaderboard-tab" class="tab-content">
+                    <div class="leaderboard-section">
+                        <h2>🏆 Топ игроков</h2>
+                        <p class="leaderboard-desc">Рейтинг составляется по опыту уровня</p>
+                        
+                        <div class="leaderboard-filters">
+                            <button class="filter-btn active" data-filter="all">Все</button>
+                            <button class="filter-btn" data-filter="my-clan">Мой клан</button>
+                            <button class="filter-btn" data-filter="friends">Друзья</button>
+                        </div>
+                        
+                        <div id="leaderboard-list" class="leaderboard-list">
+                            <!-- Список топ игроков -->
                         </div>
                     </div>
                 </div>

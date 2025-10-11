@@ -1436,8 +1436,107 @@ class GameData {
             if (window.clansSystem) {
                 window.clansSystem.updateClanUI();
             }
+        } else if (tabName === 'leaderboard') {
+            this.loadLeaderboard('all');
         }
     }
+    
+    // 🏆 ===== СИСТЕМА ТОПА =====
+    
+    async loadLeaderboard(filter = 'all') {
+        console.log('🏆 Загрузка топа игроков, фильтр:', filter);
+        
+        const leaderboardList = document.getElementById('leaderboard-list');
+        if (!leaderboardList) {
+            console.error('❌ Контейнер топа не найден!');
+            return;
+        }
+        
+        leaderboardList.innerHTML = '<div class="loading">Загрузка топа...</div>';
+        
+        try {
+            // Получаем всех пользователей
+            const allUsers = await this.getAllUsers();
+            console.log('📊 Всего пользователей:', Object.keys(allUsers).length);
+            
+            // Преобразуем в массив
+            let usersArray = Object.entries(allUsers).map(([id, userData]) => ({
+                id,
+                ...userData,
+                totalExp: this.calculateTotalExp(userData.level || 1, userData.experience || 0)
+            }));
+            
+            // Фильтрация
+            const currentUser = this.getUser();
+            
+            if (filter === 'my-clan' && currentUser.clanId) {
+                usersArray = usersArray.filter(u => u.clanId === currentUser.clanId);
+            } else if (filter === 'friends' && currentUser.friends) {
+                usersArray = usersArray.filter(u => currentUser.friends.includes(u.userid));
+            }
+            
+            // Сортируем по опыту
+            usersArray.sort((a, b) => b.totalExp - a.totalExp);
+            
+            // Берем топ-100
+            usersArray = usersArray.slice(0, 100);
+            
+            console.log('🏆 Топ игроков после фильтрации:', usersArray.length);
+            
+            // Рендерим список
+            if (usersArray.length === 0) {
+                leaderboardList.innerHTML = '<div class="no-results">Нет игроков</div>';
+                return;
+            }
+            
+            leaderboardList.innerHTML = usersArray.map((userData, index) => {
+                const isCurrentUser = userData.userid === currentUser.userid;
+                const rank = index + 1;
+                const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+                
+                return `
+                    <div class="leaderboard-item ${isCurrentUser ? 'current-user' : ''}">
+                        <div class="leader-rank">${medal}</div>
+                        <img src="${userData.avatar || this.avatars[0]}" alt="Avatar" class="leader-avatar">
+                        <div class="leader-info">
+                            <div class="leader-name">${userData.nickname || userData.username}</div>
+                            <div class="leader-stats">
+                                <span class="leader-level">Ур. ${userData.level || 1}</span>
+                                <span class="leader-exp">${userData.totalExp} опыта</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            // Обработчики фильтров
+            document.querySelectorAll('.leaderboard-filters .filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.leaderboard-filters .filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    this.loadLeaderboard(btn.dataset.filter);
+                });
+            });
+            
+        } catch (error) {
+            console.error('❌ Ошибка загрузки топа:', error);
+            leaderboardList.innerHTML = '<div class="error">Ошибка загрузки топа</div>';
+        }
+    }
+    
+    calculateTotalExp(level, currentExp) {
+        // Подсчитываем общий опыт с учетом уровня
+        let totalExp = currentExp;
+        
+        for (let lvl = 1; lvl < level; lvl++) {
+            const expNeeded = lvl <= 5 ? 30 : 30 + (Math.floor((lvl - 1) / 5) * 50);
+            totalExp += expNeeded;
+        }
+        
+        return totalExp;
+    }
+    
+    // ===== КОНЕЦ СИСТЕМЫ ТОПА =====
 
     setupCardFilters(tabId, isDeck = false) {
         const tab = document.getElementById(tabId);
@@ -2516,6 +2615,14 @@ class GameData {
         
         console.log('Is first battle:', isFirstBattle);
         
+        // Подсчитываем среднее количество улучшений у игрока
+        let totalPlayerUpgrades = 0;
+        playerDeck.forEach(card => {
+            totalPlayerUpgrades += (card.upgrades && card.upgrades.length) || 0;
+        });
+        const avgPlayerUpgrades = Math.floor(totalPlayerUpgrades / playerDeck.length);
+        console.log(`📊 Среднее улучшений у игрока: ${avgPlayerUpgrades} (всего: ${totalPlayerUpgrades})`);
+        
         const allCards = Object.keys(this.cards);
         const botDeck = [];
         const usedCards = new Set();
@@ -2572,11 +2679,11 @@ class GameData {
                     botCard.maxHealth = Math.floor(botCard.maxHealth * strengthMultiplier);
                     botCard.defense = Math.min(80, Math.floor(botCard.defense * (1 + Math.random() * 0.5))); // до 80% защиты
                     
-                    // Добавляем случайные улучшения боту (4-7 штук)
-                    const upgradesCount = 4 + Math.floor(Math.random() * 4); // 4, 5, 6 или 7
+                    // Добавляем улучшения боту (столько же сколько у игрока в среднем)
+                    const upgradesCount = avgPlayerUpgrades;
                     const availableUpgrades = Object.keys(this.upgrades);
                     
-                    console.log(`Adding ${upgradesCount} upgrades to bot`);
+                    console.log(`⚖️ Добавляем боту ${upgradesCount} улучшений (как у игрока)`);
                     
                     // Проверяем что есть доступные улучшения
                     if (availableUpgrades.length === 0) {
@@ -2793,6 +2900,8 @@ class GameData {
             const hasSkill = card.skill && (card.rarity === 'epic' || card.rarity === 'legendary');
             const skillOnCooldown = card.skillCooldown > 0;
             
+            console.log(`⚡ Карта ${card.name}: скилл=${card.skill ? card.skill.name : 'НЕТ'}, редкость=${card.rarity}, hasSkill=${hasSkill}, isPlayer=${isPlayer}`);
+            
             // ⚡ Кнопка скилла (только для своих карт с скиллами)
             let skillButtonHtml = '';
             if (hasSkill && isPlayer && !isDead) {
@@ -2801,10 +2910,13 @@ class GameData {
                     <button class="skill-btn ${skillOnCooldown ? 'on-cooldown' : ''}" 
                             data-card="${card.name}" 
                             ${skillOnCooldown ? 'disabled' : ''}>
-                        <img src="${card.skill.icon}" alt="${card.skill.name}">
-                        ${cooldownText}
+                        <img src="${card.skill.icon}" alt="${card.skill.name}" onerror="this.src='https://via.placeholder.com/35x35?text=S'">
+                        ${cooldownText ? '<span class="skill-cooldown">' + cooldownText + '</span>' : ''}
                     </button>
                 `;
+                console.log(`✅ Кнопка скилла добавлена для ${card.name}`);
+            } else if (!hasSkill) {
+                console.log(`ℹ️ У ${card.name} нет скилла (редкость: ${card.rarity})`);
             }
             
             // ⚡ Добавляем классы для замороженных и испуганных карт
@@ -2842,11 +2954,17 @@ class GameData {
             // ⚡ Добавляем обработчик на кнопку скилла
             if (hasSkill && isPlayer && !isDead && !skillOnCooldown) {
                 const skillBtn = cardDiv.querySelector('.skill-btn');
+                console.log(`🔍 Кнопка скилла ${card.name}:`, skillBtn ? 'найдена ✅' : 'НЕ найдена ❌');
                 if (skillBtn) {
                     skillBtn.onclick = (e) => {
                         e.stopPropagation();
+                        console.log('🔵 КЛИК НА СКИЛЛ:', card.skill.name, 'от', card.name);
                         this.useSkill(card);
                     };
+                    console.log(`✅ Обработчик клика добавлен на скилл ${card.name}`);
+                } else {
+                    console.error(`❌ Кнопка скилла не найдена в DOM для ${card.name}`);
+                    console.log('HTML карты:', cardDiv.innerHTML.substring(0, 200));
                 }
             }
         });
@@ -2934,8 +3052,11 @@ class GameData {
                 if (!this.checkBattleEnd()) {
                     // Проверяем онлайн-бой
                     if (this.battleState.isOnline && window.onlineBattlesSystem) {
+                        console.log('🌐 Онлайн: пропуск хода, передаем противнику');
                         window.onlineBattlesSystem.endPlayerTurn();
+                        // НЕ вызываем startBotTurn!
                     } else {
+                        // Только для оффлайн
                         this.startBotTurn();
                     }
                 }
@@ -3151,16 +3272,19 @@ class GameData {
                 if (this.battleState.isOnline && window.onlineBattlesSystem) {
                     console.log('🌐 Онлайн-бой: передаём ход противнику');
                     window.onlineBattlesSystem.endPlayerTurn();
+                    
+                    // НЕ вызываем startBotTurn в онлайн-бою!
+                    // Противник - реальный игрок, а не бот
                     return;
                 }
                 
-                // Переходим к ходу бота (только для оффлайн-боев)
+                // Переходим к ходу бота (ТОЛЬКО для оффлайн-боев)
                 console.log('🤖 Переход к ходу бота через 1 сек...');
-            setTimeout(() => {
+                setTimeout(() => {
                     if (!this.checkBattleEnd()) {
                         this.startBotTurn();
                     }
-            }, 1000);
+                }, 1000);
                 return;
             }
             
@@ -3196,7 +3320,14 @@ class GameData {
     startBotTurn() {
         if (this.battleEnded) return;
         
-        console.log('🤖 ХОД БОТА НАЧАЛСЯ');
+        // ⚠️ В онлайн-бое НЕ должно быть логики бота!
+        if (this.battleState.isOnline) {
+            console.log('⚠️ startBotTurn вызван в онлайн-бою! Это ошибка!');
+            console.log('🌐 В онлайн-бою оба игрока управляют своими картами');
+            return;
+        }
+        
+        console.log('🤖 ХОД БОТА НАЧАЛСЯ (оффлайн-бой)');
         
         this.isPlayerTurn = false;
         
@@ -3484,18 +3615,29 @@ class GameData {
     }
     
     renderPlayerRune() {
+        console.log('🔮 renderPlayerRune вызван');
         const runeContainer = document.getElementById('player-rune-container');
+        console.log('📦 Контейнер руны игрока:', runeContainer ? 'найден ✅' : 'НЕ найден ❌');
+        
         if (!runeContainer) {
             console.error('❌ Контейнер руны игрока не найден!');
+            console.log('🔍 Все элементы с id на экране:', 
+                Array.from(document.querySelectorAll('[id]')).map(el => el.id)
+            );
             return;
         }
         
         const rune = this.battleState.playerRune;
-        if (!rune) return;
+        console.log('🔮 Руна игрока:', rune);
+        if (!rune) {
+            console.error('❌ У игрока нет руны в battleState!');
+            return;
+        }
         
+        runeContainer.style.display = 'block';
         runeContainer.innerHTML = `
             <div class="rune-item ${this.battleState.runeUsedThisTurn ? 'used' : ''}" id="player-rune">
-                <img src="${rune.icon}" alt="${rune.name}" title="${rune.description}">
+                <img src="${rune.icon}" alt="${rune.name}" title="${rune.description}" onerror="this.src='https://via.placeholder.com/60x60?text=RUNE'">
                 <span class="rune-name">${rune.name}</span>
                 <button class="rune-use-btn btn primary" ${this.battleState.runeUsedThisTurn ? 'disabled' : ''}>
                     Использовать
@@ -3503,28 +3645,45 @@ class GameData {
             </div>
         `;
         
+        console.log('✅ HTML руны установлен');
+        
         // Добавляем обработчик на кнопку
         if (!this.battleState.runeUsedThisTurn) {
             const useBtn = runeContainer.querySelector('.rune-use-btn');
             if (useBtn) {
                 useBtn.onclick = () => this.showRuneTargetSelection();
+                console.log('✅ Обработчик кнопки руны добавлен');
+            } else {
+                console.error('❌ Кнопка использования руны не найдена!');
             }
         }
     }
     
     renderBotRune() {
+        console.log('🔮 renderBotRune вызван');
         const runeContainer = document.getElementById('bot-rune-container');
-        if (!runeContainer) return;
+        console.log('📦 Контейнер руны бота:', runeContainer ? 'найден ✅' : 'НЕ найден ❌');
+        
+        if (!runeContainer) {
+            console.error('❌ Контейнер руны бота не найден!');
+            return;
+        }
         
         const rune = this.battleState.botRune;
-        if (!rune) return;
+        console.log('🔮 Руна бота:', rune);
+        if (!rune) {
+            console.error('❌ У бота нет руны в battleState!');
+            return;
+        }
         
+        runeContainer.style.display = 'block';
         runeContainer.innerHTML = `
             <div class="rune-item">
-                <img src="${rune.icon}" alt="${rune.name}" title="${rune.description}">
+                <img src="${rune.icon}" alt="${rune.name}" title="${rune.description}" onerror="this.src='https://via.placeholder.com/60x60?text=RUNE'">
                 <span class="rune-name">${rune.name}</span>
             </div>
         `;
+        console.log('✅ HTML руны бота установлен');
     }
     
     showRuneTargetSelection() {
@@ -3791,10 +3950,12 @@ class GameData {
             setTimeout(() => {
                 this.hideBattleHint();
                 if (!this.checkBattleEnd()) {
-                    // Переходим к ходу бота (но он пропустит из-за страха)
+                    // Онлайн-бой: передаем ход, НЕ вызываем startBotTurn
                     if (this.battleState.isOnline && window.onlineBattlesSystem) {
+                        console.log('🌐 Онлайн: Requiem применен, передаем ход');
                         window.onlineBattlesSystem.endPlayerTurn();
                     } else {
+                        // Оффлайн: переходим к ходу бота (он пропустит из-за страха)
                         this.startBotTurn();
                     }
                 }
@@ -3830,6 +3991,7 @@ class GameData {
                 this.hideBattleHint();
                 if (!this.checkBattleEnd()) {
                     if (this.battleState.isOnline && window.onlineBattlesSystem) {
+                        console.log('🌐 Онлайн: Dismember применен, передаем ход');
                         window.onlineBattlesSystem.endPlayerTurn();
                     } else {
                         this.startBotTurn();
@@ -3868,6 +4030,7 @@ class GameData {
                 this.hideBattleHint();
                 if (!this.checkBattleEnd()) {
                     if (this.battleState.isOnline && window.onlineBattlesSystem) {
+                        console.log('🌐 Онлайн: Sun Strike применен, передаем ход');
                         window.onlineBattlesSystem.endPlayerTurn();
                     } else {
                         this.startBotTurn();
@@ -3898,6 +4061,7 @@ class GameData {
                 this.hideBattleHint();
                 if (!this.checkBattleEnd()) {
                     if (this.battleState.isOnline && window.onlineBattlesSystem) {
+                        console.log('🌐 Онлайн: Frostbite применен, передаем ход');
                         window.onlineBattlesSystem.endPlayerTurn();
                     } else {
                         this.startBotTurn();
@@ -3934,6 +4098,7 @@ class GameData {
                 this.hideBattleHint();
                 if (!this.checkBattleEnd()) {
                     if (this.battleState.isOnline && window.onlineBattlesSystem) {
+                        console.log('🌐 Онлайн: Sunder применен, передаем ход');
                         window.onlineBattlesSystem.endPlayerTurn();
                     } else {
                         this.startBotTurn();
