@@ -402,6 +402,10 @@ class OnlineBattlesSystem {
             this.gameData.renderBattle();
             console.log('✅ Бой отрендерен');
             
+            // Обновляем отображение имен
+            this.gameData.updateBattleNames();
+            this.gameData.updateRoundDisplay();
+            
             // Запускаем онлайн-логику вместо обычной
             this.startOnlineBattleLogic(roomCode);
             console.log('✅ Онлайн-логика запущена');
