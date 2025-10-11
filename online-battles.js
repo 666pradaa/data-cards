@@ -669,8 +669,8 @@ class OnlineBattlesSystem {
                     this.playOpponentAction(room.currentAction);
                 }
                 
-                // Синхронизируем состояние колод
-                if (room.hostDeck && room.guestDeck) {
+                // Синхронизируем состояние колод (только если это обновления HP после хода)
+                if (room.hostDeck && room.guestDeck && room.lastActionTime) {
                     this.syncDecksFromRoom(room);
                 }
             });

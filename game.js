@@ -129,19 +129,19 @@ class GameData {
             invisibility: {
                 name: 'Руна невидимости',
                 description: 'Карта не может быть атакована в этом раунде',
-                icon: 'https://i.imgur.com/8YqZ5Uw.png',
+                icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/3/38/Invis_Rune_icon.png/revision/latest?cb=20200626151209',
                 type: 'invisibility'
             },
             shield: {
                 name: 'Руна щита',
                 description: '+40% защиты на раунд',
-                icon: 'https://i.imgur.com/nJ3ZYQW.png',
+                icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/b/b0/Haste_Rune_icon.png/revision/latest?cb=20200626151213',
                 type: 'shield'
             },
             water: {
                 name: 'Руна воды',
                 description: 'Восстанавливает 20% здоровья',
-                icon: 'https://i.imgur.com/vXrT5oY.png',
+                icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/b/bf/Regen_Rune_icon.png/revision/latest?cb=20200626151220',
                 type: 'water'
             }
         };
@@ -249,7 +249,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/terrorblade.png',
                 skill: {
                     name: 'Sunder',
-                    icon: 'https://i.imgur.com/YqK8wZL.png',
+                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/2/2f/Sunder_icon.png/revision/latest?cb=20140810071521',
                     description: 'Меняется HP с выбранной картой',
                     cooldown: 2
                 }
@@ -264,7 +264,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/crystal_maiden.png',
                 skill: {
                     name: 'Frostbite',
-                    icon: 'https://i.imgur.com/TqBvN8r.png',
+                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/d/d5/Frostbite_icon.png/revision/latest?cb=20140810071445',
                     description: 'Заморозка: карта пропускает следующий ход',
                     cooldown: 2
                 }
@@ -279,7 +279,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/spirit_breaker.png',
                 skill: {
                     name: 'Charge of Darkness',
-                    icon: 'https://i.imgur.com/Jp4M6Kx.png',
+                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/6/68/Charge_of_Darkness_icon.png/revision/latest?cb=20140810071407',
                     description: '+20 скорости на раунд, можно ударить любую карту',
                     cooldown: 2
                 }
@@ -295,7 +295,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/nevermore.png',
                 skill: {
                     name: 'Реквием душ',
-                    icon: 'https://i.imgur.com/KqH7XkO.png',
+                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/9/90/Requiem_of_Souls_icon.png/revision/latest?cb=20140810071604',
                     description: '50 урона карте напротив, 20 остальным. Все в страхе (пропуск хода)',
                     cooldown: 2
                 }
@@ -310,7 +310,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/pudge.png',
                 skill: {
                     name: 'Dismember',
-                    icon: 'https://i.imgur.com/zNjR7yM.png',
+                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/3/30/Dismember_icon.png/revision/latest?cb=20140810071422',
                     description: 'Снимает 50 HP врага, восстанавливает 25 HP',
                     cooldown: 2
                 }
@@ -325,7 +325,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/invoker.png',
                 skill: {
                     name: 'Sun Strike',
-                    icon: 'https://i.imgur.com/hNjQx3L.png',
+                    icon: 'https://static.wikia.nocookie.net/dota2_gamepedia/images/8/8f/Sun_Strike_icon.png/revision/latest?cb=20140810071513',
                     description: '100 урона + Cold Snap (пропуск следующего хода)',
                     cooldown: 2
                 }
@@ -1479,11 +1479,26 @@ class GameData {
             
             // Фильтрация
             const currentUser = this.getUser();
+            console.log('👤 Текущий пользователь для фильтрации:', currentUser.userid);
+            console.log('👥 Друзья:', currentUser.friends);
             
             if (filter === 'my-clan' && currentUser.clanId) {
+                console.log('🏰 Фильтр по клану:', currentUser.clanId);
                 usersArray = usersArray.filter(u => u.clanId === currentUser.clanId);
-            } else if (filter === 'friends' && currentUser.friends) {
-                usersArray = usersArray.filter(u => currentUser.friends.includes(u.userid));
+            } else if (filter === 'friends') {
+                console.log('👥 Фильтр по друзьям');
+                if (currentUser.friends && currentUser.friends.length > 0) {
+                    console.log('📋 Список друзей:', currentUser.friends);
+                    usersArray = usersArray.filter(u => {
+                        // Проверяем userid пользователя в массиве friends
+                        const isFriend = currentUser.friends.includes(u.userid || u.id);
+                        if (isFriend) console.log('✅ Друг найден:', u.nickname || u.username);
+                        return isFriend;
+                    });
+                } else {
+                    console.log('⚠️ У пользователя нет друзей');
+                    usersArray = [];
+                }
             }
             
             // Сортируем по опыту
@@ -2920,8 +2935,10 @@ class GameData {
                 skillButtonHtml = `
                     <button class="skill-btn ${skillOnCooldown ? 'on-cooldown' : ''}" 
                             data-card="${card.name}" 
+                            title="${card.skill.name}: ${card.skill.description}"
                             ${skillOnCooldown ? 'disabled' : ''}>
-                        <img src="${card.skill.icon}" alt="${card.skill.name}" onerror="this.src='https://via.placeholder.com/35x35?text=S'">
+                        <img src="${card.skill.icon}" alt="${card.skill.name}" 
+                             onerror="this.style.display='none'; this.parentElement.style.background='linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)'; this.parentElement.innerHTML='⚡';">
                         ${cooldownText ? '<span class="skill-cooldown">' + cooldownText + '</span>' : ''}
                     </button>
                 `;
@@ -3646,17 +3663,23 @@ class GameData {
         }
         
         runeContainer.style.display = 'block';
+        
+        // Используем data URI как fallback
+        const fallbackIcon = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"%3E%3Ccircle cx="50" cy="50" r="40" fill="%23FFD700"/%3E%3Ctext x="50" y="65" font-size="40" text-anchor="middle" fill="%23000"%3E🔮%3C/text%3E%3C/svg%3E';
+        
         runeContainer.innerHTML = `
-            <div class="rune-item ${this.battleState.runeUsedThisTurn ? 'used' : ''}" id="player-rune">
-                <img src="${rune.icon}" alt="${rune.name}" title="${rune.description}" onerror="this.src='https://via.placeholder.com/60x60?text=RUNE'">
-                <span class="rune-name">${rune.name}</span>
-                <button class="rune-use-btn btn primary" ${this.battleState.runeUsedThisTurn ? 'disabled' : ''}>
+            <div class="rune-item ${this.battleState.runeUsedThisTurn ? 'used' : ''}" id="player-rune" data-desc="${rune.description}">
+                <img src="${rune.icon}" alt="${rune.name}" title="${rune.description}" 
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div class="rune-icon-fallback" style="display: none; width: 60px; height: 60px; background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%); border-radius: 50%; align-items: center; justify-content: center; font-size: 2rem;">🔮</div>
+                <span class="rune-name" title="${rune.description}">${rune.name}</span>
+                <button class="rune-use-btn btn primary" ${this.battleState.runeUsedThisTurn ? 'disabled' : ''} title="${rune.description}">
                     Использовать
                 </button>
             </div>
         `;
         
-        console.log('✅ HTML руны установлен');
+        console.log('✅ HTML руны установлен, icon:', rune.icon);
         
         // Добавляем обработчик на кнопку
         if (!this.battleState.runeUsedThisTurn) {
@@ -3689,12 +3712,14 @@ class GameData {
         
         runeContainer.style.display = 'block';
         runeContainer.innerHTML = `
-            <div class="rune-item">
-                <img src="${rune.icon}" alt="${rune.name}" title="${rune.description}" onerror="this.src='https://via.placeholder.com/60x60?text=RUNE'">
-                <span class="rune-name">${rune.name}</span>
+            <div class="rune-item" data-desc="${rune.description}">
+                <img src="${rune.icon}" alt="${rune.name}" title="${rune.description}" 
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="rune-icon-fallback" style="display: none; width: 60px; height: 60px; background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%); border-radius: 50%; align-items: center; justify-content: center; font-size: 2rem;">🔮</div>
+                <span class="rune-name" title="${rune.description}">${rune.name}</span>
             </div>
         `;
-        console.log('✅ HTML руны бота установлен');
+        console.log('✅ HTML руны бота установлен, icon:', rune.icon);
     }
     
     showRuneTargetSelection() {
@@ -3804,21 +3829,27 @@ class GameData {
     clearRuneEffects() {
         console.log('🧹 Очищаем эффекты рун');
         
+        if (!this.battleState) return;
+        
         // Убираем невидимость
-        this.battleState.invisibleCards = [];
+        if (this.battleState.invisibleCards) {
+            this.battleState.invisibleCards = [];
+        }
         document.querySelectorAll('.invisible-card').forEach(el => {
             el.classList.remove('invisible-card');
             el.style.opacity = '';
         });
         
         // Убираем щиты
-        this.battleState.shieldedCards.forEach(cardName => {
-            const card = this.battleState.playerDeck.find(c => c.name === cardName);
-            if (card) {
-                card.tempDefense = 0;
-            }
-        });
-        this.battleState.shieldedCards = [];
+        if (this.battleState.shieldedCards) {
+            this.battleState.shieldedCards.forEach(cardName => {
+                const card = [...this.battleState.playerDeck, ...this.battleState.botDeck].find(c => c.name === cardName);
+                if (card && card.tempDefense) {
+                    card.tempDefense = 0;
+                }
+            });
+            this.battleState.shieldedCards = [];
+        }
         document.querySelectorAll('.shielded-card').forEach(el => {
             el.classList.remove('shielded-card');
         });
@@ -4177,17 +4208,21 @@ class GameData {
         
         const arena = document.querySelector('.battle-arena');
         
-        // Создаем 36 душ вокруг Shadow Fiend
-        for (let i = 0; i < 36; i++) {
+        // Создаем 40 красных светящихся точек вокруг Shadow Fiend
+        for (let i = 0; i < 40; i++) {
             const soul = document.createElement('div');
             soul.className = 'requiem-soul';
-            soul.textContent = '👻';
             
-            const angle = (i / 36) * Math.PI * 2;
+            // Случайный размер точки
+            const size = 8 + Math.random() * 12; // 8-20px
+            soul.style.width = size + 'px';
+            soul.style.height = size + 'px';
+            
+            const angle = (i / 40) * Math.PI * 2 + (Math.random() * 0.2 - 0.1);
             const startX = 50; // Центр
             const startY = 50;
-            const endX = 50 + Math.cos(angle) * 100;
-            const endY = 50 + Math.sin(angle) * 100;
+            const endX = 50 + Math.cos(angle) * 120;
+            const endY = 50 + Math.sin(angle) * 120;
             
             soul.style.left = startX + '%';
             soul.style.top = startY + '%';
@@ -4196,11 +4231,11 @@ class GameData {
             
             arena.appendChild(soul);
             
-            setTimeout(() => soul.classList.add('flying'), i * 20);
+            setTimeout(() => soul.classList.add('flying'), i * 15);
             
             setTimeout(() => {
                 if (arena.contains(soul)) arena.removeChild(soul);
-            }, 1500);
+            }, 1800);
         }
         
         // Красное свечение
@@ -4377,22 +4412,32 @@ class GameData {
     
     // Уменьшаем кулдауны в начале раунда
     decreaseSkillCooldowns() {
-        this.battleState.playerDeck.forEach(card => {
-            if (card.skillCooldown > 0) {
-                card.skillCooldown--;
-                console.log('⏱️ Кулдаун', card.name, ':', card.skillCooldown);
-            }
-        });
+        if (!this.battleState) return;
         
-        this.battleState.botDeck.forEach(card => {
-            if (card.skillCooldown > 0) {
-                card.skillCooldown--;
-            }
-        });
+        if (this.battleState.playerDeck) {
+            this.battleState.playerDeck.forEach(card => {
+                if (card.skillCooldown > 0) {
+                    card.skillCooldown--;
+                    console.log('⏱️ Кулдаун', card.name, ':', card.skillCooldown);
+                }
+            });
+        }
+        
+        if (this.battleState.botDeck) {
+            this.battleState.botDeck.forEach(card => {
+                if (card.skillCooldown > 0) {
+                    card.skillCooldown--;
+                }
+            });
+        }
         
         // Очищаем эффекты контроля
-        this.battleState.frozenCards = [];
-        this.battleState.fearedCards = [];
+        if (this.battleState.frozenCards) {
+            this.battleState.frozenCards = [];
+        }
+        if (this.battleState.fearedCards) {
+            this.battleState.fearedCards = [];
+        }
     }
     
     // Бот использует скиллы
