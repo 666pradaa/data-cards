@@ -3140,7 +3140,7 @@ body.light-theme {
     background: linear-gradient(135deg, rgba(30, 30, 30, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%);
     border-radius: 15px;
     display: flex;
-    overflow: hidden;
+    overflow: visible; /* Изменено с hidden чтобы видеть кнопки скиллов */
     position: relative;
     transition: all 0.3s ease;
     border: 3px solid;

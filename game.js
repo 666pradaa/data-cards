@@ -2666,6 +2666,18 @@ class GameData {
 
         this.renderBattle();
             console.log('Battle rendered, starting interactive battle...');
+            
+        // 🔮 Отображаем руны сразу при старте
+        console.log('🔮 Отображение рун при старте боя');
+        if (this.battleState.playerRune) {
+            this.renderPlayerRune();
+            console.log('✅ Руна игрока отрендерена:', this.battleState.playerRune.name);
+        }
+        if (this.battleState.botRune) {
+            this.renderBotRune();
+            console.log('✅ Руна бота отрендерена:', this.battleState.botRune.name);
+        }
+        
         this.startInteractiveBattle();
         } catch (error) {
             console.error('Error in startBattle:', error);
@@ -2720,6 +2732,14 @@ class GameData {
         
         // Обновляем номер раунда
         this.updateRoundDisplay();
+        
+        // 🔮 Отображаем руны
+        if (this.battleState.playerRune) {
+            this.renderPlayerRune();
+        }
+        if (this.battleState.botRune) {
+            this.renderBotRune();
+        }
         
         this.renderDeck('player-cards', this.battleState.playerDeck, true);
         this.renderDeck('enemy-cards', this.battleState.botDeck, false);
