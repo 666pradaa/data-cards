@@ -951,11 +951,24 @@ class ClansSystem {
     }
 
     async addClanExp(amount) {
-        if (!this.currentClan) return;
+        console.log('🏰 addClanExp вызван, amount:', amount);
+        console.log('   - currentClan:', this.currentClan);
+        
+        if (!this.currentClan) {
+            console.log('⚠️ currentClan не установлен');
+            return;
+        }
         
         try {
-            const newExp = (this.currentClan.exp || 0) + amount;
+            const oldExp = this.currentClan.exp || 0;
+            const newExp = oldExp + amount;
             const expNeeded = (this.currentClan.level || 1) * 100;
+            
+            console.log('📊 Опыт клана:');
+            console.log('   - Было:', oldExp);
+            console.log('   - Добавляем:', amount);
+            console.log('   - Станет:', newExp);
+            console.log('   - Нужно для lvl up:', expNeeded);
             
             let newLevel = this.currentClan.level || 1;
             let finalExp = newExp;
@@ -967,23 +980,32 @@ class ClansSystem {
             }
             
             if (this.gameData.useFirebase) {
+                console.log('☁️ Обновляем опыт клана в Firebase...');
                 await firebase.database().ref(`clans/${this.currentClan.id}`).update({
                     level: newLevel,
                     exp: finalExp
                 });
+                console.log('✅ Опыт клана обновлен в Firebase');
             } else {
+                console.log('💾 Обновляем опыт клана в localStorage...');
                 const clans = JSON.parse(localStorage.getItem('clans') || '{}');
                 if (clans[this.currentClan.id]) {
                     clans[this.currentClan.id].level = newLevel;
                     clans[this.currentClan.id].exp = finalExp;
                     localStorage.setItem('clans', JSON.stringify(clans));
+                    console.log('✅ Опыт клана обновлен в localStorage');
+                } else {
+                    console.error('❌ Клан не найден в localStorage!');
                 }
             }
             
+            // Обновляем локальный объект
             this.currentClan.level = newLevel;
             this.currentClan.exp = finalExp;
             
+            console.log('🔄 Перезагружаем информацию о клане...');
             await this.loadUserClan();
+            console.log('✅ Информация о клане обновлена');
             
         } catch (error) {
             console.error('Ошибка добавления опыта клану:', error);

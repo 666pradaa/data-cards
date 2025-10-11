@@ -1,9 +1,30 @@
 // Система звуков с локальными файлами
 class SoundSystem {
     constructor() {
-        this.masterVolume = 0.3;
-        this.soundEnabled = localStorage.getItem('soundEnabled') !== 'false';
-        this.musicEnabled = localStorage.getItem('musicEnabled') !== 'false';
+        this.masterVolume = 0.5; // Увеличил с 0.3 до 0.5
+        
+        // Явно проверяем и инициализируем soundEnabled
+        const storedSound = localStorage.getItem('soundEnabled');
+        if (storedSound === null) {
+            // Если не установлено - по умолчанию ВКЛЮЧЕНО
+            this.soundEnabled = true;
+            localStorage.setItem('soundEnabled', 'true');
+            console.log('🔊 Звуки включены по умолчанию');
+        } else {
+            this.soundEnabled = storedSound === 'true';
+            console.log('🔊 Звуки из localStorage:', this.soundEnabled);
+        }
+        
+        const storedMusic = localStorage.getItem('musicEnabled');
+        if (storedMusic === null) {
+            this.musicEnabled = true;
+            localStorage.setItem('musicEnabled', 'true');
+            console.log('🎵 Музыка включена по умолчанию');
+        } else {
+            this.musicEnabled = storedMusic === 'true';
+            console.log('🎵 Музыка из localStorage:', this.musicEnabled);
+        }
+        
         this.currentBgMusic = null;
         
         // Пути к звуковым файлам
@@ -11,7 +32,6 @@ class SoundSystem {
             'whoosh': 'sounds/whoosh.mp3',
             'attack': 'sounds/attack.mp3',
             'critAttack': 'sounds/crit_attack.mp3',
-            'damage': 'sounds/damage.mp3',
             'death': 'sounds/death.mp3',
             'openCase': 'sounds/open_case.mp3',
             'victory': 'sounds/victory.mp3',
@@ -26,6 +46,12 @@ class SoundSystem {
             'terrorblade_sunder': 'sounds/skills/terrorblade_sunder.mp3',
             'spirit_breaker_charge': 'sounds/skills/spirit_breaker_charge.mp3'
         };
+        
+        console.log('🔊 Инициализация SoundSystem:');
+        console.log('   - soundEnabled:', this.soundEnabled);
+        console.log('   - musicEnabled:', this.musicEnabled);
+        console.log('   - masterVolume:', this.masterVolume);
+        console.log('   - Путей к звукам:', Object.keys(this.soundPaths).length);
     }
 
     playSound(type, volume = 1) {
@@ -43,10 +69,19 @@ class SoundSystem {
                 const audio = new Audio(soundPath);
                 audio.volume = this.masterVolume * volume;
                 console.log('🎵 Попытка воспроизведения, громкость:', audio.volume);
+                
+                // Проверяем что файл существует перед воспроизведением
+                audio.addEventListener('error', (e) => {
+                    console.error('❌ ФАЙЛ НЕ НАЙДЕН:', soundPath);
+                    console.error('   Ошибка:', e.target.error);
+                    alert(`Звуковой файл не найден: ${soundPath}\nПроверьте папку sounds/`);
+                });
+                
                 audio.play()
                     .then(() => console.log('✅ Звук воспроизведен:', type))
                     .catch((err) => {
                         console.error('❌ Звук не воспроизведен:', type, err.message);
+                        console.error('   Код ошибки:', err.name);
                     });
             } catch (e) {
                 console.error('❌ Ошибка создания аудио:', type, e.message);
@@ -58,26 +93,67 @@ class SoundSystem {
 
     startBackgroundMusic() {
         if (!this.musicEnabled) {
-            console.log('Music is disabled');
+            console.log('❌ Музыка отключена (musicEnabled = false)');
             return;
         }
         
         // Если музыка уже играет - не перезапускаем
         if (this.currentBgMusic && !this.currentBgMusic.paused) {
-            console.log('Music is already playing');
+            console.log('✅ Музыка уже играет, volume:', this.currentBgMusic.volume);
             return;
         }
         
         try {
-            console.log('Attempting to start background music from:', this.soundPaths['backgroundMusic']);
+            console.log('🎵 Попытка запустить музыку:', this.soundPaths['backgroundMusic']);
             this.currentBgMusic = new Audio(this.soundPaths['backgroundMusic']);
-            this.currentBgMusic.volume = this.masterVolume * 0.3;
+            
+            // Увеличиваем громкость музыки!
+            this.currentBgMusic.volume = 0.4; // 40%
+            console.log('🔊 Громкость музыки установлена:', this.currentBgMusic.volume, '(40%)');
+            
             this.currentBgMusic.loop = true;
+            console.log('🔁 Loop включен');
+            
+            // Обработчик ошибок загрузки
+            this.currentBgMusic.addEventListener('error', (e) => {
+                console.error('❌ Ошибка загрузки музыки:', e);
+                console.error('   Файл:', this.soundPaths['backgroundMusic']);
+                console.error('   Возможно файл поврежден или не найден');
+            });
+            
+            // Ждем полной загрузки перед воспроизведением
+            this.currentBgMusic.addEventListener('canplaythrough', () => {
+                console.log('✅ Музыка полностью загружена, duration:', this.currentBgMusic.duration);
+            }, { once: true });
+            
+            // Обработчик зацикливания
+            this.currentBgMusic.addEventListener('ended', () => {
+                console.log('🔁 Музыка закончилась, перезапуск...');
+                if (this.musicEnabled && this.currentBgMusic) {
+                    this.currentBgMusic.currentTime = 0;
+                    this.currentBgMusic.play().catch(err => console.error('❌ Ошибка перезапуска:', err));
+                }
+            });
+            
             this.currentBgMusic.play()
-                .then(() => console.log('✅ Background music started successfully!'))
-                .catch(err => console.error('❌ Failed to play music:', err.message));
+                .then(() => {
+                    console.log('✅ Музыка запущена успешно!');
+                    console.log('📊 Текущее состояние:');
+                    console.log('   - paused:', this.currentBgMusic.paused);
+                    console.log('   - volume:', this.currentBgMusic.volume);
+                    console.log('   - duration:', this.currentBgMusic.duration);
+                    console.log('   - currentTime:', this.currentBgMusic.currentTime);
+                    console.log('   - loop:', this.currentBgMusic.loop);
+                })
+                .catch(err => {
+                    console.error('❌ Ошибка воспроизведения музыки:', err.message);
+                    console.error('   Причина:', err.name);
+                    if (err.name === 'NotAllowedError') {
+                        console.log('⚠️ Браузер блокирует autoplay! Кликните по странице для запуска музыки.');
+                    }
+                });
         } catch (e) {
-            console.error('❌ Error creating audio:', e.message);
+            console.error('❌ Ошибка создания аудио:', e.message);
         }
     }
 
@@ -148,20 +224,20 @@ class GameData {
         this.runes = {
             invisibility: {
                 name: 'Руна невидимости',
-                description: 'Карта не может быть атакована в этом раунде',
-                icon: 'https://i.imgur.com/6vYxZQe.png',
+                description: 'Вражеская карта не может атаковать в следующем ходу',
+                icon: 'images/runes/invisibility.webp',
                 type: 'invisibility'
             },
             shield: {
                 name: 'Руна щита',
-                description: '+40% защиты на раунд',
-                icon: 'https://i.imgur.com/5mKZ0Xr.png',
+                description: 'Вражеская карта получает -40% к атаке в следующем ходу',
+                icon: 'images/runes/shield.webp',
                 type: 'shield'
             },
             water: {
                 name: 'Руна воды',
-                description: 'Восстанавливает 20% здоровья',
-                icon: 'https://i.imgur.com/3VhN8zK.png',
+                description: 'Восстанавливает 20% здоровья своей карте',
+                icon: 'images/runes/water.webp',
                 type: 'water'
             }
         };
@@ -269,7 +345,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/terrorblade.png',
                 skill: {
                     name: 'Sunder',
-                    icon: 'https://i.imgur.com/yvPZ8Qm.png',
+                    icon: 'images/skills/terrorblade_sunder',
                     description: 'Меняется HP с выбранной картой',
                     cooldown: 2
                 }
@@ -284,7 +360,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/crystal_maiden.png',
                 skill: {
                     name: 'Frostbite',
-                    icon: 'https://i.imgur.com/kZxN5Ry.png',
+                    icon: 'images/skills/crystal_maiden_frostbite',
                     description: 'Заморозка: карта пропускает следующий ход',
                     cooldown: 2
                 }
@@ -299,7 +375,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/spirit_breaker.png',
                 skill: {
                     name: 'Charge of Darkness',
-                    icon: 'https://i.imgur.com/Tj8mQF3.png',
+                    icon: 'images/skills/spirit_breaker_charge',
                     description: '+20 скорости на раунд, можно ударить любую карту',
                     cooldown: 2
                 }
@@ -315,7 +391,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/nevermore.png',
                 skill: {
                     name: 'Реквием душ',
-                    icon: 'https://i.imgur.com/9Z7xQfK.png',
+                    icon: 'images/skills/shadow_fiend_requiem',
                     description: '50 урона карте напротив, 20 остальным. Все в страхе (пропуск хода)',
                     cooldown: 2
                 }
@@ -330,7 +406,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/pudge.png',
                 skill: {
                     name: 'Dismember',
-                    icon: 'https://i.imgur.com/J8KqW7m.png',
+                    icon: 'images/skills/pudge_dismember',
                     description: 'Снимает 50 HP врага, восстанавливает 25 HP',
                     cooldown: 2
                 }
@@ -345,7 +421,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/invoker.png',
                 skill: {
                     name: 'Sun Strike',
-                    icon: 'https://i.imgur.com/Lm8VqZ3.png',
+                    icon: 'images/skills/invoker_sun_strike',
                     description: '100 урона + Cold Snap (пропуск следующего хода)',
                     cooldown: 2
                 }
@@ -393,11 +469,14 @@ class GameData {
     }
 
     toggleSound() {
+        console.log('🔊 toggleSound вызван');
         const enabled = this.soundSystem.toggleSound();
+        console.log('🔊 Новое состояние soundEnabled:', enabled);
         const button = document.getElementById('sound-toggle');
         button.textContent = enabled ? '🔊' : '🔇';
         if (enabled) {
-            this.soundSystem.playSound('click');
+            console.log('🔊 Пробуем воспроизвести тестовый звук');
+            this.soundSystem.playSound('whoosh');
         }
     }
 
@@ -457,14 +536,16 @@ class GameData {
         
         if (loginBtn) {
             console.log('✅ Кнопка входа найдена, устанавливаем обработчик');
-            loginBtn.addEventListener('click', async () => {
+            loginBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 console.log('🔵 Клик по кнопке входа!');
-                try {
-                    await this.login();
-                } catch (error) {
-                    console.error('Ошибка входа:', error);
+                
+                // Вызываем login без await в event listener
+                this.login().catch(error => {
+                    console.error('❌ Критическая ошибка входа:', error);
                     alert('Ошибка входа: ' + error.message);
-                }
+                });
             });
         } else {
             console.error('❌ Кнопка login-btn не найдена!');
@@ -641,13 +722,29 @@ class GameData {
     }
 
     showAuthScreen() {
-        document.getElementById('auth-screen').classList.add('active');
-        document.getElementById('main-menu').classList.remove('active');
-        document.getElementById('battle-screen').classList.remove('active');
-        document.getElementById('admin-panel').classList.remove('active');
+        console.log('🔐 Показываем экран авторизации');
+        const authScreen = document.getElementById('auth-screen');
+        const mainMenu = document.getElementById('main-menu');
+        const battleScreen = document.getElementById('battle-screen');
+        const adminPanel = document.getElementById('admin-panel');
+        
+        authScreen.classList.add('active');
+        mainMenu.classList.remove('active');
+        battleScreen.classList.remove('active');
+        adminPanel.classList.remove('active');
+        
+        // Убеждаемся что auth-screen поверх всего
+        authScreen.style.zIndex = '10000';
+        mainMenu.style.zIndex = '1';
+        battleScreen.style.zIndex = '1';
+        adminPanel.style.zIndex = '1';
+        
+        console.log('✅ Экран авторизации активен');
     }
 
     showMainMenu() {
+        console.log('🏠 Показываем главное меню');
+        
         // Проверяем сохраненный бой
         const battleRestored = this.loadBattleState();
         if (battleRestored) {
@@ -655,10 +752,24 @@ class GameData {
             return; // Не показываем главное меню, остаемся в бою
         }
         
-        document.getElementById('auth-screen').classList.remove('active');
-        document.getElementById('main-menu').classList.add('active');
-        document.getElementById('battle-screen').classList.remove('active');
-        document.getElementById('admin-panel').classList.remove('active');
+        const authScreen = document.getElementById('auth-screen');
+        const mainMenu = document.getElementById('main-menu');
+        const battleScreen = document.getElementById('battle-screen');
+        const adminPanel = document.getElementById('admin-panel');
+        
+        authScreen.classList.remove('active');
+        mainMenu.classList.add('active');
+        battleScreen.classList.remove('active');
+        adminPanel.classList.remove('active');
+        
+        // Убеждаемся что main-menu поверх auth-screen
+        authScreen.style.zIndex = '1';
+        mainMenu.style.zIndex = '10';
+        battleScreen.style.zIndex = '1';
+        adminPanel.style.zIndex = '1';
+        
+        console.log('✅ Главное меню активно');
+        
         this.updateUserInfo();
         this.updateThemeButton();
         this.updateSoundButton();
@@ -898,60 +1009,81 @@ class GameData {
     }
 
     async login() {
+        console.log('🔑 login() функция вызвана');
+        
+        const loginBtn = document.getElementById('login-btn');
         const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value;
-        const loginBtn = document.getElementById('login-btn');
+
+        console.log('📝 Введенные данные:');
+        console.log('   - username:', username);
+        console.log('   - password длина:', password.length);
 
         if (!username || !password) {
             alert('Заполните все поля');
+            console.log('⚠️ Поля не заполнены');
             return;
         }
-
+        
         // Блокируем кнопку
-        loginBtn.disabled = true;
-        loginBtn.textContent = 'Вход...';
+        if (loginBtn) {
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Вход...';
+        }
         
         console.log('🔵 Начинаем вход:', username);
         console.log('🔵 Используем Firebase:', this.useFirebase);
 
-        try {
-            if (this.useFirebase) {
-                console.log('🔵 Вызываем firebaseAdapter.login...');
-                // Firebase авторизация
-                const result = await firebaseAdapter.login(username, password);
-                console.log('🔵 Результат входа:', result);
+        if (this.useFirebase) {
+            console.log('🔵 Вызываем firebaseAdapter.login...');
+            // Firebase авторизация
+            const result = await firebaseAdapter.login(username, password);
+            console.log('🔵 Результат входа:', result);
             
             if (result.success) {
+                console.log('✅ Firebase вход успешен!');
                 this.currentUser = result.userId;
                 this.currentUserData = result.userData;
                 
+                console.log('📊 Данные пользователя:', this.currentUserData);
+                
                 // Подписываемся на изменения данных в реальном времени
                 firebaseAdapter.listenToUserData(result.userId, (data) => {
+                    console.log('🔄 Данные обновлены:', data);
                     this.currentUserData = data;
                     this.updateUserInfo();
                 });
                 
                 // Загружаем кеш пользователей для поиска друзей
+                console.log('📥 Загружаем всех пользователей...');
                 this.allUsersCache = await firebaseAdapter.getAllUsers();
+                console.log('✅ Загружено пользователей:', Object.keys(this.allUsersCache).length);
                 
-                console.log('✅ Вход через Firebase:', username);
+                console.log('✅ Вход через Firebase завершен:', username);
+                console.log('🏠 Переход в главное меню...');
                 this.showMainMenu();
             } else {
+                console.error('❌ Firebase вход не удался:', result.error);
                 alert(result.error || 'Неверные данные');
             }
         } else {
+            console.log('💾 Используем localStorage для входа');
             // localStorage авторизация (старый метод)
-        if (this.users[username] && this.users[username].password === password) {
-            this.currentUser = username;
+            if (this.users[username] && this.users[username].password === password) {
+                console.log('✅ Пользователь найден в localStorage');
+                this.currentUser = username;
                 this.currentUserData = this.users[username];
-            localStorage.setItem('dotaCardsCurrentUser', username);
-            this.showMainMenu();
-        } else {
-            alert('Неверные данные');
+                localStorage.setItem('dotaCardsCurrentUser', username);
+                console.log('🏠 Переход в главное меню...');
+                this.showMainMenu();
+            } else {
+                console.error('❌ Неверные данные для localStorage');
+                alert('Неверные данные');
             }
         }
-        } finally {
-            // Разблокируем кнопку
+        
+        // Разблокируем кнопку в конце
+        if (loginBtn) {
             loginBtn.disabled = false;
             loginBtn.textContent = 'Войти';
         }
@@ -2873,9 +3005,12 @@ class GameData {
     }
 
     updateRoundDisplay() {
-        const roundEl = document.querySelector('.battle-info h3');
+        const roundEl = document.getElementById('battle-round-num');
         if (roundEl && this.battleState) {
-            roundEl.textContent = `Раунд ${this.battleState.round}`;
+            roundEl.textContent = this.battleState.round;
+            console.log('📊 Счетчик раундов обновлен:', this.battleState.round);
+        } else {
+            console.error('❌ Элемент battle-round-num не найден!');
         }
     }
 
@@ -2956,8 +3091,8 @@ class GameData {
                     <button class="skill-btn ${skillOnCooldown ? 'on-cooldown' : ''}" 
                             data-card="${card.name}" 
                             ${skillOnCooldown ? 'disabled' : ''}>
-                        <img src="${card.skill.icon}" alt="${card.skill.name}"
-                             onerror="this.style.display='none'; this.nextElementSibling.nextElementSibling.style.display='block';">
+                        <img src="${card.skill.icon}.png" alt="${card.skill.name}"
+                             onerror="this.src='${card.skill.icon}.webp'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.nextElementSibling.style.display='block'};">
                         ${cooldownText ? '<span class="skill-cooldown">' + cooldownText + '</span>' : ''}
                         <span class="skill-icon-fallback" style="display: none;">⚡</span>
                         <div class="skill-tooltip">
@@ -3099,7 +3234,7 @@ class GameData {
             this.battleState.lastPlayerCard = null;
             
             // Через 2 секунды передаем ход боту
-            setTimeout(() => {
+        setTimeout(() => {
                 this.hideBattleHint();
                 if (!this.checkBattleEnd()) {
                     // Проверяем онлайн-бой
@@ -3437,8 +3572,8 @@ class GameData {
         // Если нет доступных карт - руну нельзя использовать
         if (availableBotCards.length === 0 && aliveBotCards.length > 0) {
             console.log('⏳ Бот пропускает ход, не может использовать руну');
-            return;
-        }
+                return;
+            }
         
         let targetCard = null;
         
@@ -3515,8 +3650,10 @@ class GameData {
             // Сбрасываем lastBotCard чтобы в следующем раунде карты были доступны
             this.battleState.lastBotCard = null;
             
-            // Увеличиваем раунд
+            // Увеличиваем раунд (бот пропустил ход)
+            const oldRound = this.battleState.round;
             this.battleState.round++;
+            console.log('📊 Раунд увеличен (пропуск бота):', oldRound, '→', this.battleState.round);
             this.updateRoundDisplay();
             this.saveBattleState();
             
@@ -3621,12 +3758,13 @@ class GameData {
                 // Сохраняем карту которой ходили
                 this.battleState.lastBotCard = { name: attacker.name };
                 
-                // Увеличиваем раунд после хода бота
+                // Увеличиваем раунд после хода бота (полный цикл: игрок + бот = 1 раунд)
                 if (this.battleState) {
+                    const oldRound = this.battleState.round;
                     this.battleState.round++;
+                    console.log('📊 Раунд увеличен:', oldRound, '→', this.battleState.round);
                     this.updateRoundDisplay();
                     this.saveBattleState();
-                    console.log('📊 Раунд увеличен до:', this.battleState.round);
                 }
                 
                 // Возвращаем ход игроку
@@ -3711,7 +3849,10 @@ class GameData {
                     <img src="${rune.icon}" alt="${rune.name}"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                     <div class="rune-icon-fallback" style="display: none;">🔮</div>
-                    <div class="rune-tooltip">${rune.description}</div>
+                    <div class="rune-tooltip">
+                        <div style="font-size: 1.3rem; font-weight: 900; margin-bottom: 0.8rem; color: #fbbf24; text-shadow: 0 0 20px rgba(251, 191, 36, 1);">${rune.name}</div>
+                        <div style="font-size: 1.05rem; line-height: 1.6;">${rune.description}</div>
+                    </div>
                 </div>
                 <span class="rune-name">${rune.name}</span>
                 <button class="rune-use-btn btn primary" ${this.battleState.runeUsedThisTurn ? 'disabled' : ''}>
@@ -3776,7 +3917,10 @@ class GameData {
                     <img src="${rune.icon}" alt="${rune.name}"
                          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                     <div class="rune-icon-fallback" style="display: none;">🔮</div>
-                    <div class="rune-tooltip">${rune.description}</div>
+                    <div class="rune-tooltip">
+                        <div style="font-size: 1.3rem; font-weight: 900; margin-bottom: 0.8rem; color: #fbbf24; text-shadow: 0 0 20px rgba(251, 191, 36, 1);">${rune.name}</div>
+                        <div style="font-size: 1.05rem; line-height: 1.6;">${rune.description}</div>
+                    </div>
                 </div>
                 <span class="rune-name">${rune.name}</span>
             </div>
@@ -3799,18 +3943,20 @@ class GameData {
         let targets = [];
         let hint = '';
         
-        if (rune.type === 'invisibility' || rune.type === 'shield') {
-            // Можно применить на свои карты
+        if (rune.type === 'invisibility') {
+            // НЕВИДИМОСТЬ - применяем на СВОЮ карту (враг её не атакует)
             targets = this.battleState.playerDeck.filter(card => !card.isDead && card.health > 0);
-            hint = rune.type === 'invisibility' 
-                ? 'Выберите карту для невидимости' 
-                : 'Выберите карту для щита';
+            hint = 'Выберите СВОЮ карту для невидимости (враг не сможет её атаковать)';
+        } else if (rune.type === 'shield') {
+            // ЩИТ - применяем на СВОЮ карту (получит меньше урона)
+            targets = this.battleState.playerDeck.filter(card => !card.isDead && card.health > 0);
+            hint = 'Выберите СВОЮ карту для щита (+40% защиты от атак врага)';
         } else if (rune.type === 'water') {
-            // Можно применить только на поврежденные карты
+            // ВОДА - лечим свою поврежденную карту
             targets = this.battleState.playerDeck.filter(card => 
                 !card.isDead && card.health > 0 && card.health < card.maxHealth
             );
-            hint = 'Выберите карту для лечения';
+            hint = 'Выберите СВОЮ карту для лечения';
         }
         
         if (targets.length === 0) {
@@ -3818,7 +3964,7 @@ class GameData {
             return;
         }
         
-        // Подсвечиваем доступные цели
+        // Подсвечиваем доступные цели (свои карты)
         targets.forEach(card => {
             const cardElement = document.querySelector(`.player-battle-side .battle-card-new[data-card-name="${card.name}"]`);
             if (cardElement) {
@@ -4284,9 +4430,15 @@ class GameData {
     // ===== АНИМАЦИИ СКИЛЛОВ =====
     
     createRequiemAnimation(caster, oppositeCard) {
-        console.log('💀 Анимация Requiem of Souls');
+        console.log('💀 Анимация Requiem of Souls НАЧАТА');
         
         const arena = document.querySelector('.battle-arena');
+        if (!arena) {
+            console.error('❌ Battle arena не найдена!');
+            return;
+        }
+        
+        console.log('✅ Arena найдена, создаем души...');
         
         // Создаем 36 душ, разлетающихся по кругу от Shadow Fiend
         const soulCount = 36;
@@ -4329,19 +4481,27 @@ class GameData {
             // Запускаем анимацию с задержкой
             setTimeout(() => {
                 soul.classList.add('flying');
+                if (i === 0) console.log('🔴 Первая душа запущена');
             }, delay);
             
             // Удаляем душу после завершения анимации
             setTimeout(() => {
                 if (arena.contains(soul)) {
                     arena.removeChild(soul);
+                    if (i === soulCount - 1) console.log('✅ Все души удалены');
                 }
             }, 2000 + delay);
         }
         
+        console.log('✅ Создано', soulCount, 'душ');
+        
         // Красное свечение арены
         arena.classList.add('requiem-flash');
-        setTimeout(() => arena.classList.remove('requiem-flash'), 1200);
+        console.log('🔴 Красное свечение добавлено');
+        setTimeout(() => {
+            arena.classList.remove('requiem-flash');
+            console.log('✅ Анимация Requiem завершена');
+        }, 1200);
     }
     
     createDismemberAnimation(caster, target) {
@@ -4940,8 +5100,30 @@ class GameData {
             await this.checkLevelUp(user);
             
             // Опыт клану (если есть)
-            if (window.clansSystem && window.clansSystem.currentClan) {
-                await window.clansSystem.addClanExp(10);
+            console.log('🏰 Проверка клана для опыта...');
+            console.log('   - window.clansSystem:', window.clansSystem ? 'есть' : 'НЕТ');
+            console.log('   - user.clanId:', user.clanId);
+            
+            if (user.clanId) {
+                if (window.clansSystem) {
+                    // Загружаем клан если не загружен
+                    if (!window.clansSystem.currentClan) {
+                        console.log('🔄 Загружаем клан для опыта...');
+                        await window.clansSystem.loadUserClan();
+                    }
+                    
+                    if (window.clansSystem.currentClan) {
+                        console.log('✅ Начисляем опыт клану:', window.clansSystem.currentClan.name);
+                        await window.clansSystem.addClanExp(10);
+                        console.log('✅ Опыт клана начислен: +10');
+                    } else {
+                        console.log('⚠️ Клан не загружен, пропускаем начисление опыта');
+                    }
+                } else {
+                    console.log('⚠️ clansSystem не инициализирован');
+                }
+            } else {
+                console.log('ℹ️ Игрок не состоит в клане');
             }
             
             resultOverlay.innerHTML = `

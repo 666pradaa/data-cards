@@ -48,6 +48,7 @@ body.light-theme {
     position: fixed;
     top: 0;
     left: 0;
+    overflow: visible !important;
 }
 
 .screen.active {
@@ -59,6 +60,15 @@ body.light-theme {
 /* Экран авторизации */
 #auth-screen {
     background: linear-gradient(135deg, #000 0%, #333 100%);
+    z-index: 10000 !important;
+}
+
+#auth-screen.active {
+    z-index: 10000 !important;
+}
+
+#main-menu {
+    z-index: 1;
 }
 
 .light-theme #auth-screen {
@@ -2510,20 +2520,21 @@ body.light-theme {
     background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
     border: 2px solid #0f3460;
     border-radius: 15px;
-    padding: 1rem;
+    padding: 0.8rem;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
 }
 
 .player-rune {
-    bottom: 2rem;
+    bottom: auto;
+    top: 15%;
     left: 2rem;
-    max-width: 300px;
+    max-width: 200px;
 }
 
 .bot-rune {
-    top: 2rem;
+    top: 15%;
     right: 2rem;
-    max-width: 250px;
+    max-width: 200px;
 }
 
 .rune-item {
@@ -2539,8 +2550,8 @@ body.light-theme {
 }
 
 .rune-item img {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     object-fit: contain;
     filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
     animation: runeGlow 2s ease-in-out infinite;
@@ -2548,39 +2559,41 @@ body.light-theme {
 }
 
 .rune-icon-fallback {
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 2rem;
+    font-size: 1.8rem;
 }
 
 .rune-tooltip {
     position: absolute;
-    bottom: calc(100% + 15px);
+    bottom: calc(100% + 12px);
     left: 50%;
-    transform: translateX(-50%);
-    padding: 1.2rem 1.5rem;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    transform: translateX(-50%) scale(0.95);
+    padding: 0.9rem 1.2rem;
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.97) 0%, rgba(22, 33, 62, 0.97) 100%);
     color: #ffd700;
-    border: 3px solid #ffd700;
-    border-radius: 15px;
-    font-size: 1rem;
-    white-space: normal;
-    max-width: 300px;
-    min-width: 250px;
+    border: 2px solid #ffd700;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    white-space: nowrap;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    z-index: 10000;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 215, 0, 0.3);
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 100000;
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.7),
+        0 0 30px rgba(255, 215, 0, 0.25),
+        inset 0 1px 0 rgba(255, 215, 0, 0.4);
+    text-shadow: 0 0 6px rgba(255, 215, 0, 0.4);
     font-weight: 700;
     text-align: center;
-    line-height: 1.5;
+    line-height: 1.4;
+    backdrop-filter: blur(8px);
 }
 
 .rune-tooltip::before {
@@ -2589,13 +2602,32 @@ body.light-theme {
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
-    border: 10px solid transparent;
+    border: 6px solid transparent;
     border-top-color: #ffd700;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4));
+}
+
+.rune-tooltip::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.03) 0%, transparent 50%);
+    border-radius: 8px;
+    pointer-events: none;
+}
+
+.rune-tooltip strong {
+    display: block;
+    margin-bottom: 0.3rem;
+    color: #fbbf24;
+    font-weight: 800;
+    font-size: 0.95rem;
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.7);
 }
 
 .rune-icon-wrapper:hover .rune-tooltip {
     opacity: 1;
-    transform: translateX(-50%) translateY(-10px);
+    transform: translateX(-50%) translateY(-5px) scale(1);
 }
 
 .rune-name {
@@ -2715,27 +2747,29 @@ body.light-theme {
 
 .skill-tooltip {
     position: absolute;
-    bottom: calc(100% + 15px);
+    bottom: calc(100% + 12px);
     left: 50%;
-    transform: translateX(-50%);
-    padding: 1.2rem 1.5rem;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    transform: translateX(-50%) scale(0.95);
+    padding: 0.9rem 1.2rem;
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.97) 0%, rgba(22, 33, 62, 0.97) 100%);
     color: #60a5fa;
-    border: 3px solid #3b82f6;
-    border-radius: 15px;
-    font-size: 1rem;
-    white-space: normal;
-    max-width: 320px;
-    min-width: 280px;
+    border: 2px solid #3b82f6;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    white-space: nowrap;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    z-index: 10000;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(59, 130, 246, 0.3);
-    text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 100000;
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.7),
+        0 0 30px rgba(59, 130, 246, 0.25),
+        inset 0 1px 0 rgba(59, 130, 246, 0.4);
+    text-shadow: 0 0 6px rgba(59, 130, 246, 0.4);
     font-weight: 600;
     text-align: center;
-    line-height: 1.6;
+    line-height: 1.4;
+    backdrop-filter: blur(8px);
 }
 
 .skill-tooltip::before {
@@ -2744,24 +2778,34 @@ body.light-theme {
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
-    border: 10px solid transparent;
+    border: 6px solid transparent;
     border-top-color: #3b82f6;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4));
+}
+
+.skill-tooltip::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.03) 0%, transparent 50%);
+    border-radius: 8px;
+    pointer-events: none;
 }
 
 .skill-btn:hover:not(:disabled) .skill-tooltip {
     opacity: 1;
-    transform: translateX(-50%) translateY(-10px);
+    transform: translateX(-50%) translateY(-5px) scale(1);
 }
 
 .skill-tooltip strong {
     display: block;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
     color: #fbbf24;
-    font-weight: 900;
-    font-size: 1.15rem;
+    font-weight: 800;
+    font-size: 0.95rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    text-shadow: 0 0 15px rgba(251, 191, 36, 0.8);
+    letter-spacing: 1.5px;
+    text-shadow: 0 0 10px rgba(251, 191, 36, 0.7);
 }
 
 .skill-icon-fallback {
@@ -3428,12 +3472,14 @@ body.light-theme {
     padding: 2rem;
     position: relative;
     z-index: 5;
+    overflow: visible !important;
 }
 
 .battle-side {
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    overflow: visible !important;
 }
 
 .side-label {
@@ -3541,7 +3587,7 @@ body.light-theme {
     background: linear-gradient(135deg, #1a1a2e 0%, #0f1419 100%);
     border-radius: 20px;
     display: flex;
-    overflow: hidden;
+    overflow: visible !important;
     position: relative;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     border: 3px solid;
@@ -3549,6 +3595,11 @@ body.light-theme {
         0 8px 32px rgba(0, 0, 0, 0.8),
         inset 0 2px 4px rgba(255, 255, 255, 0.1),
         inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+    z-index: 1;
+}
+
+.battle-card-new:hover {
+    z-index: 100 !important;
 }
 
 .battle-card-new::before {
@@ -3576,6 +3627,8 @@ body.light-theme {
     background-position: center;
     position: relative;
     filter: brightness(1.1) saturate(1.2);
+    overflow: hidden;
+    border-radius: 20px 0 0 20px;
 }
 
 .battle-card-image::before {
@@ -3660,8 +3713,8 @@ body.light-theme {
 .battle-health-fill {
     height: 100%;
     background: linear-gradient(90deg, 
-        #e0e0e0 0%,
-        #f5f5f5 50%,
+        #e0e0e0 0%, 
+        #f5f5f5 50%, 
         #ffffff 100%
     );
     transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
