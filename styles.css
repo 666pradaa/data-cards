@@ -2842,7 +2842,7 @@ body.light-theme {
     height: 40px;
     pointer-events: none;
     opacity: 0;
-    z-index: 100;
+    z-index: 10000 !important;
     filter: blur(0px);
 }
 
@@ -3915,9 +3915,9 @@ body.light-theme {
 /* Подсказки в бою */
 .battle-hint {
     position: fixed;
-    top: 50%;
+    top: 80px;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
     background: linear-gradient(135deg, rgba(40, 40, 40, 0.98), rgba(20, 20, 20, 0.98));
     padding: 1.5rem 3rem;
     border-radius: 20px;
@@ -3926,7 +3926,7 @@ body.light-theme {
     font-weight: 700;
     color: #fff;
     text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
-    z-index: 9999;
+    z-index: 10000;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;

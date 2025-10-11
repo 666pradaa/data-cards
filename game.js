@@ -2050,6 +2050,14 @@ class GameData {
                     `<span class="star ${idx < upgradeCount ? 'filled' : ''}">★</span>`
                 ).join('');
                 
+                const skillHtml = card.skill ? `
+                    <div class="card-skill-info" style="margin-top: 8px; padding: 8px; background: rgba(255, 215, 0, 0.15); border-radius: 8px; border: 1px solid rgba(255, 215, 0, 0.3);">
+                        <div style="font-weight: 600; color: #ffd700; font-size: 0.85rem; margin-bottom: 4px;">⚡ ${card.skill.name}</div>
+                        <div style="font-size: 0.75rem; color: #d4d4d8; line-height: 1.3;">${card.skill.description}</div>
+                        <div style="font-size: 0.7rem; color: #a1a1aa; margin-top: 4px;">Кулдаун: ${card.skill.cooldown} хода</div>
+                    </div>
+                ` : '';
+                
                 cardDiv.innerHTML = `
                     <div class="card-image" style="background-image: url('${card.image}'); background-size: cover; background-position: center; width: 100%; height: 80px; border-radius: 10px; margin-bottom: 10px;"></div>
                     <div class="card-rarity rarity-${card.rarity}">${this.getRarityName(card.rarity)}</div>
@@ -2061,6 +2069,7 @@ class GameData {
                         <div>🛡️ ${card.defense}%</div>
                         <div>⚡ ${card.speed}</div>
                     </div>
+                    ${skillHtml}
                     ${inDeck ? '<div class="in-deck-badge">В колоде</div>' : `<button class="add-to-deck-btn" data-card="${cardName}">Добавить</button>`}
                 `;
                 
@@ -3583,7 +3592,8 @@ class GameData {
                 card.health < weakest.health ? card : weakest
             );
             this.battleState.invisibleCards.push(targetCard.name);
-            console.log('👻 Бот сделал карту невидимой:', targetCard.name);
+            this.battleState.runeDurations[targetCard.name] = 2; // 2 хода
+            console.log('👻 Бот сделал карту невидимой на 2 хода:', targetCard.name);
             
             const cardEl = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
             if (cardEl) {
@@ -3596,8 +3606,9 @@ class GameData {
                 card.health > strongest.health ? card : strongest
             );
             this.battleState.shieldedCards.push(targetCard.name);
+            this.battleState.runeDurations[targetCard.name] = 2; // 2 хода
             targetCard.tempDefense = (targetCard.tempDefense || 0) + 40;
-            console.log('🛡️ Бот дал щит карте:', targetCard.name);
+            console.log('🛡️ Бот дал щит карте на 2 хода:', targetCard.name);
             
             const cardEl = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
             if (cardEl) {
@@ -3993,8 +4004,9 @@ class GameData {
         // Применяем эффект руны
         if (rune.type === 'invisibility') {
             this.battleState.invisibleCards.push(targetCard.name);
-            this.showBattleHint(`${targetCard.name} невидим! Не может быть атакован в этом раунде.`);
-            console.log('👻 Карта стала невидимой:', targetCard.name);
+            this.battleState.runeDurations[targetCard.name] = 2; // 2 хода
+            this.showBattleHint(`${targetCard.name} невидим! Не может быть атакован 2 хода.`);
+            console.log('👻 Карта стала невидимой на 2 хода:', targetCard.name);
             
             // Визуальный эффект
             const cardEl = document.querySelector(`.player-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
@@ -4004,9 +4016,10 @@ class GameData {
             }
         } else if (rune.type === 'shield') {
             this.battleState.shieldedCards.push(targetCard.name);
+            this.battleState.runeDurations[targetCard.name] = 2; // 2 хода
             targetCard.tempDefense = (targetCard.tempDefense || 0) + 40;
-            this.showBattleHint(`${targetCard.name} получил щит! +40% защиты на раунд.`);
-            console.log('🛡️ Карта получила щит:', targetCard.name);
+            this.showBattleHint(`${targetCard.name} получил щит! +40% защиты на 2 хода.`);
+            console.log('🛡️ Карта получила щит на 2 хода:', targetCard.name);
             
             // Визуальный эффект
             const cardEl = document.querySelector(`.player-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
@@ -4039,16 +4052,47 @@ class GameData {
         
         if (!this.battleState) return;
         
-        // Убираем невидимость
-        if (this.battleState.invisibleCards) {
-            this.battleState.invisibleCards = [];
+        // Инициализируем счетчики если их нет
+        if (!this.battleState.runeDurations) {
+            this.battleState.runeDurations = {};
         }
-        document.querySelectorAll('.invisible-card').forEach(el => {
-            el.classList.remove('invisible-card');
-            el.style.opacity = '';
+        
+        // Уменьшаем длительность рун и убираем истекшие
+        Object.keys(this.battleState.runeDurations).forEach(cardName => {
+            this.battleState.runeDurations[cardName]--;
+            if (this.battleState.runeDurations[cardName] <= 0) {
+                delete this.battleState.runeDurations[cardName];
+            }
         });
         
-        // Убираем щиты
+        // Убираем невидимость (истекшие)
+        if (this.battleState.invisibleCards) {
+            this.battleState.invisibleCards = this.battleState.invisibleCards.filter(cardName => 
+                this.battleState.runeDurations[cardName] > 0
+            );
+        }
+        document.querySelectorAll('.invisible-card').forEach(el => {
+            const cardName = el.dataset.cardName;
+            if (!this.battleState.runeDurations[cardName]) {
+                el.classList.remove('invisible-card');
+                el.style.opacity = '';
+            }
+        });
+        
+        // Убираем щиты (истекшие)
+        if (this.battleState.shieldedCards) {
+            this.battleState.shieldedCards = this.battleState.shieldedCards.filter(cardName => 
+                this.battleState.runeDurations[cardName] > 0
+            );
+        }
+        document.querySelectorAll('.shielded-card').forEach(el => {
+            const cardName = el.dataset.cardName;
+            if (!this.battleState.runeDurations[cardName]) {
+                el.classList.remove('shielded-card');
+            }
+        });
+        
+        // Оставляем щиты только для активных
         if (this.battleState.shieldedCards) {
             this.battleState.shieldedCards.forEach(cardName => {
                 const card = [...this.battleState.playerDeck, ...this.battleState.botDeck].find(c => c.name === cardName);
@@ -4220,8 +4264,8 @@ class GameData {
     usePudgeSkill(casterCard, targetCard) {
         console.log('🩸 Pudge использует Dismember!');
         
-        // Воспроизводим звук
-        this.soundSystem.playSound('pudge_dismember', 1.2);
+        // Воспроизводим звук (если загружен)
+        // this.soundSystem.playSound('pudge_dismember', 1.2);
         
         casterCard.skillCooldown = 2;
         this.battleState.lastPlayerCard = { name: casterCard.name };
@@ -4303,8 +4347,8 @@ class GameData {
     useCrystalMaidenSkill(casterCard, targetCard) {
         console.log('❄️ Crystal Maiden использует Frostbite!');
         
-        // Воспроизводим звук
-        this.soundSystem.playSound('crystal_maiden_frostbite', 1.2);
+        // Воспроизводим звук (если загружен)
+        // this.soundSystem.playSound('crystal_maiden_frostbite', 1.2);
         
         casterCard.skillCooldown = 2;
         this.battleState.lastPlayerCard = { name: casterCard.name };
@@ -4377,8 +4421,8 @@ class GameData {
     useSpiritBreakerSkill(card) {
         console.log('⚡ Spirit Breaker использует Charge of Darkness!');
         
-        // Воспроизводим звук
-        this.soundSystem.playSound('spirit_breaker_charge', 1.2);
+        // Воспроизводим звук (если загружен)
+        // this.soundSystem.playSound('spirit_breaker_charge', 1.2);
         
         card.skillCooldown = 2;
         
@@ -4622,17 +4666,21 @@ class GameData {
     }
     
     showFearEffect() {
-        // Показываем эпичные хитмаркеры страха над всеми врагами
+        // Показываем эпичные хитмаркеры страха на всю карточку
         this.battleState.botDeck.forEach(enemy => {
             if (!enemy.isDead) {
                 const cardEl = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${enemy.name}"]`);
                 if (cardEl) {
                     const fearMarker = document.createElement('div');
-                    fearMarker.className = 'fear-marker';
+                    fearMarker.className = 'fear-marker-full';
                     fearMarker.innerHTML = `
-                        <div class="fear-icon">😱</div>
-                        <div class="fear-text">СТРАХ</div>
+                        <div class="fear-overlay"></div>
+                        <div class="fear-content">
+                            <div class="fear-icon-big">😱</div>
+                            <div class="fear-text-big">СТРАХ</div>
+                        </div>
                     `;
+                    cardEl.style.position = 'relative';
                     cardEl.appendChild(fearMarker);
                     
                     setTimeout(() => {
@@ -4647,11 +4695,15 @@ class GameData {
         const cardEl = document.querySelector(`.battle-card-new[data-card-name="${target.name}"]`);
         if (cardEl) {
             const freezeMarker = document.createElement('div');
-            freezeMarker.className = 'freeze-marker';
+            freezeMarker.className = 'freeze-marker-full';
             freezeMarker.innerHTML = `
-                <div class="freeze-icon">❄️</div>
-                <div class="freeze-text">ЗАМОРОЖЕН</div>
+                <div class="freeze-overlay"></div>
+                <div class="freeze-content">
+                    <div class="freeze-icon-big">❄️</div>
+                    <div class="freeze-text-big">ЗАМОРОЖЕН</div>
+                </div>
             `;
+            cardEl.style.position = 'relative';
             cardEl.appendChild(freezeMarker);
             
             setTimeout(() => {
