@@ -993,18 +993,16 @@ class GameData {
         // Кнопка выхода
         const logoutBtn = document.getElementById('logout-btn');
         if (logoutBtn) {
-            console.log('✅ Переустанавливаем кнопку выхода');
-            const newLogoutBtn = logoutBtn.cloneNode(true);
-            logoutBtn.parentNode.replaceChild(newLogoutBtn, logoutBtn);
-            newLogoutBtn.addEventListener('click', async () => {
-                console.log('🔵🔵🔵 КЛИК ПО КНОПКЕ ВЫХОДА 🔵🔵🔵');
+            console.log('✅ Устанавливаем кнопку выхода');
+            logoutBtn.onclick = async () => {
+                console.log('🔵 Клик по кнопке выхода');
                 try {
                     await this.logout();
                 } catch (error) {
                     console.error('❌ Ошибка выхода:', error);
                     await this.showAlert('Ошибка выхода: ' + error.message, '❌', 'Ошибка');
                 }
-            });
+            };
         }
         
         // Плавающая кнопка поддержки (в правом нижнем углу)
@@ -1020,18 +1018,16 @@ class GameData {
         // Кнопка боя с ботом
         const botBattleBtn = document.getElementById('bot-battle-btn');
         if (botBattleBtn) {
-            console.log('✅ Переустанавливаем кнопку боя с ботом');
-            const newBotBtn = botBattleBtn.cloneNode(true);
-            botBattleBtn.parentNode.replaceChild(newBotBtn, botBattleBtn);
-            newBotBtn.addEventListener('click', async () => {
-                console.log('🔵🔵🔵 КЛИК ПО КНОПКЕ БОЯ С БОТОМ 🔵🔵🔵');
+            console.log('✅ Устанавливаем кнопку боя с ботом');
+            botBattleBtn.onclick = async () => {
+                console.log('🔵 Клик по кнопке боя с ботом');
                 try {
                     await this.startBotBattle();
                 } catch (error) {
                     console.error('❌ Ошибка запуска боя:', error);
                     await this.showAlert('Ошибка запуска боя: ' + error.message, '❌', 'Ошибка');
                 }
-            });
+            };
         }
         
         // Проверяем нужно ли показать обучение
