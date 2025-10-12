@@ -827,20 +827,15 @@ class GameData {
     }
 
     showMainMenu() {
-        console.log('🏠 Показываем главное меню');
+        console.log('🏠 ========== ПОКАЗЫВАЕМ ГЛАВНОЕ МЕНЮ ==========');
         console.log('   currentUser:', this.currentUser);
         console.log('   currentUserData:', this.currentUserData ? 'есть' : 'НЕТ');
         
-        // Проверяем сохраненный бой (ПОСЛЕ инициализации данных)
-        try {
-            const battleRestored = this.loadBattleState();
-            if (battleRestored) {
-                console.log('✅ Бой восстановлен');
-                return; // Не показываем главное меню, остаемся в бою
-            }
-        } catch (error) {
-            console.error('❌ Ошибка восстановления боя:', error);
-            console.log('🗑️ Очищаем поврежденный battleState');
+        // НЕ проверяем сохраненный бой при входе/регистрации
+        // Очищаем старый бой чтобы не мешал
+        const battleState = localStorage.getItem('currentBattle');
+        if (battleState) {
+            console.log('🗑️ Очищаем старый battleState при входе');
             localStorage.removeItem('currentBattle');
             localStorage.removeItem('battleStateTimestamp');
         }
@@ -862,18 +857,28 @@ class GameData {
             return;
         }
         
+        // Убираем все экраны
         authScreen?.classList.remove('active');
-        mainMenu.classList.add('active');
         battleScreen?.classList.remove('active');
         adminPanel?.classList.remove('active');
         
-        // Убеждаемся что main-menu поверх auth-screen
-        if (authScreen) authScreen.style.zIndex = '1';
+        // Добавляем главное меню
+        mainMenu.classList.add('active');
+        
+        // Убеждаемся что main-menu поверх всего
+        if (authScreen) {
+            authScreen.style.display = 'none';
+            authScreen.style.zIndex = '1';
+        }
+        mainMenu.style.display = 'block';
         mainMenu.style.zIndex = '10';
         if (battleScreen) battleScreen.style.zIndex = '1';
         if (adminPanel) adminPanel.style.zIndex = '1';
         
-        console.log('✅ Главное меню активно');
+        console.log('✅✅✅ ГЛАВНОЕ МЕНЮ АКТИВНО И ВИДИМО ✅✅✅');
+        console.log('   authScreen display:', authScreen?.style.display);
+        console.log('   mainMenu display:', mainMenu.style.display);
+        console.log('   mainMenu z-index:', mainMenu.style.zIndex);
         
         this.updateUserInfo();
         this.updateThemeButton();
@@ -1175,7 +1180,11 @@ class GameData {
                 
                 console.log('✅ Вход через Firebase завершен:', username);
                 console.log('🏠 Переход в главное меню...');
-                this.showMainMenu();
+                
+                // Принудительно показываем меню
+                setTimeout(() => {
+                    this.showMainMenu();
+                }, 100);
             } else {
                 console.error('❌ Firebase вход не удался:', result.error);
                 await this.showAlert(result.error || 'Неверные данные', '❌', 'Ошибка входа');
@@ -1270,11 +1279,12 @@ class GameData {
                 console.log('💾 Сессия сохранена');
                 console.log('🏠 Переход в главное меню...');
                 
-                // Сначала переходим в меню
-                this.showMainMenu();
-                
-                // Затем показываем уведомление
-                await this.showAlert('Регистрация успешна!', '✅', 'Успех');
+                // Принудительно показываем меню с задержкой
+                setTimeout(() => {
+                    this.showMainMenu();
+                    // Затем показываем уведомление
+                    this.showAlert('Регистрация успешна!', '✅', 'Успех');
+                }, 100);
             } else {
                 console.log('❌ Регистрация не удалась, ошибка:', result.error);
                 await this.showAlert(result.error || 'Ошибка регистрации', '❌', 'Ошибка');
