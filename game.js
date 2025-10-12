@@ -2531,26 +2531,7 @@ class GameData {
     }
 
     animateTabTransition() {
-        const transition = document.createElement('div');
-        transition.className = 'theme-transition';
-        document.body.appendChild(transition);
-
-        // Показываем анимацию
-        setTimeout(() => {
-            transition.classList.add('active');
-        }, 10);
-
-        // Убираем анимацию
-        setTimeout(() => {
-            transition.classList.remove('active');
-        }, 300);
-
-        // Удаляем элемент
-        setTimeout(() => {
-            if (document.body.contains(transition)) {
-                document.body.removeChild(transition);
-            }
-        }, 600);
+        // Убрана анимация по просьбе пользователя
     }
 
     createFloatingParticles() {

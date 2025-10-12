@@ -1368,13 +1368,8 @@ body.light-theme .stat-item {
 }
 
 .card-glow {
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(50, 50, 50,0.3) 0%, transparent 70%);
-    animation: glowRotate 3s linear infinite;
+    /* Анимация убрана по просьбе пользователя */
+    display: none;
 }
 
 @keyframes glowRotate {
@@ -1473,13 +1468,8 @@ body.light-theme .stat-item {
 }
 
 .upgrade-glow {
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(50, 50, 50, 0.2) 0%, transparent 70%);
-    animation: upgradeGlowRotate 4s linear infinite;
+    /* Анимация убрана по просьбе пользователя */
+    display: none;
 }
 
 @keyframes upgradeGlowRotate {
