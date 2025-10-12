@@ -6995,3 +6995,112 @@ textarea.form-input {
     }
 }
 
+
+
+
+/* Кнопки в шапке - черно-белые */
+.user-info .btn.small {
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    transition: all 0.3s ease;
+}
+
+.user-info .btn.small:hover {
+    background: rgba(255, 255, 255, 0.25) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    transform: translateY(-2px);
+}
+
+body.light-theme .user-info .btn.small {
+    background: rgba(0, 0, 0, 0.1) !important;
+    color: #000 !important;
+    border: 2px solid rgba(0, 0, 0, 0.3) !important;
+}
+
+body.light-theme .user-info .btn.small:hover {
+    background: rgba(0, 0, 0, 0.15) !important;
+    border-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+
+
+/* Минималистичные белые кнопки фильтров */
+.filter-btn {
+    padding: 0.7rem 1.5rem !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 12px !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+    cursor: pointer;
+}
+
+.filter-btn.active {
+    background: rgba(255, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    font-weight: 700 !important;
+}
+
+.filter-btn:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    transform: translateY(-2px);
+}
+
+body.light-theme .filter-btn {
+    background: rgba(0, 0, 0, 0.08) !important;
+    color: rgba(0, 0, 0, 0.7) !important;
+    border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+body.light-theme .filter-btn.active {
+    background: rgba(0, 0, 0, 0.15) !important;
+    color: #000 !important;
+    border-color: rgba(0, 0, 0, 0.4) !important;
+}
+
+body.light-theme .filter-btn:hover {
+    background: rgba(0, 0, 0, 0.12) !important;
+}
+
+
+
+/* Светлые кнопки навигации категорий */
+.nav-btn {
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    border: 2px solid rgba(255, 255, 255, 0.25) !important;
+    font-weight: 600 !important;
+}
+
+.nav-btn.active {
+    background: rgba(255, 255, 255, 0.3) !important;
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    font-weight: 700 !important;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2) !important;
+}
+
+.nav-btn:hover {
+    background: rgba(255, 255, 255, 0.22) !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+body.light-theme .nav-btn {
+    background: rgba(0, 0, 0, 0.1) !important;
+    color: rgba(0, 0, 0, 0.8) !important;
+    border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+body.light-theme .nav-btn.active {
+    background: rgba(0, 0, 0, 0.2) !important;
+    color: #000 !important;
+    border-color: rgba(0, 0, 0, 0.4) !important;
+}
+
+body.light-theme .nav-btn:hover {
+    background: rgba(0, 0, 0, 0.15) !important;
+}

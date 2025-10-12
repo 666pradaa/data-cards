@@ -457,11 +457,41 @@ class GameData {
     }
 
     toggleTheme() {
-        this.currentTheme = this.currentTheme === 'dark' ? 'light' : 'dark';
-        localStorage.setItem('dotaCardsTheme', this.currentTheme);
-        this.applyTheme();
-        this.updateThemeButton();
-        this.soundSystem.playSound('click');
+        // Создаем плавную анимацию перехода
+        const transition = document.createElement('div');
+        transition.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: ${this.currentTheme === 'dark' ? '#ffffff' : '#000000'};
+            z-index: 999999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        `;
+        document.body.appendChild(transition);
+        
+        // Запускаем анимацию
+        setTimeout(() => transition.style.opacity = '1', 10);
+        
+        setTimeout(() => {
+            // Меняем тему
+            this.currentTheme = this.currentTheme === 'dark' ? 'light' : 'dark';
+            localStorage.setItem('dotaCardsTheme', this.currentTheme);
+            this.applyTheme();
+            this.updateThemeButton();
+            this.soundSystem.playSound('whoosh');
+            
+            // Убираем анимацию
+            setTimeout(() => transition.style.opacity = '0', 50);
+            setTimeout(() => {
+                if (document.body.contains(transition)) {
+                    document.body.removeChild(transition);
+                }
+            }, 600);
+        }, 300);
     }
 
     updateThemeButton() {
