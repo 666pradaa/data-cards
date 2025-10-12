@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="styles_hitmarkers.css">
     <link rel="stylesheet" href="styles_rune_animations.css">
     <link rel="stylesheet" href="styles_modern_menu.css">
+    <link rel="stylesheet" href="styles_auth_screen.css">
+    <link rel="stylesheet" href="styles_support.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- Firebase SDK -->
@@ -60,6 +62,7 @@
                         <button id="music-toggle" class="btn small" title="Фоновая музыка">🎵</button>
                         <button id="sound-toggle" class="btn small" title="Звуковые эффекты">🔊</button>
                         <button id="theme-toggle" class="btn small" title="Сменить тему">🌙</button>
+                        <button id="support-btn" class="btn small support" title="Поддержка">💬</button>
                         <button id="logout-btn" class="btn small">Выйти</button>
                     </div>
                 </header>
@@ -513,6 +516,59 @@
                         <h3>Управление пользователями</h3>
                         <div id="users-container">
                             <!-- Список пользователей -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Поддержка (Support Panel) -->
+        <div id="support-panel" class="screen">
+            <div class="support-container">
+                <div class="support-header">
+                    <h2>💬 Поддержка</h2>
+                    <button id="close-support" class="btn small">Закрыть</button>
+                </div>
+                
+                <div class="support-content">
+                    <div class="support-messages" id="support-messages">
+                        <!-- Сообщения поддержки -->
+                    </div>
+                    
+                    <div class="support-input-area">
+                        <textarea id="support-message-input" placeholder="Опишите вашу проблему..."></textarea>
+                        <button id="send-support-message" class="btn primary">Отправить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Админ поддержка (Support Admin Panel - только для POD777) -->
+        <div id="support-admin-panel" class="screen" style="display: none;">
+            <div class="support-admin-container">
+                <div class="support-admin-header">
+                    <h2>💬 Админ поддержка</h2>
+                    <button id="close-support-admin" class="btn small">Закрыть</button>
+                </div>
+                
+                <div class="support-admin-content">
+                    <div class="support-tickets-list">
+                        <h3>Обращения пользователей</h3>
+                        <div id="support-tickets-container">
+                            <!-- Список обращений -->
+                        </div>
+                    </div>
+                    
+                    <div class="support-chat-area" id="support-chat-area" style="display: none;">
+                        <div class="support-chat-header">
+                            <h3 id="support-chat-user">Пользователь</h3>
+                        </div>
+                        <div class="support-chat-messages" id="support-chat-messages">
+                            <!-- Переписка -->
+                        </div>
+                        <div class="support-admin-input-area">
+                            <textarea id="support-admin-message-input" placeholder="Ваш ответ..."></textarea>
+                            <button id="send-support-admin-message" class="btn primary">Ответить</button>
                         </div>
                     </div>
                 </div>

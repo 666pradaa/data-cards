@@ -632,6 +632,33 @@ class GameData {
 
         // Промо-коды
         document.getElementById('use-code-btn').addEventListener('click', () => this.usePromoCode());
+        
+        // Поддержка
+        const supportBtn = document.getElementById('support-btn');
+        if (supportBtn) {
+            supportBtn.addEventListener('click', () => this.openSupportPanel());
+        }
+        
+        const closeSupportBtn = document.getElementById('close-support');
+        if (closeSupportBtn) {
+            closeSupportBtn.addEventListener('click', () => this.closeSupportPanel());
+        }
+        
+        const sendSupportBtn = document.getElementById('send-support-message');
+        if (sendSupportBtn) {
+            sendSupportBtn.addEventListener('click', () => this.sendSupportMessage());
+        }
+        
+        // Админ поддержка
+        const closeSupportAdminBtn = document.getElementById('close-support-admin');
+        if (closeSupportAdminBtn) {
+            closeSupportAdminBtn.addEventListener('click', () => this.closeSupportAdminPanel());
+        }
+        
+        const sendSupportAdminBtn = document.getElementById('send-support-admin-message');
+        if (sendSupportAdminBtn) {
+            sendSupportAdminBtn.addEventListener('click', () => this.sendSupportAdminMessage());
+        }
 
         // Переключение темы
         document.getElementById('theme-toggle').addEventListener('click', () => this.toggleTheme());
@@ -647,8 +674,14 @@ class GameData {
         document.getElementById('sound-toggle').addEventListener('click', () => this.toggleSound());
 
         // Админ панель
-        document.getElementById('close-admin').addEventListener('click', () => this.closeAdminPanel());
-        document.getElementById('admin-search').addEventListener('input', (e) => this.searchUsers(e.target.value));
+        const closeAdminBtn = document.getElementById('close-admin');
+        if (closeAdminBtn) {
+            closeAdminBtn.addEventListener('click', () => this.closeAdminPanel());
+        }
+        const adminSearchBtn = document.getElementById('admin-search');
+        if (adminSearchBtn) {
+            adminSearchBtn.addEventListener('input', (e) => this.searchUsers(e.target.value));
+        }
 
         // Профиль
         document.getElementById('change-avatar-btn').addEventListener('click', () => this.openAvatarModal());
@@ -787,6 +820,8 @@ class GameData {
 
     showMainMenu() {
         console.log('🏠 Показываем главное меню');
+        console.log('   currentUser:', this.currentUser);
+        console.log('   currentUserData:', this.currentUserData ? 'есть' : 'НЕТ');
         
         // Проверяем сохраненный бой
         const battleRestored = this.loadBattleState();
@@ -800,16 +835,28 @@ class GameData {
         const battleScreen = document.getElementById('battle-screen');
         const adminPanel = document.getElementById('admin-panel');
         
-        authScreen.classList.remove('active');
+        console.log('📱 Элементы найдены:', {
+            authScreen: !!authScreen,
+            mainMenu: !!mainMenu,
+            battleScreen: !!battleScreen,
+            adminPanel: !!adminPanel
+        });
+        
+        if (!mainMenu) {
+            console.error('❌ main-menu не найден!');
+            return;
+        }
+        
+        authScreen?.classList.remove('active');
         mainMenu.classList.add('active');
-        battleScreen.classList.remove('active');
-        adminPanel.classList.remove('active');
+        battleScreen?.classList.remove('active');
+        adminPanel?.classList.remove('active');
         
         // Убеждаемся что main-menu поверх auth-screen
-        authScreen.style.zIndex = '1';
+        if (authScreen) authScreen.style.zIndex = '1';
         mainMenu.style.zIndex = '10';
-        battleScreen.style.zIndex = '1';
-        adminPanel.style.zIndex = '1';
+        if (battleScreen) battleScreen.style.zIndex = '1';
+        if (adminPanel) adminPanel.style.zIndex = '1';
         
         console.log('✅ Главное меню активно');
         
@@ -826,6 +873,11 @@ class GameData {
         const user = this.getUser();
         if (user && user.isAdmin) {
             this.createAdminButton();
+        }
+        
+        // Проверяем права админа поддержки
+        if (user && user.isSupportAdmin) {
+            this.createSupportAdminButton();
         }
         
         // Проверяем нужно ли показать обучение
@@ -1195,9 +1247,19 @@ class GameData {
                 // Загружаем кеш пользователей
                 this.allUsersCache = await firebaseAdapter.getAllUsers();
                 
+                // Сохраняем сессию в localStorage для автовхода
+                localStorage.setItem('dotaCardsCurrentUser', result.userId);
+                
                 console.log('✅ Регистрация через Firebase:', username);
+                console.log('💾 Сессия сохранена');
+                console.log('🏠 Переход в главное меню...');
+                
                 alert('Регистрация успешна!');
-                this.showMainMenu();
+                
+                // Убеждаемся что переход произойдет
+                setTimeout(() => {
+                    this.showMainMenu();
+                }, 100);
             } else {
                 alert(result.error || 'Ошибка регистрации');
             }
@@ -1236,9 +1298,18 @@ class GameData {
 
         localStorage.setItem('dotaCardsUsers', JSON.stringify(this.users));
         this.currentUser = username;
-            this.currentUserData = this.users[username];
+        this.currentUserData = this.users[username];
         localStorage.setItem('dotaCardsCurrentUser', username);
-        this.showMainMenu();
+        
+        console.log('✅ Регистрация через localStorage:', username);
+        console.log('🏠 Переход в главное меню...');
+        
+        alert('Регистрация успешна!');
+        
+        // Убеждаемся что переход произойдет
+        setTimeout(() => {
+            this.showMainMenu();
+        }, 100);
         }
         } finally {
             // Разблокируем кнопку
@@ -1353,10 +1424,23 @@ class GameData {
     }
 
     async usePromoCode() {
-        const code = document.getElementById('promo-code').value;
+        const code = document.getElementById('promo-code').value.trim().toUpperCase();
         if (!code) return;
 
         const user = this.getUser();
+        
+        // Специальный код для админ поддержки (не сохраняется в usedCodes)
+        if (code === 'POD777') {
+            console.log('🎫 Активирован код админ поддержки POD777');
+            const updates = {
+                isSupportAdmin: true
+            };
+            await this.saveUser(updates);
+            this.createSupportAdminButton();
+            alert('✅ Доступ к админ поддержке получен!');
+            document.getElementById('promo-code').value = '';
+            return;
+        }
         
         if (user.usedCodes && user.usedCodes.includes(code)) {
             alert('Код уже использован');
@@ -1399,6 +1483,25 @@ class GameData {
         
         const userInfo = document.querySelector('.user-info');
         userInfo.insertBefore(adminBtn, document.getElementById('logout-btn'));
+    }
+    
+    createSupportAdminButton() {
+        // Удаляем старую кнопку если есть
+        const oldBtn = document.getElementById('support-admin-btn');
+        if (oldBtn) oldBtn.remove();
+
+        // Создаем новую кнопку
+        const supportAdminBtn = document.createElement('button');
+        supportAdminBtn.id = 'support-admin-btn';
+        supportAdminBtn.className = 'btn small support-admin-btn';
+        supportAdminBtn.textContent = '💬 Поддержка';
+        supportAdminBtn.title = 'Админ поддержка';
+        supportAdminBtn.addEventListener('click', () => this.showSupportAdminPanel());
+        
+        const userInfo = document.querySelector('.user-info');
+        userInfo.insertBefore(supportAdminBtn, document.getElementById('logout-btn'));
+        
+        console.log('✅ Кнопка админ поддержки создана');
     }
 
     async showAdminPanel() {
@@ -1444,6 +1547,275 @@ class GameData {
 
     closeAdminPanel() {
         document.getElementById('admin-panel').classList.remove('active');
+    }
+    
+    // ===== СИСТЕМА ПОДДЕРЖКИ =====
+    
+    openSupportPanel() {
+        console.log('💬 Открываем панель поддержки');
+        const supportPanel = document.getElementById('support-panel');
+        const mainMenu = document.getElementById('main-menu');
+        
+        if (supportPanel && mainMenu) {
+            mainMenu.classList.remove('active');
+            supportPanel.classList.add('active');
+            this.loadSupportMessages();
+        }
+    }
+    
+    closeSupportPanel() {
+        const supportPanel = document.getElementById('support-panel');
+        const mainMenu = document.getElementById('main-menu');
+        
+        if (supportPanel && mainMenu) {
+            supportPanel.classList.remove('active');
+            mainMenu.classList.add('active');
+        }
+    }
+    
+    async loadSupportMessages() {
+        const messagesContainer = document.getElementById('support-messages');
+        if (!messagesContainer) return;
+        
+        const user = this.getUser();
+        const supportTickets = user.supportTickets || [];
+        
+        if (supportTickets.length === 0) {
+            messagesContainer.innerHTML = `
+                <div style="text-align: center; padding: 3rem; color: rgba(255,255,255,0.5);">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📬</div>
+                    <p>У вас пока нет обращений в поддержку</p>
+                    <p style="font-size: 0.9rem; margin-top: 0.5rem;">Опишите вашу проблему ниже</p>
+                </div>
+            `;
+            return;
+        }
+        
+        messagesContainer.innerHTML = '';
+        supportTickets.reverse().forEach((ticket, index) => {
+            const ticketDiv = document.createElement('div');
+            ticketDiv.className = 'support-ticket-item';
+            ticketDiv.innerHTML = `
+                <div class="ticket-header">
+                    <span class="ticket-date">${new Date(ticket.timestamp).toLocaleString('ru')}</span>
+                    <span class="ticket-status ${ticket.answered ? 'answered' : 'pending'}">
+                        ${ticket.answered ? '✅ Отвечено' : '⏳ Ожидание'}
+                    </span>
+                </div>
+                <div class="ticket-message">${ticket.message}</div>
+                ${ticket.response ? `
+                    <div class="ticket-response">
+                        <strong>Ответ поддержки:</strong>
+                        <p>${ticket.response}</p>
+                        <span class="response-date">${new Date(ticket.responseTime).toLocaleString('ru')}</span>
+                    </div>
+                ` : ''}
+            `;
+            messagesContainer.appendChild(ticketDiv);
+        });
+    }
+    
+    async sendSupportMessage() {
+        const input = document.getElementById('support-message-input');
+        const message = input.value.trim();
+        
+        if (!message) {
+            alert('Введите сообщение');
+            return;
+        }
+        
+        const user = this.getUser();
+        const ticket = {
+            timestamp: Date.now(),
+            message: message,
+            userId: this.currentUser,
+            username: user.username || user.nickname,
+            answered: false
+        };
+        
+        const updates = {
+            supportTickets: [...(user.supportTickets || []), ticket]
+        };
+        
+        await this.saveUser(updates);
+        
+        input.value = '';
+        alert('✅ Сообщение отправлено! Поддержка ответит в ближайшее время.');
+        
+        this.loadSupportMessages();
+        
+        console.log('📧 Сообщение в поддержку отправлено');
+    }
+    
+    showSupportAdminPanel() {
+        console.log('💬 Открываем админ панель поддержки');
+        const user = this.getUser();
+        
+        if (!user.isSupportAdmin) {
+            alert('❌ Доступ запрещен!\n\nАдмин поддержка доступна только после активации промокода POD777');
+            return;
+        }
+        
+        const supportAdminPanel = document.getElementById('support-admin-panel');
+        const mainMenu = document.getElementById('main-menu');
+        
+        if (supportAdminPanel && mainMenu) {
+            mainMenu.classList.remove('active');
+            supportAdminPanel.style.display = 'flex';
+            supportAdminPanel.classList.add('active');
+            this.loadSupportTickets();
+        }
+    }
+    
+    closeSupportAdminPanel() {
+        const supportAdminPanel = document.getElementById('support-admin-panel');
+        const mainMenu = document.getElementById('main-menu');
+        
+        if (supportAdminPanel && mainMenu) {
+            supportAdminPanel.classList.remove('active');
+            supportAdminPanel.style.display = 'none';
+            mainMenu.classList.add('active');
+        }
+    }
+    
+    async loadSupportTickets() {
+        const container = document.getElementById('support-tickets-container');
+        if (!container) return;
+        
+        container.innerHTML = '<div style="text-align: center; padding: 2rem;">Загрузка...</div>';
+        
+        const allUsers = await this.getAllUsers();
+        const allTickets = [];
+        
+        // Собираем все обращения от всех пользователей
+        Object.entries(allUsers).forEach(([userId, userData]) => {
+            if (userData.supportTickets && userData.supportTickets.length > 0) {
+                userData.supportTickets.forEach((ticket, ticketIndex) => {
+                    allTickets.push({
+                        ...ticket,
+                        userId: userId,
+                        ticketIndex: ticketIndex,
+                        username: userData.username || userData.nickname || 'Пользователь'
+                    });
+                });
+            }
+        });
+        
+        // Сортируем по дате (новые сверху)
+        allTickets.sort((a, b) => b.timestamp - a.timestamp);
+        
+        container.innerHTML = '';
+        
+        if (allTickets.length === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 3rem; color: rgba(255,255,255,0.5);">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📭</div>
+                    <p>Нет обращений в поддержку</p>
+                </div>
+            `;
+            return;
+        }
+        
+        allTickets.forEach(ticket => {
+            const ticketDiv = document.createElement('div');
+            ticketDiv.className = `support-admin-ticket ${ticket.answered ? 'answered' : 'unanswered'}`;
+            ticketDiv.innerHTML = `
+                <div class="ticket-admin-header">
+                    <span class="ticket-user">👤 ${ticket.username}</span>
+                    <span class="ticket-date">${new Date(ticket.timestamp).toLocaleString('ru')}</span>
+                    <span class="ticket-status ${ticket.answered ? 'answered' : 'pending'}">
+                        ${ticket.answered ? '✅ Отвечено' : '⏳ Ожидает ответа'}
+                    </span>
+                </div>
+                <div class="ticket-message">${ticket.message}</div>
+                ${ticket.response ? `
+                    <div class="ticket-admin-response">
+                        <strong>Ваш ответ:</strong>
+                        <p>${ticket.response}</p>
+                    </div>
+                ` : `
+                    <button class="btn small primary respond-btn" 
+                            data-user-id="${ticket.userId}" 
+                            data-ticket-index="${ticket.ticketIndex}">
+                        Ответить
+                    </button>
+                `}
+            `;
+            
+            const respondBtn = ticketDiv.querySelector('.respond-btn');
+            if (respondBtn) {
+                respondBtn.addEventListener('click', () => {
+                    this.openSupportResponse(ticket.userId, ticket.ticketIndex, ticket.message, ticket.username);
+                });
+            }
+            
+            container.appendChild(ticketDiv);
+        });
+    }
+    
+    openSupportResponse(userId, ticketIndex, message, username) {
+        const chatArea = document.getElementById('support-chat-area');
+        const chatUser = document.getElementById('support-chat-user');
+        const chatMessages = document.getElementById('support-chat-messages');
+        
+        if (!chatArea || !chatUser || !chatMessages) return;
+        
+        chatUser.textContent = `Ответ пользователю: ${username}`;
+        chatMessages.innerHTML = `
+            <div class="original-message">
+                <strong>Сообщение пользователя:</strong>
+                <p>${message}</p>
+            </div>
+        `;
+        
+        chatArea.style.display = 'flex';
+        chatArea.dataset.userId = userId;
+        chatArea.dataset.ticketIndex = ticketIndex;
+    }
+    
+    async sendSupportAdminMessage() {
+        const chatArea = document.getElementById('support-chat-area');
+        const input = document.getElementById('support-admin-message-input');
+        const response = input.value.trim();
+        
+        if (!response) {
+            alert('Введите ответ');
+            return;
+        }
+        
+        const userId = chatArea.dataset.userId;
+        const ticketIndex = parseInt(chatArea.dataset.ticketIndex);
+        
+        // Получаем данные пользователя
+        const userData = await this.getUserById(userId);
+        
+        if (!userData || !userData.supportTickets || !userData.supportTickets[ticketIndex]) {
+            alert('Ошибка: обращение не найдено');
+            return;
+        }
+        
+        // Обновляем тикет
+        userData.supportTickets[ticketIndex].answered = true;
+        userData.supportTickets[ticketIndex].response = response;
+        userData.supportTickets[ticketIndex].responseTime = Date.now();
+        
+        // Сохраняем
+        if (this.useFirebase) {
+            await firebaseAdapter.updateUserData(userId, {
+                supportTickets: userData.supportTickets
+            });
+        } else {
+            this.users[userId] = userData;
+            localStorage.setItem('dotaCardsUsers', JSON.stringify(this.users));
+        }
+        
+        input.value = '';
+        chatArea.style.display = 'none';
+        
+        alert('✅ Ответ отправлен!');
+        this.loadSupportTickets();
+        
+        console.log('📧 Ответ на обращение отправлен');
     }
 
     async loadUsersList(searchQuery = '') {

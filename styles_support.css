@@ -1,0 +1,341 @@
+/* Система поддержки */
+
+#support-panel,
+#support-admin-panel {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    padding: 2rem;
+    overflow-y: auto;
+}
+
+.support-container,
+.support-admin-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+}
+
+.support-header,
+.support-admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid rgba(59, 130, 246, 0.3);
+}
+
+.support-header h2,
+.support-admin-header h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+}
+
+/* Сообщения поддержки */
+.support-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    min-height: 60vh;
+}
+
+.support-messages {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 50vh;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+}
+
+.support-ticket-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.support-ticket-item:hover {
+    border-color: rgba(59, 130, 246, 0.4);
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateX(5px);
+}
+
+.ticket-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.ticket-date {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.ticket-status {
+    padding: 0.3rem 0.8rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.ticket-status.pending {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+    border: 1px solid rgba(251, 191, 36, 0.4);
+}
+
+.ticket-status.answered {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.4);
+}
+
+.ticket-message {
+    color: #fff;
+    line-height: 1.6;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.ticket-response {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(139, 92, 246, 0.15));
+    border-left: 4px solid #3b82f6;
+    border-radius: 8px;
+}
+
+.ticket-response strong {
+    color: #3b82f6;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.ticket-response p {
+    color: #fff;
+    margin: 0.5rem 0;
+    line-height: 1.6;
+}
+
+.response-date {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
+    display: block;
+    margin-top: 0.5rem;
+}
+
+/* Область ввода */
+.support-input-area {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+}
+
+.support-input-area textarea {
+    flex: 1;
+    min-height: 100px;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+    transition: all 0.3s ease;
+}
+
+.support-input-area textarea:focus {
+    outline: none;
+    border-color: rgba(59, 130, 246, 0.6);
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+}
+
+.support-input-area textarea::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* Админ поддержка */
+.support-admin-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    min-height: 70vh;
+}
+
+.support-tickets-list {
+    overflow-y: auto;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+}
+
+.support-tickets-list h3 {
+    margin-bottom: 1.5rem;
+    color: #fff;
+    font-size: 1.3rem;
+}
+
+.support-admin-ticket {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s ease;
+}
+
+.support-admin-ticket.unanswered {
+    border-color: rgba(251, 191, 36, 0.4);
+    background: rgba(251, 191, 36, 0.05);
+}
+
+.support-admin-ticket:hover {
+    border-color: rgba(59, 130, 246, 0.5);
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateX(5px);
+}
+
+.ticket-admin-header {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.ticket-user {
+    color: #3b82f6;
+    font-weight: 600;
+}
+
+.ticket-admin-response {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(34, 197, 94, 0.1);
+    border-left: 4px solid #22c55e;
+    border-radius: 8px;
+}
+
+.respond-btn {
+    margin-top: 1rem;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+/* Область чата для ответа */
+.support-chat-area {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 15px;
+}
+
+.support-chat-header h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 1.2rem;
+}
+
+.support-chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    min-height: 200px;
+}
+
+.original-message {
+    padding: 1rem;
+    background: rgba(59, 130, 246, 0.1);
+    border-left: 4px solid #3b82f6;
+    border-radius: 8px;
+}
+
+.original-message strong {
+    color: #3b82f6;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.original-message p {
+    color: #fff;
+    margin: 0.5rem 0;
+    line-height: 1.6;
+}
+
+.support-admin-input-area {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-end;
+}
+
+.support-admin-input-area textarea {
+    flex: 1;
+    min-height: 80px;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+}
+
+.support-admin-input-area textarea:focus {
+    outline: none;
+    border-color: rgba(59, 130, 246, 0.6);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+}
+
+/* Адаптивность */
+@media (max-width: 1024px) {
+    .support-admin-content {
+        grid-template-columns: 1fr;
+    }
+    
+    .support-chat-area {
+        min-height: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .support-container,
+    .support-admin-container {
+        padding: 1rem;
+    }
+    
+    .support-header h2,
+    .support-admin-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .support-ticket-item,
+    .support-admin-ticket {
+        padding: 1rem;
+    }
+    
+    .ticket-header,
+    .ticket-admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
