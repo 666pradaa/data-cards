@@ -736,7 +736,12 @@ class GameData {
         // Поддержка - закрытие и отправка
         const closeSupportBtn = document.getElementById('close-support');
         if (closeSupportBtn) {
-            closeSupportBtn.addEventListener('click', () => this.closeSupportPanel());
+            console.log('✅ Устанавливаем обработчик закрытия поддержки');
+            closeSupportBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('🔵 Клик по кнопке закрытия поддержки');
+                this.closeSupportPanel();
+            });
         }
         
         const sendSupportBtn = document.getElementById('send-support-message');
@@ -1763,6 +1768,19 @@ class GameData {
             console.log('   mainMenu display:', mainMenu.style.display);
             
             this.loadSupportMessages();
+            
+            // Переустанавливаем кнопку закрытия
+            const closeBtn = document.getElementById('close-support');
+            if (closeBtn) {
+                console.log('✅ Переустанавливаем кнопку закрытия поддержки');
+                const newCloseBtn = closeBtn.cloneNode(true);
+                closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
+                newCloseBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    console.log('🔵🔵🔵 ЗАКРЫТИЕ ПАНЕЛИ ПОДДЕРЖКИ 🔵🔵🔵');
+                    this.closeSupportPanel();
+                });
+            }
         } else {
             console.error('❌ Не найдены элементы для поддержки!');
             console.error('   supportPanel:', !!supportPanel);
@@ -1771,12 +1789,19 @@ class GameData {
     }
     
     closeSupportPanel() {
+        console.log('❌ ЗАКРЫВАЕМ ПАНЕЛЬ ПОДДЕРЖКИ');
+        
         const supportPanel = document.getElementById('support-panel');
         const mainMenu = document.getElementById('main-menu');
         
         if (supportPanel && mainMenu) {
             supportPanel.classList.remove('active');
+            supportPanel.style.display = 'none';
+            
             mainMenu.classList.add('active');
+            mainMenu.style.display = 'block';
+            
+            console.log('✅ Панель поддержки закрыта, возврат в меню');
         }
     }
     
@@ -4215,10 +4240,9 @@ class GameData {
     
     showTargetSelection(attackerCard) {
         // Подсвечиваем доступные цели (исключая невидимые карты)
+        // Невидимые карты МОГУТ атаковать, просто их нельзя атаковать
         const aliveEnemyCards = this.battleState.botDeck.filter(card => {
-            const isAlive = !card.isDead && card.health > 0;
-            const isVisible = !this.battleState.invisibleCards.includes(card.name);
-            return isAlive && isVisible;
+            return !card.isDead && card.health > 0;
         });
         
         // Показываем подсказку с учетом количества атак
@@ -4603,7 +4627,7 @@ class GameData {
         // Через небольшую задержку выбираем цель
         setTimeout(() => {
             this.selectBotTarget(attackerCard, alivePlayerCards);
-        }, 800);
+        }, 400);
     }
     
     selectBotTarget(attackerCard, alivePlayerCards) {
