@@ -29,7 +29,8 @@
 }
 
 /* Показываем кнопку ТОЛЬКО в главном меню */
-#main-menu.active ~ #support-btn-floating {
+#main-menu.active ~ #support-btn-floating,
+body:has(#main-menu.active) #support-btn-floating {
     display: flex !important;
     opacity: 1 !important;
     visibility: visible !important;
