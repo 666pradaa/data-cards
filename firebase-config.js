@@ -85,11 +85,20 @@ class FirebaseAdapter {
         } catch (error) {
             console.error('❌ Ошибка регистрации:', error);
             
+            let errorMessage = 'Ошибка регистрации';
+            
             if (error.code === 'auth/email-already-in-use') {
-                return { success: false, error: 'Это имя пользователя уже занято!' };
+                errorMessage = 'Это имя пользователя уже занято!';
+            } else if (error.code === 'auth/weak-password') {
+                errorMessage = 'Пароль слишком короткий (минимум 6 символов)';
+            } else if (error.code === 'auth/invalid-email') {
+                errorMessage = 'Некорректное имя пользователя';
+            } else {
+                errorMessage = error.message;
             }
             
-            return { success: false, error: error.message };
+            console.log('📛 Ошибка для пользователя:', errorMessage);
+            return { success: false, error: errorMessage };
         }
     }
 
