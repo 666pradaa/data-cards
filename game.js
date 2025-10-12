@@ -501,7 +501,7 @@ class GameData {
         }
     }
 
-    setupEventListeners() {
+    async setupEventListeners() {
         console.log('🔧 setupEventListeners() вызван');
         
         // Запускаем музыку после первого клика пользователя
@@ -2890,7 +2890,7 @@ class GameData {
         });
     }
 
-    showUpgradeDropAnimation(upgradeName, upgradeData) {
+    async showUpgradeDropAnimation(upgradeName, upgradeData) {
         // Проверяем что данные улучшения переданы
         if (!upgradeData) {
             console.error('❌ upgradeData не передан!', upgradeName);
@@ -3360,7 +3360,7 @@ class GameData {
         return botDeck;
     }
 
-    startBattle(playerDeck, botDeck) {
+    async startBattle(playerDeck, botDeck) {
         console.log('=== startBattle called ===');
         console.log('Player deck:', playerDeck);
         console.log('Bot deck:', botDeck);
@@ -4839,7 +4839,7 @@ class GameData {
         }
     }
     
-    showSkillTargetSelection(casterCard, targetType) {
+    async showSkillTargetSelection(casterCard, targetType) {
         console.log('🎯 Выбор цели для скилла:', casterCard.skill.name);
         
         let targets = [];
