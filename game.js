@@ -5427,78 +5427,61 @@ class GameData {
     // ===== АНИМАЦИИ СКИЛЛОВ =====
     
     createRequiemAnimation(caster, oppositeCard) {
-        console.log('💀 Анимация Requiem of Souls НАЧАТА');
+        console.log('💀💀💀 АНИМАЦИЯ REQUIEM НАЧАТА 💀💀💀');
+        console.log('Caster:', caster.name);
+        console.log('Opposite card:', oppositeCard.name);
         
-        const arena = document.querySelector('.battle-arena');
-        if (!arena) {
-            console.error('❌ Battle arena не найдена!');
+        // Получаем координаты противоположной карты
+        const oppositeCardEl = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${oppositeCard.name}"]`);
+        if (!oppositeCardEl) {
+            console.error('❌ Карта напротив не найдена:', oppositeCard.name);
             return;
         }
         
-        console.log('✅ Arena найдена, создаем души...');
+        // Получаем координаты центра карты относительно ОКНА (не арены)
+        const rect = oppositeCardEl.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
         
-        // Создаем 36 душ, разлетающихся по кругу от Shadow Fiend
-        const soulCount = 36;
+        console.log('🎯 Requiem center (window coords):', centerX, centerY);
+        console.log('📐 Card position:', rect);
+        
+        // Создаем 12 душ по кругу
+        const soulCount = 12;
+        const radius = 200; // Увеличен радиус для лучшей видимости
+        
         for (let i = 0; i < soulCount; i++) {
+            const angle = (i / soulCount) * Math.PI * 2;
+            const targetX = Math.cos(angle) * radius;
+            const targetY = Math.sin(angle) * radius;
+            
             const soul = document.createElement('div');
             soul.className = 'requiem-soul';
+            // Позиционируем относительно окна (fixed)
+            soul.style.left = centerX + 'px';
+            soul.style.top = centerY + 'px';
+            soul.style.zIndex = '99999';
+            soul.style.position = 'fixed';
             
-            // Создаем внутреннюю часть души (светящееся ядро)
-            const soulCore = document.createElement('div');
-            soulCore.className = 'soul-core';
+            document.body.appendChild(soul); // Добавляем в body, а не в arena!
+            console.log(`✅ Soul ${i} created at window position (${centerX}, ${centerY})`);
             
-            // Создаем шлейф души
-            const soulTrail = document.createElement('div');
-            soulTrail.className = 'soul-trail';
-            
-            soul.appendChild(soulCore);
-            soul.appendChild(soulTrail);
-            
-            // Угол для равномерного распределения по кругу
-            const angle = (i / soulCount) * Math.PI * 2;
-            const startX = 50; // Центр арены
-            const startY = 50;
-            
-            // Конечная точка - дальше от центра
-            const distance = 100 + Math.random() * 30; // 100-130%
-            const endX = 50 + Math.cos(angle) * distance;
-            const endY = 50 + Math.sin(angle) * distance;
-            
-            // Устанавливаем начальную позицию
-            soul.style.left = startX + '%';
-            soul.style.top = startY + '%';
-            soul.style.setProperty('--end-x', endX + '%');
-            soul.style.setProperty('--end-y', endY + '%');
-            
-            // Добавляем небольшую случайность во время старта
-            const delay = i * 20 + Math.random() * 10;
-            
-            arena.appendChild(soul);
-            
-            // Запускаем анимацию с задержкой
+            // Анимация: душа летит по кругу
             setTimeout(() => {
-                soul.classList.add('flying');
-                if (i === 0) console.log('🔴 Первая душа запущена');
-            }, delay);
+                soul.style.transform = `translate(${targetX}px, ${targetY}px)`;
+                console.log(`🌀 Soul ${i} flying to offset (${targetX}, ${targetY})`);
+            }, 100 + i * 30); // Небольшая задержка между душами для эффекта
             
-            // Удаляем душу после завершения анимации
+            // Удаляем душу
             setTimeout(() => {
-                if (arena.contains(soul)) {
-                    arena.removeChild(soul);
-                    if (i === soulCount - 1) console.log('✅ Все души удалены');
+                if (document.body.contains(soul)) {
+                    document.body.removeChild(soul);
+                    console.log(`🗑️ Soul ${i} removed`);
                 }
-            }, 2000 + delay);
+            }, 2500);
         }
         
-        console.log('✅ Создано', soulCount, 'душ');
-        
-        // Красное свечение арены
-        arena.classList.add('requiem-flash');
-        console.log('🔴 Красное свечение добавлено');
-        setTimeout(() => {
-            arena.classList.remove('requiem-flash');
-            console.log('✅ Анимация Requiem завершена');
-        }, 1200);
+        console.log('✅✅✅ REQUIEM ANIMATION COMPLETE ✅✅✅');
     }
     
     createDismemberAnimation(caster, target) {
