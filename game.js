@@ -930,13 +930,31 @@ class GameData {
         
         // Проверяем админ права
         const user = this.getUser();
+        console.log('🔍 Проверка прав пользователя:', {
+            isAdmin: user?.isAdmin,
+            isSupportAdmin: user?.isSupportAdmin
+        });
+        
         if (user && user.isAdmin) {
+            console.log('✅ Создаем кнопку админ панели');
             this.createAdminButton();
         }
         
         // Проверяем права админа поддержки
         if (user && user.isSupportAdmin) {
+            console.log('✅ Создаем кнопку админ поддержки');
             this.createSupportAdminButton();
+        }
+        
+        // Переустанавливаем обработчик кнопки поддержки (она уже есть в HTML)
+        const supportBtnMain = document.getElementById('support-btn');
+        if (supportBtnMain) {
+            console.log('✅ Переустанавливаем обработчик кнопки поддержки');
+            supportBtnMain.onclick = null; // Убираем старый
+            supportBtnMain.addEventListener('click', () => {
+                console.log('🔵 Клик по главной кнопке поддержки');
+                this.openSupportPanel();
+            });
         }
         
         // Проверяем нужно ли показать обучение
@@ -1586,13 +1604,27 @@ class GameData {
     }
 
     async showAdminPanel() {
+        console.log('⚙️⚙️⚙️ ОТКРЫВАЕМ АДМИН ПАНЕЛЬ ⚙️⚙️⚙️');
+        
         // Проверка прав администратора по промокоду
         const user = this.getUser();
         
+        console.log('   user найден:', !!user);
+        console.log('   user.isAdmin:', user?.isAdmin);
+        
+        if (!user) {
+            console.error('❌ Пользователь не найден!');
+            await this.showAlert('Ошибка: пользователь не найден', '❌', 'Ошибка');
+            return;
+        }
+        
         if (!user.isAdmin) {
+            console.log('⚠️ У пользователя нет прав админа');
             await this.showAlert('Доступ запрещен!\n\nАдмин-панель доступна только после активации специального промокода.\n\n💡 Подсказка: промокод начинается с "ADMIN"', '🔒', 'Нет доступа');
             return;
         }
+        
+        console.log('✅ Права админа подтверждены');
         
         const panel = document.getElementById('admin-panel');
         
@@ -1633,14 +1665,22 @@ class GameData {
     // ===== СИСТЕМА ПОДДЕРЖКИ =====
     
     openSupportPanel() {
-        console.log('💬 Открываем панель поддержки');
+        console.log('💬💬💬 ОТКРЫВАЕМ ПАНЕЛЬ ПОДДЕРЖКИ 💬💬💬');
+        
         const supportPanel = document.getElementById('support-panel');
         const mainMenu = document.getElementById('main-menu');
+        
+        console.log('   supportPanel найден:', !!supportPanel);
+        console.log('   mainMenu найден:', !!mainMenu);
         
         if (supportPanel && mainMenu) {
             mainMenu.classList.remove('active');
             supportPanel.classList.add('active');
+            
+            console.log('✅ Панель поддержки открыта');
             this.loadSupportMessages();
+        } else {
+            console.error('❌ Не найдены элементы для поддержки!');
         }
     }
     

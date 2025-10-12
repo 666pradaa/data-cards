@@ -705,12 +705,12 @@ body.light-theme .stat-item {
 }
 
 .rarity-rare {
-    background: #0066ff;
+    background: #cccccc;
     color: #fff;
 }
 
 .rarity-epic {
-    background: #9900ff;
+    background: #777777;
     color: #fff;
 }
 
@@ -866,7 +866,7 @@ body.light-theme .stat-item {
     width: 100%;
     padding: 0.5rem;
     margin-top: 0.5rem;
-    background: linear-gradient(45deg, #9900ff, #cc00ff);
+    background: linear-gradient(45deg, #777777, #666666);
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -1236,12 +1236,12 @@ body.light-theme .stat-item {
 }
 
 .rarity-border-rare {
-    border: 3px solid #0066ff !important;
+    border: 3px solid #cccccc !important;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
 }
 
 .rarity-border-epic {
-    border: 3px solid #9900ff !important;
+    border: 3px solid #777777 !important;
     box-shadow: 0 0 15px rgba(50, 50, 50, 0.5);
 }
 
@@ -1760,7 +1760,7 @@ body.light-theme .stat-item {
 
 .hit-marker.blocked .damage-number {
     font-size: 1.8rem;
-    color: #00bfff;
+    color: #aaaaaa;
     text-shadow: 
         0 0 15px rgba(0, 0, 0, 1),
         0 0 25px rgba(0, 0, 0, 0.6),
@@ -1770,7 +1770,7 @@ body.light-theme .stat-item {
 .hit-marker.blocked .damage-label {
     background: rgba(0, 0, 0, 0.3);
     border-color: rgba(0, 0, 0, 0.6);
-    color: #00bfff;
+    color: #aaaaaa;
 }
 
 /* Колода */
@@ -2685,12 +2685,12 @@ body.light-theme .stat-item {
 .invisible-card {
     opacity: 0.5 !important;
     filter: blur(2px);
-    border: 2px dashed #9370db !important;
+    border: 2px dashed #999999 !important;
 }
 
 .shielded-card {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.8) !important;
-    border: 2px solid #00bfff !important;
+    border: 2px solid #aaaaaa !important;
     animation: shieldPulse 1.5s ease-in-out infinite;
 }
 
@@ -2727,8 +2727,8 @@ body.light-theme .stat-item {
     width: 45px;
     height: 45px;
     padding: 3px;
-    background: linear-gradient(135deg, #1e3a8a 0%, #ffffff 100%);
-    border: 3px solid #60a5fa;
+    background: linear-gradient(135deg, #333333 0%, #ffffff 100%);
+    border: 3px solid #dddddd;
     border-radius: 10px;
     cursor: pointer;
     display: flex;
@@ -2780,7 +2780,7 @@ body.light-theme .stat-item {
     transform: translateX(-50%) scale(0.95);
     padding: 0.9rem 1.2rem;
     background: linear-gradient(135deg, rgba(26, 26, 26, 0.97) 0%, rgba(22, 22, 22, 0.97) 100%);
-    color: #60a5fa;
+    color: #dddddd;
     border: 2px solid #ffffff;
     border-radius: 10px;
     font-size: 0.9rem;
@@ -2851,7 +2851,7 @@ body.light-theme .stat-item {
 
 .skill-target {
     box-shadow: 0 0 30px rgba(50, 50, 50, 0.9) !important;
-    border: 3px solid #8a2be2 !important;
+    border: 3px solid #888888 !important;
     animation: skillTargetPulse 0.8s ease-in-out infinite;
     cursor: crosshair !important;
 }
@@ -3014,7 +3014,7 @@ body.light-theme .stat-item {
 /* Crystal Maiden - Frostbite */
 .frozen {
     animation: frozenShake 0.5s ease-in-out;
-    border-color: #00bfff !important;
+    border-color: #aaaaaa !important;
     box-shadow: 0 0 20px rgba(0, 0, 0, 1) !important;
 }
 
@@ -3206,12 +3206,12 @@ body.light-theme .stat-item {
 }
 
 .damage-number.blocked {
-    color: #00bfff;
+    color: #aaaaaa;
 }
 
 /* Статусы контроля на картах */
 .frozen-status {
-    border-color: #00bfff !important;
+    border-color: #aaaaaa !important;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.6) !important;
 }
 
@@ -3226,7 +3226,7 @@ body.light-theme .stat-item {
 }
 
 .feared-status {
-    border-color: #dc143c !important;
+    border-color: #ff0000 !important;
     box-shadow: 0 0 15px rgba(50, 50, 50, 0.6) !important;
 }
 
@@ -3293,8 +3293,8 @@ body.light-theme .stat-item {
 }
 
 .filter-btn.active {
-    background: linear-gradient(135deg, #ffffff 0%, #1e3a8a 100%);
-    border-color: #60a5fa;
+    background: linear-gradient(135deg, #ffffff 0%, #333333 100%);
+    border-color: #dddddd;
     box-shadow: 0 0 15px rgba(50, 50, 50, 0.5);
 }
 
@@ -5977,7 +5977,7 @@ body.light-theme .stat-item {
 
 .join-requests-header h3 {
     margin: 0 0 1rem 0;
-    color: #6496ff;
+    color: #eeeeee;
     text-align: center;
 }
 
@@ -5999,7 +5999,7 @@ body.light-theme .stat-item {
 }
 
 .request-info strong {
-    color: #6496ff;
+    color: #eeeeee;
     font-size: 1.1rem;
 }
 
