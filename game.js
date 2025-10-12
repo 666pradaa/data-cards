@@ -3298,10 +3298,22 @@ class GameData {
     }
 
     async startBotBattle() {
-        console.log('=== startBotBattle called ===');
+        console.log('⚔️⚔️⚔️ ЗАПУСК БОЯ С БОТОМ ⚔️⚔️⚔️');
+        console.log('   currentUser:', this.currentUser);
+        console.log('   currentUserData:', !!this.currentUserData);
         
         try {
         const user = this.getUser();
+        
+        if (!user) {
+            console.error('❌ getUser() вернул null при запуске боя!');
+            await this.showAlert('Ошибка: пользователь не найден. Попробуйте перезайти.', '❌', 'Ошибка');
+            return;
+        }
+        
+        console.log('✅ Пользователь найден:', !!user);
+        console.log('   user.cards:', !!user.cards);
+        console.log('   user.deck:', user.deck);
         const userCards = user.cards || {};
             const deck = user.deck || [];
             
