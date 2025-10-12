@@ -6765,7 +6765,29 @@ class GameData {
 
     async skipTutorial() {
         if (await this.showConfirm('Вы уверены что хотите пропустить обучение?', '❓', 'Подтверждение')) {
-            await this.completeTutorial();
+            await this.saveUser({ tutorialCompleted: true });
+            
+            // Убираем оверлей обучения
+            const overlay = document.getElementById('tutorial-overlay');
+            overlay.classList.remove('active');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 300);
+            
+            // Убираем все блокировки и подсветки
+            document.querySelectorAll('.tutorial-blocked').forEach(el => {
+                el.classList.remove('tutorial-blocked');
+                el.style.pointerEvents = '';
+            });
+            
+            document.querySelectorAll('.tutorial-highlight').forEach(el => {
+                el.classList.remove('tutorial-highlight');
+            });
+            
+            // Показываем подсказку о конкурсе даже при пропуске обучения
+            setTimeout(() => {
+                this.showCompetitionHint();
+            }, 500);
         }
     }
 
