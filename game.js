@@ -1698,34 +1698,26 @@ class GameData {
         
         const panel = document.getElementById('admin-panel');
         
-        // Создаем эффектную анимацию появления
-        const overlay = document.createElement('div');
-        overlay.className = 'admin-overlay-animation';
-        
-        // Добавляем частицы
-        for (let i = 0; i < 30; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'admin-particle';
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.top = Math.random() * 100 + '%';
-            particle.style.animationDelay = Math.random() * 0.5 + 's';
-            overlay.appendChild(particle);
+        if (!panel) {
+            console.error('❌ admin-panel не найдена!');
+            return;
         }
         
-        document.body.appendChild(overlay);
+        // Открываем панель СРАЗУ без анимации
+        const mainMenu = document.getElementById('main-menu');
+        if (mainMenu) {
+            mainMenu.classList.remove('active');
+            mainMenu.style.display = 'none';
+        }
         
-        setTimeout(() => overlay.classList.add('active'), 10);
+        panel.classList.add('active');
+        panel.style.display = 'flex';
+        panel.style.visibility = 'visible';
+        panel.style.opacity = '1';
         
-        setTimeout(() => {
-            panel.classList.add('active');
+        console.log('✅ Админ панель открыта');
+        
         this.loadUsersList();
-        }, 600);
-        
-        setTimeout(() => {
-            if (document.body.contains(overlay)) {
-                document.body.removeChild(overlay);
-            }
-        }, 1000);
     }
 
     closeAdminPanel() {
