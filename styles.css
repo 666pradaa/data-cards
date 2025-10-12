@@ -27,13 +27,16 @@ body.light-theme {
 .rarity-border-rare {
     border: 3px solid #4a9eff !important;
 }
+}
 
 .rarity-border-epic {
     border: 3px solid #9370db !important;
 }
+}
 
 .rarity-border-legendary {
     border: 3px solid #ff9900 !important;
+}
 }
 
 .rarity-common {
@@ -744,12 +747,12 @@ body.light-theme .stat-item {
 }
 
 .rarity-rare {
-    background: #cccccc;
+    background: #4a9eff;
     color: #fff;
 }
 
 .rarity-epic {
-    background: #777777;
+    background: #9370db;
     color: #fff;
 }
 
@@ -1270,22 +1273,26 @@ body.light-theme .stat-item {
 
 /* Обводка карт по редкости */
 .rarity-border-common {
-    border: 3px solid #888 !important;
+    border: 3px solid #808080 !important;
+}
     box-shadow: 0 0 15px rgba(50, 50, 50, 0.5);
 }
 
 .rarity-border-rare {
-    border: 3px solid #cccccc !important;
+    border: 3px solid #4a9eff !important;
+}
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
 }
 
 .rarity-border-epic {
-    border: 3px solid #777777 !important;
+    border: 3px solid #9370db !important;
+}
     box-shadow: 0 0 15px rgba(50, 50, 50, 0.5);
 }
 
 .rarity-border-legendary {
-    border: 3px solid #ff6600 !important;
+    border: 3px solid #ff9900 !important;
+}
     box-shadow: 0 0 20px rgba(50, 50, 50, 0.7);
     animation: legendary-pulse 2s infinite;
 }
