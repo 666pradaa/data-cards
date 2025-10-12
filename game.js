@@ -1906,7 +1906,7 @@ class GameData {
         const user = await this.getUserById(userId);
         const username = user.username || user.nickname || userId.substr(0, 8);
         
-        if (confirm(`⚠️ СБРОС ПРОГРЕССА ${username}!\n\n• Уровень, карты, улучшения → 0\n• Использованные промокоды → очистятся\n\nСОХРАНЯТСЯ:\n✅ ID и аватар\n✅ Друзья и запросы\n\nПродолжить?`)) {
+        if (await this.showConfirm(`СБРОС ПРОГРЕССА ${username}!\n\n• Уровень, карты, улучшения → 0\n• Использованные промокоды → очистятся\n\nСОХРАНЯТСЯ:\n✅ ID и аватар\n✅ Друзья и запросы\n\nПродолжить?`, '⚠️', 'Подтверждение')) {
             const resetData = {
                 gold: 300,
                 gems: 5,
@@ -6337,7 +6337,7 @@ class GameData {
     }
 
     async skipTutorial() {
-        if (confirm('Вы уверены что хотите пропустить обучение?')) {
+        if (await this.showConfirm('Вы уверены что хотите пропустить обучение?', '❓', 'Подтверждение')) {
             await this.completeTutorial();
         }
     }
@@ -6648,7 +6648,7 @@ class GameData {
     }
 
     async removeFriend(friendUserId) {
-        if (!confirm('Вы уверены, что хотите удалить этого друга?')) return;
+        if (!await this.showConfirm('Вы уверены, что хотите удалить этого друга?', '❓', 'Подтверждение')) return;
         
         const currentUser = this.getUser();
         const friend = await this.getUserById(friendUserId);
