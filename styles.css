@@ -2725,7 +2725,7 @@ body.light-theme .stat-item {
     width: 45px;
     height: 45px;
     padding: 3px;
-    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    background: linear-gradient(135deg, #1e3a8a 0%, #ffffff 100%);
     border: 3px solid #60a5fa;
     border-radius: 10px;
     cursor: pointer;
@@ -2779,7 +2779,7 @@ body.light-theme .stat-item {
     padding: 0.9rem 1.2rem;
     background: linear-gradient(135deg, rgba(26, 26, 26, 0.97) 0%, rgba(22, 22, 22, 0.97) 100%);
     color: #60a5fa;
-    border: 2px solid #3b82f6;
+    border: 2px solid #ffffff;
     border-radius: 10px;
     font-size: 0.9rem;
     white-space: nowrap;
@@ -2805,7 +2805,7 @@ body.light-theme .stat-item {
     left: 50%;
     transform: translateX(-50%);
     border: 6px solid transparent;
-    border-top-color: #3b82f6;
+    border-top-color: #ffffff;
     filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4));
 }
 
@@ -3136,7 +3136,7 @@ body.light-theme .stat-item {
     font-size: 1.2rem;
     font-weight: 900;
     color: #fff;
-    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #000000 100%);
     padding: 0.4rem 1.2rem;
     border-radius: 12px;
     border: 3px solid #fff;
@@ -3289,7 +3289,7 @@ body.light-theme .stat-item {
 }
 
 .filter-btn.active {
-    background: linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%);
+    background: linear-gradient(135deg, #ffffff 0%, #1e3a8a 100%);
     border-color: #60a5fa;
     box-shadow: 0 0 15px rgba(50, 50, 50, 0.5);
 }
@@ -3459,7 +3459,7 @@ body.light-theme .stat-item {
 }
 
 .player-name-battle {
-    color: #64c8ff;
+    color: #ffffff;
 }
 
 .bot-name-battle {
