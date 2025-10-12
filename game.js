@@ -691,7 +691,10 @@ class GameData {
         }, 500);
 
         // Промо-коды
-        document.getElementById('use-code-btn').addEventListener('click', () => this.usePromoCode());
+        const useCodeBtn = document.getElementById('use-code-btn');
+        if (useCodeBtn) {
+            useCodeBtn.addEventListener('click', () => this.usePromoCode());
+        }
         
         // Поддержка
         const supportBtn = document.getElementById('support-btn');
