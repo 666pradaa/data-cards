@@ -843,7 +843,17 @@ class GameData {
                         this.allUsersCache = await firebaseAdapter.getAllUsers();
                         
                         console.log('✅ Автовход через Firebase успешен');
-                        this.showMainMenu();
+                        
+                        // Проверяем сохраненный бой
+                        const hasSavedBattle = this.loadBattleState();
+                        
+                        if (hasSavedBattle) {
+                            console.log('⚔️ Восстанавливаем незавершенный бой!');
+                            // Бой уже отображен в loadBattleState()
+                        } else {
+                            console.log('🏠 Нет сохраненного боя, показываем меню');
+                            this.showMainMenu();
+                        }
                         return;
                     }
                 } catch (error) {
@@ -858,7 +868,17 @@ class GameData {
             console.log('✅ Автовход через localStorage:', currentUser);
             this.currentUser = currentUser;
             this.currentUserData = this.users[currentUser];
-            this.showMainMenu();
+            
+            // Проверяем сохраненный бой
+            const hasSavedBattle = this.loadBattleState();
+            
+            if (hasSavedBattle) {
+                console.log('⚔️ Восстанавливаем незавершенный бой!');
+                // Бой уже отображен в loadBattleState()
+            } else {
+                console.log('🏠 Нет сохраненного боя, показываем меню');
+                this.showMainMenu();
+            }
         } else {
             console.log('❌ Автовход не удался, показываем экран входа');
             this.showAuthScreen();
