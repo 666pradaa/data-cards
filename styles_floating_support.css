@@ -1,6 +1,6 @@
 /* Плавающая кнопка поддержки в правом нижнем углу */
 
-.support-btn-floating {
+#support-btn-floating.support-btn-floating {
     position: fixed !important;
     bottom: 2rem !important;
     right: 2rem !important;
@@ -15,7 +15,7 @@
     box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.3),
         0 0 20px rgba(255, 255, 255, 0.2) !important;
-    z-index: 99999 !important;
+    z-index: 999999 !important;
     transition: all 0.3s ease !important;
     display: flex !important;
     align-items: center !important;
@@ -24,6 +24,14 @@
     opacity: 1 !important;
     visibility: visible !important;
     pointer-events: auto !important;
+}
+
+/* Убираем скрытие кнопки на экране боя */
+#battle-screen.active ~ #support-btn-floating,
+.screen.active ~ #support-btn-floating {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 @keyframes floatSupport {
