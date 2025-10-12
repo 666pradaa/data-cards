@@ -3185,6 +3185,16 @@ class GameData {
         
         const upgrades = userCard.upgrades || [];
         
+        // Копируем скилл с правильным icon
+        const skill = card.skill ? {
+            name: card.skill.name,
+            icon: card.skill.icon, // ✅ Берем актуальный путь с расширением
+            description: card.skill.description,
+            cooldown: card.skill.cooldown
+        } : null;
+        
+        console.log('✅ Создаем battleCard:', cardName, 'skill.icon:', skill?.icon);
+        
         return {
             name: card.name,
             damage: card.damage + this.getUpgradeBonus(upgrades, 'damage'),
@@ -3196,7 +3206,7 @@ class GameData {
             rarity: card.rarity,
             upgrades: upgrades,
             isDead: false,
-            skill: card.skill || null, // ⚡ Скилл карты
+            skill: skill, // ⚡ Скилл с правильным icon
             skillCooldown: 0 // Текущий кулдаун скилла
         };
     }
