@@ -1,0 +1,49 @@
+/* Модальное окно подсказки о конкурсе */
+
+.competition-hint-modal {
+    max-width: 500px;
+    text-align: center;
+}
+
+.competition-hint-modal h2 {
+    color: #FFD700;
+}
+
+.competition-hint-modal strong {
+    color: #FFD700;
+}
+
+.competition-hint-modal .modal-icon {
+    animation: hintPulse 2s ease-in-out infinite;
+}
+
+@keyframes hintPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Для темной темы */
+body:not(.light-theme) .competition-hint-modal {
+    background: linear-gradient(135deg, rgba(20, 20, 20, 0.98) 0%, rgba(30, 30, 30, 0.98) 100%);
+    border: 2px solid rgba(255, 215, 0, 0.3);
+}
+
+/* Для светлой темы */
+.light-theme .competition-hint-modal {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(245, 245, 245, 0.98) 100%);
+    border: 2px solid rgba(255, 165, 0, 0.3);
+}
+
+.light-theme .competition-hint-modal h2,
+.light-theme .competition-hint-modal strong {
+    color: #FF8C00;
+}
+
+.light-theme .competition-hint-modal p {
+    color: #333;
+}
+
