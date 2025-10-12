@@ -33,14 +33,6 @@
     visibility: visible !important;
 }
 
-/* Убираем скрытие кнопки на экране боя */
-#battle-screen.active ~ #support-btn-floating,
-.screen.active ~ #support-btn-floating {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
 @keyframes floatSupport {
     0%, 100% {
         transform: translateY(0);
