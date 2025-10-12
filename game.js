@@ -3526,8 +3526,8 @@ class GameData {
                     <button class="skill-btn ${skillOnCooldown ? 'on-cooldown' : ''}" 
                             data-card="${card.name}" 
                             ${skillOnCooldown ? 'disabled' : ''}>
-                        <img src="${card.skill.icon}.png" alt="${card.skill.name}"
-                             onerror="this.src='${card.skill.icon}.webp'; this.onerror=function(){this.style.display='none'; this.nextElementSibling.nextElementSibling.style.display='block'};">
+                        <img src="${card.skill.icon}" alt="${card.skill.name}"
+                             onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.nextElementSibling.style.display='block';">
                         ${cooldownText ? '<span class="skill-cooldown">' + cooldownText + '</span>' : ''}
                         <span class="skill-icon-fallback" style="display: none;">⚡</span>
                         <div class="skill-tooltip">
