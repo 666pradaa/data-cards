@@ -1028,6 +1028,11 @@ class GameData {
         if (user && !user.tutorialCompleted) {
             console.log('🎓 Показываем обучение для нового игрока');
             setTimeout(() => this.startTutorial(), 500);
+        } else if (user && user.tutorialCompleted) {
+            // Показываем подсказку о конкурсе для существующих пользователей
+            setTimeout(() => {
+                this.showCompetitionHint();
+            }, 1000);
         }
     }
     
