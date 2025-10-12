@@ -2261,7 +2261,7 @@ class GameData {
     
     // 🏆 ===== СИСТЕМА ТОПА =====
     
-    getWeeklyTopMessage() {
+    getWeeklyTopMessage(topPlayer = null) {
         // Находим следующий понедельник 13:00 МСК
         const now = new Date();
         const moscowOffset = 3 * 60; // МСК = UTC+3
@@ -2284,26 +2284,34 @@ class GameData {
         // Проверяем, наступил ли момент награждения
         const isRewardTime = nowMoscow.getDay() === 1 && nowMoscow.getHours() === 13 && nowMoscow.getMinutes() < 60;
         
-        if (isRewardTime) {
-            // Показываем победителя (нужно получить топ-1 из прошлой недели)
+        if (isRewardTime && topPlayer) {
+            // Показываем победителя
             return `
-                <div style="background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); padding: 1.5rem; border-radius: 15px; margin-bottom: 1rem; border: 3px solid rgba(255, 215, 0, 0.5); box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);">
-                    <h3 style="margin: 0 0 1rem 0; font-size: 1.5rem; color: #000;">🏆 ПОБЕДИТЕЛЬ НЕДЕЛИ! 🏆</h3>
-                    <p style="margin: 0; color: #000; font-weight: 600; font-size: 1.1rem;">
-                        Игрок, занявший 1-е место на прошлой неделе, получает <strong>DOTA PLUS на месяц</strong>!
+                <div class="weekly-winner-banner" style="background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); padding: 2rem; border-radius: 15px; margin-bottom: 1.5rem; border: 3px solid rgba(255, 215, 0, 0.5); box-shadow: 0 0 30px rgba(255, 215, 0, 0.4); text-align: center;">
+                    <h3 style="margin: 0 0 1rem 0; font-size: 2rem; color: #000;">🏆 ПОБЕДИТЕЛЬ НЕДЕЛИ! 🏆</h3>
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 1.5rem; margin: 1.5rem 0;">
+                        <img src="${topPlayer.avatar || this.avatars[0]}" alt="Avatar" style="width: 80px; height: 80px; border-radius: 50%; border: 4px solid #000; box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);">
+                        <div style="text-align: left;">
+                            <div style="font-size: 1.5rem; font-weight: 900; color: #000;">${topPlayer.nickname || topPlayer.username}</div>
+                            <div style="font-size: 1rem; color: #000; opacity: 0.8;">ID: ${topPlayer.userid || topPlayer.id}</div>
+                            <div style="font-size: 1.1rem; color: #000; margin-top: 0.3rem;">Уровень: ${topPlayer.level || 1}</div>
+                        </div>
+                    </div>
+                    <p style="margin: 0; color: #000; font-weight: 700; font-size: 1.2rem;">
+                        🎁 Получает DOTA PLUS на месяц! 🎁
                     </p>
-                    <p style="margin: 0.5rem 0 0 0; color: #000; opacity: 0.8;">Следующий розыгрыш через 7 дней в понедельник 13:00 МСК</p>
+                    <p style="margin: 0.8rem 0 0 0; color: #000; opacity: 0.7; font-size: 0.9rem;">Следующий розыгрыш через 7 дней в понедельник 13:00 МСК</p>
                 </div>
             `;
         } else {
             return `
-                <div style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 165, 0, 0.1) 100%); padding: 1.5rem; border-radius: 15px; margin-bottom: 1rem; border: 2px solid rgba(255, 215, 0, 0.3);">
-                    <h3 style="margin: 0 0 0.5rem 0; font-size: 1.3rem; color: #FFD700;">🎁 ЕЖЕНЕДЕЛЬНЫЙ КОНКУРС 🎁</h3>
-                    <p style="margin: 0; opacity: 0.9; line-height: 1.6;">
+                <div class="weekly-competition-banner" style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 165, 0, 0.1) 100%); padding: 1.5rem; border-radius: 15px; margin-bottom: 1.5rem; border: 2px solid rgba(255, 215, 0, 0.3);">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 1.3rem; color: #FFD700; text-align: center;">🎁 ЕЖЕНЕДЕЛЬНЫЙ КОНКУРС 🎁</h3>
+                    <p style="margin: 0; opacity: 0.9; line-height: 1.6; text-align: center;">
                         Игрок на <strong>1-м месте</strong> в <strong>понедельник в 13:00 МСК</strong> получит 
                         <strong style="color: #FFD700;">DOTA PLUS на месяц!</strong>
                     </p>
-                    <p style="margin: 0.5rem 0 0 0; opacity: 0.7; font-size: 0.9rem;">
+                    <p style="margin: 0.5rem 0 0 0; opacity: 0.7; font-size: 0.9rem; text-align: center;">
                         ⏰ До розыгрыша: ${daysLeft} дней ${hoursLeft} часов
                     </p>
                 </div>
@@ -2320,16 +2328,8 @@ class GameData {
             return;
         }
         
-        // Добавляем сообщение о конкурсе топ-1
-        const weeklyMessage = this.getWeeklyTopMessage();
-        
-        leaderboardList.innerHTML = `
-            <div class="weekly-competition-banner">${weeklyMessage}</div>
-            <div class="loading">Загрузка топа...</div>
-        `;
-        
         try {
-            // Получаем всех пользователей
+            // Получаем всех пользователей СНАЧАЛА
             let allUsers = null;
             
             if (this.useFirebase) {
@@ -2407,7 +2407,10 @@ class GameData {
                 return;
             }
             
-            leaderboardList.innerHTML = usersArray.map((userData, index) => {
+            // Добавляем баннер конкурса в начало
+            const weeklyBanner = this.getWeeklyTopMessage(usersArray[0]);
+            
+            leaderboardList.innerHTML = weeklyBanner + usersArray.map((userData, index) => {
                 const isCurrentUser = userData.userid === currentUser.userid;
                 const rank = index + 1;
                 const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
