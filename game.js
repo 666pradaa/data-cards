@@ -539,7 +539,12 @@ class GameData {
         
         if (loginBtn) {
             console.log('✅ Кнопка входа найдена, устанавливаем обработчик');
-            loginBtn.addEventListener('click', async (e) => {
+            
+            // Убираем старые обработчики
+            const newLoginBtn = loginBtn.cloneNode(true);
+            loginBtn.parentNode.replaceChild(newLoginBtn, loginBtn);
+            
+            newLoginBtn.addEventListener('click', async (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 console.log('🔵 Клик по кнопке входа!');
