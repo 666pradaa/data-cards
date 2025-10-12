@@ -6812,6 +6812,11 @@ class GameData {
         });
         
         this.updateUserInfo();
+        
+        // Показываем подсказку о конкурсе для новых пользователей
+        setTimeout(() => {
+            this.showCompetitionHint();
+        }, 500);
     }
 
     // ========== СИСТЕМА ДРУЗЕЙ ==========
