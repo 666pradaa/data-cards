@@ -3146,7 +3146,7 @@ class GameData {
 
             // Создаем колоду игрока из выбранных карт
         const playerDeck = [];
-            deck.forEach(cardName => {
+            for (const cardName of deck) {
                 console.log('Processing card:', cardName);
                 console.log('Card exists in userCards:', !!userCards[cardName]);
                 console.log('Card exists in this.cards:', !!this.cards[cardName]);
@@ -3163,7 +3163,7 @@ class GameData {
 Попробуйте очистить колоду и собрать заново.`, '❌', 'Ошибка');
                     }
                 }
-            });
+            }
 
             console.log('Player deck created:', playerDeck.length, 'cards');
 
