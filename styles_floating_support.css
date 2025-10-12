@@ -7,14 +7,14 @@
     width: 60px !important;
     height: 60px !important;
     border-radius: 50% !important;
-    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%) !important;
+    background: rgba(255, 255, 255, 0.1) !important;
     color: #fff !important;
-    border: 3px solid rgba(255, 255, 255, 0.4) !important;
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
     font-size: 1.8rem !important;
     cursor: pointer !important;
     box-shadow: 
-        0 8px 32px rgba(76, 175, 80, 0.5),
-        0 0 20px rgba(76, 175, 80, 0.3) !important;
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(255, 255, 255, 0.1) !important;
     z-index: 999999 !important;
     transition: all 0.3s ease !important;
     display: none !important;
@@ -24,6 +24,8 @@
     opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: auto !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
 }
 
 /* Показываем кнопку ТОЛЬКО в главном меню */
@@ -44,9 +46,11 @@
 
 .support-btn-floating:hover {
     transform: translateY(-5px) scale(1.1);
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
     box-shadow: 
         0 12px 48px rgba(0, 0, 0, 0.4),
-        0 0 30px rgba(255, 255, 255, 0.3);
+        0 0 30px rgba(255, 255, 255, 0.2);
 }
 
 .support-btn-floating:active {
@@ -54,9 +58,14 @@
 }
 
 body.light-theme #support-btn-floating.support-btn-floating {
-    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%) !important;
-    color: #fff !important;
-    border-color: rgba(255, 255, 255, 0.4) !important;
+    background: rgba(0, 0, 0, 0.1) !important;
+    color: #000 !important;
+    border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+body.light-theme .support-btn-floating:hover {
+    background: rgba(0, 0, 0, 0.2) !important;
+    border-color: rgba(0, 0, 0, 0.3) !important;
 }
 
 /* Адаптивность для телефонов */

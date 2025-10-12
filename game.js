@@ -2546,41 +2546,26 @@ class GameData {
     }
 
     animateTabTransition() {
-        // Простой blur эффект без обрезания
-        const overlay = document.createElement('div');
-        overlay.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            z-index: 500;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s ease;
-        `;
-        
-        document.body.appendChild(overlay);
-        
-        // Показываем
+        const transition = document.createElement('div');
+        transition.className = 'theme-transition';
+        document.body.appendChild(transition);
+
+        // Показываем анимацию
         setTimeout(() => {
-            overlay.style.opacity = '1';
+            transition.classList.add('active');
         }, 10);
-        
-        // Скрываем
+
+        // Убираем анимацию
         setTimeout(() => {
-            overlay.style.opacity = '0';
-        }, 200);
-        
-        // Удаляем
+            transition.classList.remove('active');
+        }, 300);
+
+        // Удаляем элемент
         setTimeout(() => {
-            if (document.body.contains(overlay)) {
-                document.body.removeChild(overlay);
+            if (document.body.contains(transition)) {
+                document.body.removeChild(transition);
             }
-        }, 400);
+        }, 600);
     }
 
     createFloatingParticles() {
