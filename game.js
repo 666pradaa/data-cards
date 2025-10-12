@@ -2261,6 +2261,56 @@ class GameData {
     
     // 🏆 ===== СИСТЕМА ТОПА =====
     
+    getWeeklyTopMessage() {
+        // Находим следующий понедельник 13:00 МСК
+        const now = new Date();
+        const moscowOffset = 3 * 60; // МСК = UTC+3
+        const nowMoscow = new Date(now.getTime() + (moscowOffset - now.getTimezoneOffset()) * 60000);
+        
+        // Находим следующий понедельник
+        let nextMonday = new Date(nowMoscow);
+        nextMonday.setDate(nowMoscow.getDate() + ((8 - nowMoscow.getDay()) % 7 || 7));
+        nextMonday.setHours(13, 0, 0, 0);
+        
+        // Если сегодня понедельник после 13:00, берем следующий
+        if (nowMoscow.getDay() === 1 && nowMoscow.getHours() >= 13) {
+            nextMonday.setDate(nextMonday.getDate() + 7);
+        }
+        
+        const timeLeft = nextMonday - nowMoscow;
+        const daysLeft = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        const hoursLeft = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        
+        // Проверяем, наступил ли момент награждения
+        const isRewardTime = nowMoscow.getDay() === 1 && nowMoscow.getHours() === 13 && nowMoscow.getMinutes() < 60;
+        
+        if (isRewardTime) {
+            // Показываем победителя (нужно получить топ-1 из прошлой недели)
+            return `
+                <div style="background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); padding: 1.5rem; border-radius: 15px; margin-bottom: 1rem; border: 3px solid rgba(255, 215, 0, 0.5); box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);">
+                    <h3 style="margin: 0 0 1rem 0; font-size: 1.5rem; color: #000;">🏆 ПОБЕДИТЕЛЬ НЕДЕЛИ! 🏆</h3>
+                    <p style="margin: 0; color: #000; font-weight: 600; font-size: 1.1rem;">
+                        Игрок, занявший 1-е место на прошлой неделе, получает <strong>DOTA PLUS на месяц</strong>!
+                    </p>
+                    <p style="margin: 0.5rem 0 0 0; color: #000; opacity: 0.8;">Следующий розыгрыш через 7 дней в понедельник 13:00 МСК</p>
+                </div>
+            `;
+        } else {
+            return `
+                <div style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 165, 0, 0.1) 100%); padding: 1.5rem; border-radius: 15px; margin-bottom: 1rem; border: 2px solid rgba(255, 215, 0, 0.3);">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 1.3rem; color: #FFD700;">🎁 ЕЖЕНЕДЕЛЬНЫЙ КОНКУРС 🎁</h3>
+                    <p style="margin: 0; opacity: 0.9; line-height: 1.6;">
+                        Игрок на <strong>1-м месте</strong> в <strong>понедельник в 13:00 МСК</strong> получит 
+                        <strong style="color: #FFD700;">DOTA PLUS на месяц!</strong>
+                    </p>
+                    <p style="margin: 0.5rem 0 0 0; opacity: 0.7; font-size: 0.9rem;">
+                        ⏰ До розыгрыша: ${daysLeft} дней ${hoursLeft} часов
+                    </p>
+                </div>
+            `;
+        }
+    }
+    
     async loadLeaderboard(filter = 'all') {
         console.log('🏆 Загрузка топа игроков, фильтр:', filter);
         
