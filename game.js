@@ -445,10 +445,15 @@ class GameData {
         };
     }
 
-    async initUI() {
+    async     initUI() {
         console.log('🔧 initUI() вызван - настраиваем интерфейс');
         this.applyTheme();
         this.setupEventListeners();
+        
+        // КРИТИЧНО: Устанавливаем кнопку поддержки СРАЗУ
+        console.log('🔧 Вызываем setupCriticalButtons()...');
+        this.setupCriticalButtons();
+        
         await this.checkAuth();
     }
 
