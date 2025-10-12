@@ -74,7 +74,7 @@ class SoundSystem {
                 audio.addEventListener('error', (e) => {
                     console.error('❌ ФАЙЛ НЕ НАЙДЕН:', soundPath);
                     console.error('   Ошибка:', e.target.error);
-                    alert(`Звуковой файл не найден: ${soundPath}\nПроверьте папку sounds/`);
+                    console.error('Звуковой файл не найден:', soundPath);
                 });
                 
                 audio.play()
@@ -547,7 +547,7 @@ class GameData {
                 // Вызываем login без await в event listener
                 this.login().catch(error => {
                     console.error('❌ Критическая ошибка входа:', error);
-                    alert('Ошибка входа: ' + error.message);
+                    await this.showAlert('Ошибка входа: ' + error.message, '❌', 'Ошибка');
                 });
             });
         } else {
@@ -562,7 +562,7 @@ class GameData {
                     await this.register();
                 } catch (error) {
                     console.error('Ошибка регистрации:', error);
-                    alert('Ошибка регистрации: ' + error.message);
+                    await this.showAlert('Ошибка регистрации: ' + error.message, '❌', 'Ошибка');
                 }
             });
         } else {
@@ -575,7 +575,7 @@ class GameData {
                     await this.logout();
                 } catch (error) {
                     console.error('Ошибка выхода:', error);
-                    alert('Ошибка выхода: ' + error.message);
+                    await this.showAlert('Ошибка выхода: ' + error.message, '❌', 'Ошибка');
                 }
             });
         }
@@ -615,7 +615,7 @@ class GameData {
                 if (window.onlineBattlesSystem) {
                     window.onlineBattlesSystem.openOnlineBattleModal();
                 } else {
-                    alert('Система онлайн-боёв загружается...');
+                    await this.showAlert('Система онлайн-боёв загружается...', 'ℹ️', 'Ожидание');
                 }
             });
         } else {
@@ -2677,17 +2677,17 @@ class GameData {
     async applyUpgrade(cardName) {
         const user = this.getUser();
         if (!user) {
-            alert('❌ Пользователь не найден!');
+            await this.showAlert('Пользователь не найден!', '❌', 'Ошибка');
             return;
         }
         
         if (!user.cards || !user.cards[cardName]) {
-            alert('❌ Карта не найдена!');
+            await this.showAlert('Карта не найдена!', '❌', 'Ошибка');
             return;
         }
         
         if (!this.selectedUpgrade) {
-            alert('❌ Выберите улучшение!');
+            await this.showAlert('Выберите улучшение!', '❌', 'Ошибка');
             return;
         }
         
@@ -2735,13 +2735,13 @@ class GameData {
         try {
             const user = this.getUser();
             if (!user) {
-                alert('❌ Пользователь не найден!');
+                await this.showAlert('Пользователь не найден!', '❌', 'Ошибка');
                 return;
             }
             
         const caseData = this.cases[caseType];
             if (!caseData) {
-                alert('❌ Кейс не найден!');
+                await this.showAlert('Кейс не найден!', '❌', 'Ошибка');
                 return;
             }
         
