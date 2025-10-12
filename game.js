@@ -823,11 +823,18 @@ class GameData {
         console.log('   currentUser:', this.currentUser);
         console.log('   currentUserData:', this.currentUserData ? 'есть' : 'НЕТ');
         
-        // Проверяем сохраненный бой
-        const battleRestored = this.loadBattleState();
-        if (battleRestored) {
-            console.log('✅ Бой восстановлен');
-            return; // Не показываем главное меню, остаемся в бою
+        // Проверяем сохраненный бой (ПОСЛЕ инициализации данных)
+        try {
+            const battleRestored = this.loadBattleState();
+            if (battleRestored) {
+                console.log('✅ Бой восстановлен');
+                return; // Не показываем главное меню, остаемся в бою
+            }
+        } catch (error) {
+            console.error('❌ Ошибка восстановления боя:', error);
+            console.log('🗑️ Очищаем поврежденный battleState');
+            localStorage.removeItem('currentBattle');
+            localStorage.removeItem('battleStateTimestamp');
         }
         
         const authScreen = document.getElementById('auth-screen');
@@ -3418,35 +3425,86 @@ class GameData {
     saveBattleState() {
         if (this.battleState) {
             localStorage.setItem('currentBattle', JSON.stringify(this.battleState));
+            localStorage.setItem('battleStateTimestamp', Date.now().toString());
         }
     }
 
     loadBattleState() {
         const saved = localStorage.getItem('currentBattle');
+        const savedTimestamp = localStorage.getItem('battleStateTimestamp');
+        
         if (saved) {
             try {
+                // Проверяем не слишком ли старое сохранение (больше 24 часов)
+                if (savedTimestamp) {
+                    const age = Date.now() - parseInt(savedTimestamp);
+                    const hours = age / (1000 * 60 * 60);
+                    
+                    if (hours > 24) {
+                        console.log('⏰ Сохраненный бой старше 24 часов, очищаем');
+                        localStorage.removeItem('currentBattle');
+                        localStorage.removeItem('battleStateTimestamp');
+                        return false;
+                    }
+                }
+                
                 this.battleState = JSON.parse(saved);
                 if (this.battleState && this.battleState.inProgress) {
                     console.log('🔄 Восстанавливаем бой...');
-                    document.getElementById('main-menu').classList.remove('active');
-                    document.getElementById('battle-screen').classList.add('active');
+                    
+                    // ✅ Обновляем skill.icon у всех карт из актуальных данных
+                    this.updateBattleCardsSkills(this.battleState.playerDeck);
+                    this.updateBattleCardsSkills(this.battleState.botDeck);
+                    
+                    document.getElementById('main-menu')?.classList.remove('active');
+                    document.getElementById('battle-screen')?.classList.add('active');
                     this.renderBattle();
                     this.startInteractiveBattle();
                     return true;
                 }
             } catch (e) {
-                console.error('Ошибка загрузки боя:', e);
+                console.error('❌ Ошибка загрузки боя:', e);
+                console.log('🗑️ Очищаем поврежденный battleState');
                 localStorage.removeItem('currentBattle');
+                localStorage.removeItem('battleStateTimestamp');
             }
         }
         return false;
     }
+    
+    // Обновляем иконки скиллов в сохраненных картах
+    updateBattleCardsSkills(deck) {
+        if (!deck || !Array.isArray(deck)) return;
+        
+        deck.forEach(card => {
+            if (card && card.name && this.cards[card.name]) {
+                const actualCard = this.cards[card.name];
+                
+                // Обновляем skill полностью из актуальных данных
+                if (actualCard.skill) {
+                    card.skill = {
+                        name: actualCard.skill.name,
+                        icon: actualCard.skill.icon, // ✅ Актуальный путь с расширением
+                        description: actualCard.skill.description,
+                        cooldown: actualCard.skill.cooldown
+                    };
+                    console.log(`✅ Обновили skill для ${card.name}:`, card.skill.icon);
+                } else if (card.skill) {
+                    // У карты больше нет скилла - убираем
+                    card.skill = null;
+                    console.log(`⚠️ Убрали skill у ${card.name}`);
+                }
+            }
+        });
+    }
 
     clearBattleState() {
         localStorage.removeItem('currentBattle');
+        localStorage.removeItem('battleStateTimestamp');
         if (this.battleState) {
             this.battleState.inProgress = false;
         }
+        console.log('🗑️ BattleState очищен');
     }
 
     updateRoundDisplay() {
