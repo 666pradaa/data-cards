@@ -657,13 +657,8 @@ class GameData {
             console.error('❌ Кнопка music-toggle не найдена!');
         }
         
-        if (supportBtn) {
-            console.log('✅ Кнопка поддержки найдена');
-            supportBtn.addEventListener('click', () => {
-                console.log('🔵 Клик по кнопке поддержки');
-                this.openSupportPanel();
-            });
-        } else {
+        // Старая кнопка support-btn удалена, используется support-btn-floating (плавающая кнопка)
+        console.log('ℹ️ Плавающая кнопка поддержки будет инициализирована в showMainMenu()'); else {
             console.error('❌ Кнопка support-btn не найдена!');
         }
 
