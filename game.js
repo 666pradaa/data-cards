@@ -3684,6 +3684,32 @@ class GameData {
         if (enemyLabel) {
             enemyLabel.textContent = this.battleState.botName;
         }
+        
+        // Обновляем аватарки и имена в новом блоке VS
+        const playerAvatarBattle = document.getElementById('player-avatar-battle');
+        const playerNameBattle = document.getElementById('player-name-battle');
+        const botAvatarBattle = document.getElementById('bot-avatar-battle');
+        const botNameBattle = document.getElementById('bot-name-battle');
+        
+        if (playerNameBattle) {
+            playerNameBattle.textContent = this.battleState.playerName || 'Игрок';
+        }
+        
+        if (botNameBattle) {
+            botNameBattle.textContent = this.battleState.botName || 'БОТ';
+        }
+        
+        // Устанавливаем аватарки
+        if (playerAvatarBattle) {
+            const user = this.getUser();
+            playerAvatarBattle.src = user.avatar || this.avatars[0] || 'https://i.imgur.com/EbsmHMK.jpg';
+        }
+        
+        if (botAvatarBattle) {
+            // Для бота используем случайный аватар
+            const botAvatarIndex = Math.floor(Math.random() * this.avatars.length);
+            botAvatarBattle.src = this.avatars[botAvatarIndex] || 'https://i.imgur.com/EbsmHMK.jpg';
+        }
     }
 
     renderDeck(containerId, deck, isPlayer) {
