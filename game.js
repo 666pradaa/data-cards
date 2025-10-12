@@ -611,7 +611,7 @@ class GameData {
         const onlineBtn = document.getElementById('online-battle-btn');
         if (onlineBtn) {
             console.log('✅ Кнопка онлайн-боя найдена');
-            onlineBtn.addEventListener('click', () => {
+            onlineBtn.addEventListener('click', async () => {
                 console.log('🔵 Клик на онлайн-бой');
                 console.log('window.onlineBattlesSystem:', window.onlineBattlesSystem);
                 if (window.onlineBattlesSystem) {
@@ -3127,7 +3127,7 @@ class GameData {
         };
     }
 
-    startBotBattle() {
+    async startBotBattle() {
         console.log('=== startBotBattle called ===');
         
         try {
@@ -4609,7 +4609,7 @@ class GameData {
         console.log('✅ HTML руны бота установлен, icon:', rune.icon);
     }
     
-    showRuneTargetSelection() {
+    async showRuneTargetSelection() {
         console.log('🔮 Выбор цели для руны');
         
         const rune = this.battleState.playerRune;
