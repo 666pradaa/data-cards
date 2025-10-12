@@ -545,7 +545,7 @@ class GameData {
                 console.log('🔵 Клик по кнопке входа!');
                 
                 // Вызываем login без await в event listener
-                this.login().catch(error => {
+                this.login().catch(async (error) => {
                     console.error('❌ Критическая ошибка входа:', error);
                     await this.showAlert('Ошибка входа: ' + error.message, '❌', 'Ошибка');
                 });
