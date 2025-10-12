@@ -1721,12 +1721,22 @@ class GameData {
         
         if (supportPanel && mainMenu) {
             mainMenu.classList.remove('active');
-            supportPanel.classList.add('active');
+            mainMenu.style.display = 'none';
             
-            console.log('✅ Панель поддержки открыта');
+            supportPanel.classList.add('active');
+            supportPanel.style.display = 'flex';
+            supportPanel.style.visibility = 'visible';
+            supportPanel.style.opacity = '1';
+            
+            console.log('✅✅✅ ПАНЕЛЬ ПОДДЕРЖКИ ОТКРЫТА И ВИДИМА ✅✅✅');
+            console.log('   supportPanel display:', supportPanel.style.display);
+            console.log('   mainMenu display:', mainMenu.style.display);
+            
             this.loadSupportMessages();
         } else {
             console.error('❌ Не найдены элементы для поддержки!');
+            console.error('   supportPanel:', !!supportPanel);
+            console.error('   mainMenu:', !!mainMenu);
         }
     }
     

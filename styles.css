@@ -2889,7 +2889,7 @@ body.light-theme .stat-item {
 .skill-btn.on-cooldown {
     opacity: 0.4;
     cursor: not-allowed;
-    border-color: #4b5563;
+    border-color: #ffffff;
     background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
     animation: none;
     box-shadow: none;
