@@ -7,23 +7,30 @@
     width: 60px !important;
     height: 60px !important;
     border-radius: 50% !important;
-    background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%) !important;
-    color: #000 !important;
-    border: 3px solid rgba(255, 255, 255, 0.3) !important;
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%) !important;
+    color: #fff !important;
+    border: 3px solid rgba(255, 255, 255, 0.4) !important;
     font-size: 1.8rem !important;
     cursor: pointer !important;
     box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.3),
-        0 0 20px rgba(255, 255, 255, 0.2) !important;
+        0 8px 32px rgba(76, 175, 80, 0.5),
+        0 0 20px rgba(76, 175, 80, 0.3) !important;
     z-index: 999999 !important;
     transition: all 0.3s ease !important;
-    display: flex !important;
+    display: none !important;
     align-items: center !important;
     justify-content: center !important;
     animation: floatSupport 3s ease-in-out infinite !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: auto !important;
+}
+
+/* Показываем кнопку ТОЛЬКО в главном меню */
+#main-menu.active ~ #support-btn-floating {
+    display: flex !important;
     opacity: 1 !important;
     visibility: visible !important;
-    pointer-events: auto !important;
 }
 
 /* Убираем скрытие кнопки на экране боя */
@@ -54,10 +61,10 @@
     transform: translateY(-2px) scale(1.05);
 }
 
-body.light-theme .support-btn-floating {
-    background: linear-gradient(135deg, #000 0%, #111 100%);
-    color: #fff;
-    border-color: rgba(0, 0, 0, 0.3);
+body.light-theme #support-btn-floating.support-btn-floating {
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%) !important;
+    color: #fff !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
 }
 
 /* Адаптивность для телефонов */

@@ -445,15 +445,10 @@ class GameData {
         };
     }
 
-    async     initUI() {
+    async initUI() {
         console.log('🔧 initUI() вызван - настраиваем интерфейс');
         this.applyTheme();
-        this.setupEventListeners();
-        
-        // КРИТИЧНО: Устанавливаем кнопку поддержки СРАЗУ
-        console.log('🔧 Вызываем setupCriticalButtons()...');
-        this.setupCriticalButtons();
-        
+        await this.setupEventListeners();
         await this.checkAuth();
     }
 
@@ -1010,7 +1005,9 @@ class GameData {
             };
         }
         
-        // Плавающая кнопка поддержки (в правом нижнем углу)
+        // ===== ВСЕ КНОПКИ УСТАНАВЛИВАЮТСЯ НЕЗАВИСИМО =====
+        
+        // Плавающая кнопка поддержки
         const supportBtnFloating = document.getElementById('support-btn-floating');
         if (supportBtnFloating) {
             console.log('✅ Устанавливаем плавающую кнопку поддержки');
@@ -1022,7 +1019,7 @@ class GameData {
             console.error('❌ Плавающая кнопка поддержки НЕ найдена!');
         }
         
-        // Кнопка боя с ботом (ВСЕГДА устанавливаем, независимо от кнопки поддержки)
+        // Кнопка боя с ботом
         const botBattleBtn = document.getElementById('bot-battle-btn');
         if (botBattleBtn) {
             console.log('✅ Устанавливаем кнопку боя с ботом');
@@ -1039,6 +1036,23 @@ class GameData {
             console.error('❌ Кнопка боя НЕ найдена!');
         }
         
+        // Кнопка выхода
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            console.log('✅ Устанавливаем кнопку выхода');
+            logoutBtn.onclick = async () => {
+                console.log('🔵 Клик по кнопке выхода');
+                try {
+                    await this.logout();
+                } catch (error) {
+                    console.error('❌ Ошибка выхода:', error);
+                    await this.showAlert('Ошибка выхода: ' + error.message, '❌', 'Ошибка');
+                }
+            };
+        } else {
+            console.error('❌ Кнопка выхода НЕ найдена!');
+        }
+        
         // Проверяем нужно ли показать обучение
         if (user && !user.tutorialCompleted) {
             console.log('🎓 Показываем обучение для нового игрока');
@@ -1046,26 +1060,6 @@ class GameData {
         }
     }
     
-    // КРИТИЧНАЯ ФУНКЦИЯ: Устанавливает обработчики независимо от других условий
-    setupCriticalButtons() {
-        console.log('🚨 setupCriticalButtons() - устанавливаем критичные кнопки');
-        
-        // Плавающая кнопка поддержки
-        const supportBtn = document.getElementById('support-btn-floating');
-        if (supportBtn) {
-            console.log('✅ Кнопка поддержки найдена, устанавливаем onclick');
-            supportBtn.onclick = (e) => {
-                e.preventDefault();
-                console.log('🔵 КЛИК ПО КНОПКЕ ПОДДЕРЖКИ');
-                this.openSupportPanel();
-            };
-        } else {
-            console.error('❌ КРИТИЧНО: Кнопка support-btn-floating НЕ НАЙДЕНА в DOM!');
-        }
-        
-        // Кнопка боя (устанавливаем позже через showMainMenu)
-        console.log('ℹ️ Кнопка боя будет установлена в showMainMenu()');
-    }
 
     async loadProfile() {
         const user = this.getUser();
