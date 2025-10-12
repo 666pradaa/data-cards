@@ -78,10 +78,10 @@ body.light-theme {
 .auth-container {
     text-align: center;
     padding: 2rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(50, 50, 50, 0.1);
     border-radius: 20px;
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(50, 50, 50, 0.2);
     min-width: 400px;
 }
 
@@ -114,9 +114,9 @@ body.light-theme {
 .form-group input {
     width: 100%;
     padding: 1rem;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(50, 50, 50, 0.3);
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(50, 50, 50, 0.1);
     color: #fff;
     font-size: 1rem;
     transition: all 0.3s ease;
@@ -131,7 +131,7 @@ body.light-theme {
 .form-group input:focus {
     outline: none;
     border-color: #fff;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(50, 50, 50, 0.2);
 }
 
 .light-theme .form-group input:focus {
@@ -140,7 +140,7 @@ body.light-theme {
 }
 
 .form-group input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(50, 50, 50, 0.7);
 }
 
 .light-theme .form-group input::placeholder {
@@ -162,9 +162,9 @@ body.light-theme {
 .code-input-section input {
     flex: 1;
     padding: 0.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(50, 50, 50, 0.3);
     border-radius: 5px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(50, 50, 50, 0.1);
     color: #fff;
 }
 
@@ -194,7 +194,7 @@ body.light-theme {
 
 .btn.primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 20px rgba(50, 50, 50, 0.3);
 }
 
 .btn.secondary {
@@ -255,7 +255,7 @@ body.light-theme {
     align-items: center;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 2px solid rgba(50, 50, 50, 0.2);
     position: relative;
     animation: headerSlideIn 0.6s ease;
 }
@@ -279,9 +279,9 @@ body.light-theme {
     width: 0;
     height: 2px;
     background: linear-gradient(90deg, 
-        rgba(255, 255, 255, 0.3), 
-        rgba(255, 255, 255, 0.8), 
-        rgba(255, 255, 255, 0.3));
+        rgba(50, 50, 50, 0.3), 
+        rgba(50, 50, 50, 0.8), 
+        rgba(50, 50, 50, 0.3));
     animation: borderExpand 1s ease 0.3s forwards;
 }
 
@@ -313,7 +313,7 @@ body.light-theme {
     position: relative;
     width: 120px;
     height: 8px;
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(50, 50, 50, 0.3);
     border-radius: 4px;
     overflow: hidden;
 }
@@ -342,13 +342,13 @@ body.light-theme {
 
 .light-theme .exp-text {
     color: #000;
-    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+    text-shadow: 1px 1px 2px rgba(50, 50, 50, 0.8);
 }
 
 /* Анимация частиц */
 .transition-particle {
     pointer-events: none;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 10px rgba(50, 50, 50, 0.5);
 }
 
 .light-theme .transition-particle {
@@ -357,12 +357,12 @@ body.light-theme {
 
 /* Улучшенная анимация перехода темы */
 .theme-transition {
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0.9) 70%);
+    background: radial-gradient(circle, rgba(50, 50, 50, 0.1) 0%, rgba(0, 0, 0, 0.9) 70%);
     backdrop-filter: blur(5px);
 }
 
 .light-theme .theme-transition {
-    background: radial-gradient(circle, rgba(0, 0, 0, 0.1) 0%, rgba(255, 255, 255, 0.9) 70%);
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.1) 0%, rgba(50, 50, 50, 0.9) 70%);
 }
 
 .currency {
@@ -396,8 +396,8 @@ body.light-theme {
 
 .nav-btn {
     padding: 1rem 2rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: rgba(50, 50, 50, 0.05);
+    border: 2px solid rgba(50, 50, 50, 0.2);
     color: #fff;
     border-radius: 12px;
     cursor: pointer;
@@ -414,7 +414,7 @@ body.light-theme {
     left: 50%;
     width: 0;
     height: 0;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent);
+    background: radial-gradient(circle, rgba(50, 50, 50, 0.2), transparent);
     transform: translate(-50%, -50%);
     transition: width 0.4s ease, height 0.4s ease;
     border-radius: 50%;
@@ -432,21 +432,21 @@ body.light-theme {
 }
 
 .nav-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(50, 50, 50, 0.15);
+    border-color: rgba(50, 50, 50, 0.5);
     transform: translateY(-3px);
     box-shadow: 
-        0 7px 20px rgba(255, 255, 255, 0.2),
+        0 7px 20px rgba(50, 50, 50, 0.2),
         0 3px 10px rgba(0, 0, 0, 0.2);
 }
 
 .nav-btn.active {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(200, 200, 200, 0.2));
+    background: linear-gradient(135deg, rgba(50, 50, 50, 0.2), rgba(50, 50, 50, 0.2));
     border-color: #fff;
     color: #fff;
     box-shadow: 
-        0 5px 20px rgba(255, 255, 255, 0.3),
-        inset 0 1px 3px rgba(255, 255, 255, 0.2);
+        0 5px 20px rgba(50, 50, 50, 0.3),
+        inset 0 1px 3px rgba(50, 50, 50, 0.2);
     transform: translateY(-2px);
 }
 
@@ -496,10 +496,10 @@ body.light-theme {
 
 .battle-category {
     padding: 2rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(50, 50, 50, 0.1);
     border-radius: 15px;
     text-align: center;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(50, 50, 50, 0.2);
 }
 
 .light-theme .battle-category {
@@ -532,7 +532,7 @@ body.light-theme {
 .filter-btn {
     padding: 0.5rem 1rem;
     background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(50, 50, 50, 0.3);
     color: #fff;
     border-radius: 20px;
     cursor: pointer;
@@ -565,10 +565,10 @@ body.light-theme {
 }
 
 .card {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(50, 50, 50, 0.1);
     border-radius: 15px;
     padding: 1rem;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(50, 50, 50, 0.2);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     position: relative;
@@ -613,8 +613,8 @@ body.light-theme {
 .card:hover {
     transform: translateY(-10px) scale(1.03);
     box-shadow: 
-        0 15px 35px rgba(255, 255, 255, 0.3),
-        0 5px 15px rgba(255, 255, 255, 0.2);
+        0 15px 35px rgba(50, 50, 50, 0.3),
+        0 5px 15px rgba(50, 50, 50, 0.2);
 }
 
 .light-theme .card:hover {
@@ -645,7 +645,7 @@ body.light-theme {
     background: rgba(0, 0, 0, 0.6);
     padding: 4px 8px;
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(50, 50, 50, 0.2);
 }
 
 .star {
@@ -657,7 +657,7 @@ body.light-theme {
 
 .star.filled {
     color: #fff;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    text-shadow: 0 0 8px rgba(50, 50, 50, 0.8);
 }
 
 .card-rarity {
@@ -700,10 +700,10 @@ body.light-theme {
 
 .case-item {
     padding: 2rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(50, 50, 50, 0.1);
     border-radius: 15px;
     text-align: center;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(50, 50, 50, 0.2);
 }
 
 .light-theme .case-item {
@@ -749,9 +749,9 @@ body.light-theme {
 
 .upgrade-item {
     padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(50, 50, 50, 0.1);
     border-radius: 15px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(50, 50, 50, 0.2);
     text-align: center;
     position: relative;
     transition: all 0.3s ease;
@@ -764,7 +764,7 @@ body.light-theme {
 
 .upgrade-item.selected {
     border-color: #00ff00;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
     transform: scale(1.05);
 }
 
@@ -792,8 +792,8 @@ body.light-theme {
     justify-content: center;
     font-weight: 700;
     font-size: 1.1rem;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 15px rgba(50, 50, 50, 0.5);
+    border: 2px solid rgba(50, 50, 50, 0.3);
 }
 
 .select-upgrade-btn {
@@ -810,7 +810,7 @@ body.light-theme {
 
 .select-upgrade-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 255, 0, 0.4);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
 }
 
 .no-upgrades {
@@ -821,7 +821,7 @@ body.light-theme {
 
 .upgrade-divider {
     height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(50, 50, 50, 0.3), transparent);
     margin: 1rem 0;
 }
 
@@ -849,11 +849,11 @@ body.light-theme {
 
 .apply-upgrade-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(153, 0, 255, 0.4);
+    box-shadow: 0 5px 15px rgba(50, 50, 50, 0.4);
 }
 
 .max-upgrades {
-    background: rgba(255, 0, 0, 0.2);
+    background: rgba(50, 50, 50, 0.2);
     color: #ff6666;
     padding: 0.5rem;
     margin-top: 0.5rem;
@@ -908,9 +908,9 @@ body.light-theme {
 .battle-card {
     width: 120px;
     height: 150px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(50, 50, 50, 0.1);
     border-radius: 10px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(50, 50, 50, 0.2);
     padding: 0.5rem;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -928,7 +928,7 @@ body.light-theme {
 
 .battle-card.selected {
     border-color: #00ff00;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
 }
 
 .battle-card.attacking {
@@ -959,11 +959,11 @@ body.light-theme {
     position: relative;
     width: 100%;
     height: 12px;
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(50, 50, 50, 0.3);
     border-radius: 6px;
     margin-top: 5px;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(50, 50, 50, 0.4);
 }
 
 .light-theme .health-bar {
@@ -1001,7 +1001,7 @@ body.light-theme {
 }
 
 .battle-log {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(50, 50, 50, 0.1);
     border-radius: 10px;
     padding: 1rem;
     max-height: 200px;
@@ -1016,7 +1016,7 @@ body.light-theme {
     margin-bottom: 0.5rem;
     padding: 0.5rem;
     border-radius: 5px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(50, 50, 50, 0.1);
 }
 
 .light-theme .battle-message {
@@ -1056,7 +1056,7 @@ body.light-theme {
     align-items: center;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 2px solid rgba(50, 50, 50, 0.2);
     position: relative;
 }
 
@@ -1069,9 +1069,9 @@ body.light-theme {
     height: 2px;
     background: linear-gradient(90deg, 
         transparent,
-        rgba(255, 255, 255, 0.3),
-        rgba(255, 255, 255, 0.6),
-        rgba(255, 255, 255, 0.3),
+        rgba(50, 50, 50, 0.3),
+        rgba(50, 50, 50, 0.6),
+        rgba(50, 50, 50, 0.3),
         transparent);
     animation: adminLinePulse 2s infinite;
 }
@@ -1087,7 +1087,7 @@ body.light-theme {
 
 .admin-header h2 {
     color: #fff;
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    text-shadow: 0 0 20px rgba(50, 50, 50, 0.5);
 }
 
 .light-theme .admin-header {
@@ -1109,7 +1109,7 @@ body.light-theme {
     background: linear-gradient(135deg, rgba(40, 40, 40, 0.8), rgba(20, 20, 20, 0.8));
     border-radius: 15px;
     margin-bottom: 1rem;
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(50, 50, 50, 0.1);
     transition: all 0.3s ease;
     animation: userItemSlide 0.4s ease backwards;
 }
@@ -1131,13 +1131,13 @@ body.light-theme {
 }
 
 .user-item:hover {
-    border-color: rgba(255, 0, 0, 0.3);
-    box-shadow: 0 5px 20px rgba(255, 0, 0, 0.2);
+    border-color: rgba(50, 50, 50, 0.3);
+    box-shadow: 0 5px 20px rgba(50, 50, 50, 0.2);
     transform: translateX(5px);
 }
 
 .light-theme .user-item {
-    background: linear-gradient(135deg, rgba(230, 230, 230, 0.8), rgba(240, 240, 240, 0.8));
+    background: linear-gradient(135deg, rgba(50, 50, 50, 0.8), rgba(50, 50, 50, 0.8));
     border: 2px solid rgba(0, 0, 0, 0.1);
 }
 
@@ -1161,9 +1161,9 @@ body.light-theme {
 .user-controls .admin-input {
     width: 80px;
     padding: 0.5rem;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(50, 50, 50, 0.2);
     border-radius: 8px;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(50, 50, 50, 0.05);
     color: #fff;
     text-align: center;
     font-weight: 600;
@@ -1172,9 +1172,9 @@ body.light-theme {
 
 .user-controls .admin-input:focus {
     outline: none;
-    border-color: rgba(255, 255, 255, 0.5);
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    border-color: rgba(50, 50, 50, 0.5);
+    background: rgba(50, 50, 50, 0.1);
+    box-shadow: 0 0 10px rgba(50, 50, 50, 0.2);
 }
 
 .light-theme .user-controls .admin-input {
@@ -1185,50 +1185,50 @@ body.light-theme {
 
 .admin-btn-update {
     background: linear-gradient(45deg, #555, #333) !important;
-    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    border: 2px solid rgba(50, 50, 50, 0.3) !important;
 }
 
 .admin-btn-update:hover {
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 0 15px rgba(50, 50, 50, 0.3) !important;
 }
 
 .admin-btn-reset {
     background: linear-gradient(45deg, #777, #555) !important;
-    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    border: 2px solid rgba(50, 50, 50, 0.3) !important;
 }
 
 .admin-btn-reset:hover {
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 0 15px rgba(50, 50, 50, 0.3) !important;
 }
 
 /* Обводка карт по редкости */
 .rarity-border-common {
     border: 3px solid #888 !important;
-    box-shadow: 0 0 15px rgba(136, 136, 136, 0.5);
+    box-shadow: 0 0 15px rgba(50, 50, 50, 0.5);
 }
 
 .rarity-border-rare {
     border: 3px solid #0066ff !important;
-    box-shadow: 0 0 15px rgba(0, 102, 255, 0.5);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
 }
 
 .rarity-border-epic {
     border: 3px solid #9900ff !important;
-    box-shadow: 0 0 15px rgba(153, 0, 255, 0.5);
+    box-shadow: 0 0 15px rgba(50, 50, 50, 0.5);
 }
 
 .rarity-border-legendary {
     border: 3px solid #ff6600 !important;
-    box-shadow: 0 0 20px rgba(255, 102, 0, 0.7);
+    box-shadow: 0 0 20px rgba(50, 50, 50, 0.7);
     animation: legendary-pulse 2s infinite;
 }
 
 @keyframes legendary-pulse {
     0%, 100% {
-        box-shadow: 0 0 20px rgba(255, 102, 0, 0.7);
+        box-shadow: 0 0 20px rgba(50, 50, 50, 0.7);
     }
     50% {
-        box-shadow: 0 0 30px rgba(255, 102, 0, 1);
+        box-shadow: 0 0 30px rgba(50, 50, 50, 1);
     }
 }
 
@@ -1279,7 +1279,7 @@ body.light-theme {
 }
 
 .dropped-card {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(50, 50, 50, 0.1);
     border-radius: 20px;
     padding: 2rem;
     min-width: 300px;
@@ -1297,7 +1297,7 @@ body.light-theme {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(50, 50, 50,0.3) 0%, transparent 70%);
     animation: glowRotate 3s linear infinite;
 }
 
@@ -1331,14 +1331,14 @@ body.light-theme {
 }
 
 .duplicate-reward {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(50, 50, 50, 0.2);
     color: #fff;
     padding: 0.5rem 1rem;
     border-radius: 10px;
     font-weight: 600;
     margin-bottom: 1rem;
-    border: 2px solid rgba(255, 255, 255, 0.5);
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    border: 2px solid rgba(50, 50, 50, 0.5);
+    text-shadow: 0 0 10px rgba(50, 50, 50, 0.8);
 }
 
 .close-drop-btn {
@@ -1373,7 +1373,7 @@ body.light-theme {
     text-align: center;
     margin-bottom: 1rem;
     animation: iconSpin 1s ease infinite;
-    filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.8));
+    filter: drop-shadow(0 0 30px rgba(50, 50, 50, 0.8));
 }
 
 @keyframes iconSpin {
@@ -1392,8 +1392,8 @@ body.light-theme {
     min-width: 350px;
     position: relative;
     overflow: hidden;
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
+    border: 3px solid rgba(50, 50, 50, 0.3);
+    box-shadow: 0 0 40px rgba(50, 50, 50, 0.3);
 }
 
 .upgrade-glow {
@@ -1402,7 +1402,7 @@ body.light-theme {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(50, 50, 50, 0.2) 0%, transparent 70%);
     animation: upgradeGlowRotate 4s linear infinite;
 }
 
@@ -1421,7 +1421,7 @@ body.light-theme {
     text-align: center;
     margin-bottom: 1rem;
     color: #fff;
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+    text-shadow: 0 0 20px rgba(50, 50, 50, 0.8);
     position: relative;
     z-index: 1;
 }
@@ -1436,13 +1436,13 @@ body.light-theme {
 }
 
 .upgrade-effect-badge {
-    background: rgba(255, 255, 255, 0.15);
+    background: rgba(50, 50, 50, 0.15);
     padding: 1rem 2rem;
     border-radius: 15px;
     text-align: center;
     font-size: 1.5rem;
     font-weight: 700;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(50, 50, 50, 0.3);
     position: relative;
     z-index: 1;
     animation: badgePulse 1.5s ease infinite;
@@ -1450,10 +1450,10 @@ body.light-theme {
 
 @keyframes badgePulse {
     0%, 100% {
-        box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        box-shadow: 0 0 15px rgba(50, 50, 50, 0.3);
     }
     50% {
-        box-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
+        box-shadow: 0 0 30px rgba(50, 50, 50, 0.6);
     }
 }
 
@@ -1502,7 +1502,7 @@ body.light-theme {
     font-weight: 900;
     color: #999;
     margin-bottom: 1rem;
-    text-shadow: 0 0 10px rgba(150, 150, 150, 0.5);
+    text-shadow: 0 0 10px rgba(50, 50, 50, 0.5);
 }
 
 .nothing-desc {
@@ -1531,7 +1531,7 @@ body.light-theme {
 
 .info-divider {
     height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(50, 50, 50, 0.3), transparent);
     margin: 1.5rem 0;
 }
 
@@ -1540,15 +1540,15 @@ body.light-theme {
     justify-content: space-between;
     align-items: center;
     padding: 0.8rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(50, 50, 50, 0.05);
     border-radius: 10px;
     margin-bottom: 0.5rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(50, 50, 50, 0.1);
 }
 
 .chance-item.chance-bad {
-    background: rgba(255, 0, 0, 0.1);
-    border-color: rgba(255, 0, 0, 0.3);
+    background: rgba(50, 50, 50, 0.1);
+    border-color: rgba(50, 50, 50, 0.3);
 }
 
 .rarity-label {
@@ -1566,9 +1566,9 @@ body.light-theme {
 .info-note {
     margin-top: 1.5rem;
     padding: 1rem;
-    background: rgba(0, 150, 255, 0.1);
+    background: rgba(0, 0, 0, 0.1);
     border-radius: 10px;
-    border: 2px solid rgba(0, 150, 255, 0.3);
+    border: 2px solid rgba(0, 0, 0, 0.3);
     font-size: 0.95rem;
     line-height: 1.6;
 }
@@ -1582,9 +1582,9 @@ body.light-theme {
 
 .upgrade-list-info div {
     padding: 0.5rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(50, 50, 50, 0.05);
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(50, 50, 50, 0.1);
 }
 
 .case-info-btn {
@@ -1594,8 +1594,8 @@ body.light-theme {
     width: 38px;
     height: 38px;
     padding: 0;
-    background: linear-gradient(135deg, rgba(80, 80, 80, 0.9), rgba(50, 50, 50, 0.9)) !important;
-    border: 2px solid rgba(255, 255, 255, 0.4) !important;
+    background: linear-gradient(135deg, rgba(50, 50, 50, 0.9), rgba(50, 50, 50, 0.9)) !important;
+    border: 2px solid rgba(50, 50, 50, 0.4) !important;
     border-radius: 10px !important;
     display: flex;
     align-items: center;
@@ -1608,11 +1608,11 @@ body.light-theme {
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     z-index: 10;
     text-shadow: 
-        0 0 15px rgba(255, 255, 255, 0.8),
+        0 0 15px rgba(50, 50, 50, 0.8),
         0 2px 5px rgba(0, 0, 0, 0.8);
     box-shadow: 
         0 4px 15px rgba(0, 0, 0, 0.5),
-        inset 0 1px 2px rgba(255, 255, 255, 0.3),
+        inset 0 1px 2px rgba(50, 50, 50, 0.3),
         inset 0 -1px 2px rgba(0, 0, 0, 0.5);
     position: relative;
     overflow: hidden;
@@ -1625,7 +1625,7 @@ body.light-theme {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(50, 50, 50, 0.3) 0%, transparent 70%);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -1645,16 +1645,16 @@ body.light-theme {
 }
 
 .case-info-btn:hover {
-    background: linear-gradient(135deg, rgba(120, 120, 120, 0.95), rgba(80, 80, 80, 0.95)) !important;
+    background: linear-gradient(135deg, rgba(50, 50, 50, 0.95), rgba(50, 50, 50, 0.95)) !important;
     transform: scale(1.2) rotate(8deg);
-    border-color: rgba(255, 255, 255, 0.6) !important;
+    border-color: rgba(50, 50, 50, 0.6) !important;
     box-shadow: 
-        0 6px 25px rgba(255, 255, 255, 0.4),
-        inset 0 1px 3px rgba(255, 255, 255, 0.5),
+        0 6px 25px rgba(50, 50, 50, 0.4),
+        inset 0 1px 3px rgba(50, 50, 50, 0.5),
         inset 0 -1px 3px rgba(0, 0, 0, 0.5);
     text-shadow: 
-        0 0 20px rgba(255, 255, 255, 1),
-        0 0 30px rgba(255, 255, 255, 0.6),
+        0 0 20px rgba(50, 50, 50, 1),
+        0 0 30px rgba(50, 50, 50, 0.6),
         0 2px 5px rgba(0, 0, 0, 1);
 }
 
@@ -1690,8 +1690,8 @@ body.light-theme {
     font-size: 2.5rem;
     color: #ff4444;
     text-shadow: 
-        0 0 20px rgba(255, 68, 68, 1),
-        0 0 30px rgba(255, 0, 0, 0.8),
+        0 0 20px rgba(50, 50, 50, 1),
+        0 0 30px rgba(50, 50, 50, 0.8),
         3px 3px 6px rgba(0, 0, 0, 1);
     animation: numberPulse 0.3s ease;
 }
@@ -1708,10 +1708,10 @@ body.light-theme {
 .damage-label {
     font-size: 1rem;
     color: #fff;
-    background: rgba(255, 0, 0, 0.3);
+    background: rgba(50, 50, 50, 0.3);
     padding: 3px 10px;
     border-radius: 10px;
-    border: 2px solid rgba(255, 0, 0, 0.5);
+    border: 2px solid rgba(50, 50, 50, 0.5);
     text-shadow: 0 2px 5px rgba(0, 0, 0, 1);
 }
 
@@ -1719,14 +1719,14 @@ body.light-theme {
     font-size: 3.5rem;
     color: #ffff00;
     text-shadow: 
-        0 0 30px rgba(255, 255, 0, 1),
-        0 0 50px rgba(255, 0, 0, 1),
+        0 0 30px rgba(50, 50, 50, 1),
+        0 0 50px rgba(50, 50, 50, 1),
         4px 4px 8px rgba(0, 0, 0, 1);
 }
 
 .hit-marker.critical .damage-label {
-    background: rgba(255, 255, 0, 0.3);
-    border-color: rgba(255, 255, 0, 0.7);
+    background: rgba(50, 50, 50, 0.3);
+    border-color: rgba(50, 50, 50, 0.7);
     color: #ffff00;
 }
 
@@ -1734,14 +1734,14 @@ body.light-theme {
     font-size: 1.8rem;
     color: #00bfff;
     text-shadow: 
-        0 0 15px rgba(0, 191, 255, 1),
-        0 0 25px rgba(0, 191, 255, 0.6),
+        0 0 15px rgba(0, 0, 0, 1),
+        0 0 25px rgba(0, 0, 0, 0.6),
         2px 2px 5px rgba(0, 0, 0, 1);
 }
 
 .hit-marker.blocked .damage-label {
-    background: rgba(0, 191, 255, 0.3);
-    border-color: rgba(0, 191, 255, 0.6);
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(0, 0, 0, 0.6);
     color: #00bfff;
 }
 
@@ -1774,8 +1774,8 @@ body.light-theme {
 .deck-slot {
     width: 180px;
     min-height: 200px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px dashed rgba(255, 255, 255, 0.3);
+    background: rgba(50, 50, 50, 0.05);
+    border: 2px dashed rgba(50, 50, 50, 0.3);
     border-radius: 15px;
     display: flex;
     align-items: center;
@@ -1789,7 +1789,7 @@ body.light-theme {
 }
 
 .deck-slot.filled {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(50, 50, 50, 0.1);
     border-style: solid;
 }
 
@@ -1806,7 +1806,7 @@ body.light-theme {
     position: relative;
     width: 100%;
     padding: 1rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(50, 50, 50, 0.1);
     border-radius: 10px;
 }
 
@@ -1844,7 +1844,7 @@ body.light-theme {
 
 .deck-divider {
     height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(50, 50, 50, 0.3), transparent);
 }
 
 .light-theme .deck-divider {
@@ -1870,11 +1870,11 @@ body.light-theme {
 
 .add-to-deck-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(0, 255, 0, 0.4);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
 }
 
 .in-deck-badge {
-    background: rgba(0, 255, 0, 0.2);
+    background: rgba(0, 0, 0, 0.2);
     color: #00ff00;
     padding: 0.5rem;
     margin-top: 0.5rem;
@@ -1908,11 +1908,11 @@ body.light-theme {
         rgba(30, 30, 30, 0.95) 100%);
     border-radius: 25px;
     overflow: visible;
-    border: 3px solid rgba(255, 255, 255, 0.3);
+    border: 3px solid rgba(50, 50, 50, 0.3);
     box-shadow: 
         inset 0 4px 15px rgba(0, 0, 0, 0.8),
-        inset 0 -2px 10px rgba(255, 255, 255, 0.1),
-        0 0 25px rgba(255, 255, 255, 0.2),
+        inset 0 -2px 10px rgba(50, 50, 50, 0.1),
+        0 0 25px rgba(50, 50, 50, 0.2),
         0 6px 25px rgba(0, 0, 0, 0.6);
     animation: expBarPulse 3s infinite;
 }
@@ -1921,24 +1921,24 @@ body.light-theme {
     0%, 100% {
         box-shadow: 
             inset 0 4px 15px rgba(0, 0, 0, 0.8),
-            inset 0 -2px 10px rgba(255, 255, 255, 0.1),
-            0 0 25px rgba(255, 255, 255, 0.2),
+            inset 0 -2px 10px rgba(50, 50, 50, 0.1),
+            0 0 25px rgba(50, 50, 50, 0.2),
             0 6px 25px rgba(0, 0, 0, 0.6);
     }
     50% {
         box-shadow: 
             inset 0 4px 15px rgba(0, 0, 0, 0.8),
-            inset 0 -2px 10px rgba(255, 255, 255, 0.15),
-            0 0 35px rgba(255, 255, 255, 0.3),
+            inset 0 -2px 10px rgba(50, 50, 50, 0.15),
+            0 0 35px rgba(50, 50, 50, 0.3),
             0 6px 30px rgba(0, 0, 0, 0.6);
     }
 }
 
 .light-theme .experience-bar {
     background: linear-gradient(145deg, 
-        rgba(240, 240, 240, 0.95) 0%, 
-        rgba(220, 220, 220, 0.95) 50%,
-        rgba(240, 240, 240, 0.95) 100%);
+        rgba(50, 50, 50, 0.95) 0%, 
+        rgba(50, 50, 50, 0.95) 50%,
+        rgba(50, 50, 50, 0.95) 100%);
     border-color: rgba(0, 0, 0, 0.3);
 }
 
@@ -1958,10 +1958,10 @@ body.light-theme {
     font-weight: 900;
     color: #000;
     z-index: 3;
-    border: 3px solid rgba(255, 255, 255, 0.5);
+    border: 3px solid rgba(50, 50, 50, 0.5);
     box-shadow: 
-        0 0 20px rgba(255, 255, 255, 0.5),
-        inset 0 2px 8px rgba(255, 255, 255, 0.8),
+        0 0 20px rgba(50, 50, 50, 0.5),
+        inset 0 2px 8px rgba(50, 50, 50, 0.8),
         inset 0 -2px 5px rgba(0, 0, 0, 0.2);
     animation: levelBadgePulse 2s infinite;
 }
@@ -1992,8 +1992,8 @@ body.light-theme {
     animation: expShineGrayscale 4s ease-in-out infinite;
     transition: width 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
     box-shadow: 
-        0 0 20px rgba(255, 255, 255, 0.4),
-        inset 0 3px 15px rgba(255, 255, 255, 0.4),
+        0 0 20px rgba(50, 50, 50, 0.4),
+        inset 0 3px 15px rgba(50, 50, 50, 0.4),
         inset 0 -3px 10px rgba(0, 0, 0, 0.4);
     position: relative;
     border-radius: 22px;
@@ -2007,7 +2007,7 @@ body.light-theme {
     right: 3px;
     height: 40%;
     background: linear-gradient(180deg,
-        rgba(255, 255, 255, 0.3),
+        rgba(50, 50, 50, 0.3),
         transparent);
     border-radius: 20px 20px 0 0;
 }
@@ -2033,9 +2033,9 @@ body.light-theme {
     font-weight: 900;
     color: #fff;
     text-shadow: 
-        0 0 10px rgba(255, 255, 255, 0.8),
+        0 0 10px rgba(50, 50, 50, 0.8),
         2px 2px 5px rgba(0, 0, 0, 1),
-        -1px -1px 3px rgba(255, 255, 255, 0.5);
+        -1px -1px 3px rgba(50, 50, 50, 0.5);
     z-index: 2;
     letter-spacing: 1px;
 }
@@ -2043,8 +2043,8 @@ body.light-theme {
 .light-theme .exp-text {
     color: #000;
     text-shadow: 
-        0 0 10px rgba(255, 255, 255, 1),
-        2px 2px 5px rgba(255, 255, 255, 1),
+        0 0 10px rgba(50, 50, 50, 1),
+        2px 2px 5px rgba(50, 50, 50, 1),
         -1px -1px 3px rgba(0, 0, 0, 0.5);
 }
 
@@ -2052,23 +2052,23 @@ body.light-theme {
 .admin-btn {
     background: linear-gradient(135deg, #ffffff, #e0e0e0) !important;
     color: #000 !important;
-    border: 2px solid rgba(255, 255, 255, 0.5) !important;
+    border: 2px solid rgba(50, 50, 50, 0.5) !important;
     animation: adminPulse 2s infinite;
     font-weight: 700;
 }
 
 @keyframes adminPulse {
     0%, 100% {
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+        box-shadow: 0 0 10px rgba(50, 50, 50, 0.4);
     }
     50% {
-        box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+        box-shadow: 0 0 20px rgba(50, 50, 50, 0.7);
     }
 }
 
 .admin-btn:hover {
     background: linear-gradient(135deg, #ffffff, #f5f5f5) !important;
-    box-shadow: 0 0 25px rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 0 0 25px rgba(50, 50, 50, 0.8) !important;
     transform: translateY(-2px);
 }
 
@@ -2083,10 +2083,10 @@ body.light-theme {
 
 /* Секция загрузки звуков */
 .sounds-upload-section {
-    background: rgba(255, 255, 255, 0.03);
+    background: rgba(50, 50, 50, 0.03);
     padding: 2rem;
     border-radius: 15px;
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(50, 50, 50, 0.1);
     margin-bottom: 2rem;
 }
 
@@ -2104,10 +2104,10 @@ body.light-theme {
 }
 
 .sound-upload-item {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(50, 50, 50, 0.05);
     padding: 1rem;
     border-radius: 10px;
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(50, 50, 50, 0.1);
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -2115,8 +2115,8 @@ body.light-theme {
 }
 
 .sound-upload-item:hover {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(50, 50, 50, 0.08);
+    border-color: rgba(50, 50, 50, 0.2);
     transform: translateY(-2px);
 }
 
@@ -2154,9 +2154,9 @@ body.light-theme {
     height: 200px;
     border-radius: 50%;
     overflow: hidden;
-    border: 5px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
-    background: rgba(255, 255, 255, 0.1);
+    border: 5px solid rgba(50, 50, 50, 0.4);
+    box-shadow: 0 0 30px rgba(50, 50, 50, 0.3);
+    background: rgba(50, 50, 50, 0.1);
 }
 
 .avatar-display img {
@@ -2173,10 +2173,10 @@ body.light-theme {
 }
 
 .profile-field {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(50, 50, 50, 0.1);
     padding: 1.5rem;
     border-radius: 15px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(50, 50, 50, 0.2);
 }
 
 .light-theme .profile-field {
@@ -2203,7 +2203,7 @@ body.light-theme {
 }
 
 .edit-btn {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(50, 50, 50, 0.2);
     border: none;
     border-radius: 50%;
     width: 35px;
@@ -2214,7 +2214,7 @@ body.light-theme {
 }
 
 .edit-btn:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(50, 50, 50, 0.3);
     transform: scale(1.1);
 }
 
@@ -2225,11 +2225,11 @@ body.light-theme {
 }
 
 .stat-item {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(50, 50, 50, 0.05);
     padding: 1rem;
     border-radius: 10px;
     text-align: center;
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(50, 50, 50, 0.1);
 }
 
 .light-theme .stat-item {
@@ -2247,7 +2247,7 @@ body.light-theme {
     font-size: 1.8rem;
     font-weight: 700;
     color: #fff;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    text-shadow: 0 0 10px rgba(50, 50, 50, 0.5);
 }
 
 /* Модальные окна */
@@ -2279,14 +2279,14 @@ body.light-theme {
     width: 90%;
     max-height: 80vh;
     overflow-y: auto;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 0 50px rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(50, 50, 50, 0.3);
+    box-shadow: 0 0 50px rgba(50, 50, 50, 0.2);
     animation: modalAppear 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     backdrop-filter: blur(20px);
 }
 
 .light-theme .modal-content {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(50, 50, 50, 0.95);
 }
 
 @keyframes modalAppear {
@@ -2341,9 +2341,9 @@ body.light-theme {
 
 .modal-body input {
     padding: 1rem;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(50, 50, 50, 0.3);
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(50, 50, 50, 0.1);
     color: #fff;
     font-size: 1rem;
 }
@@ -2363,7 +2363,7 @@ body.light-theme {
 .avatar-divider {
     text-align: center;
     margin: 1.5rem 0;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(50, 50, 50, 0.5);
     position: relative;
 }
 
@@ -2374,7 +2374,7 @@ body.light-theme {
     top: 50%;
     width: 40%;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(50, 50, 50, 0.3), transparent);
 }
 
 .avatar-divider::before {
@@ -2422,7 +2422,7 @@ body.light-theme {
 
 .avatar-option:hover {
     transform: scale(1.1);
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 30px rgba(50, 50, 50, 0.6);
 }
 
 .avatar-option img {
@@ -2452,28 +2452,28 @@ body.light-theme {
     right: 0;
     bottom: 0;
     background: 
-        radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.08) 0%, transparent 30%),
-        radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.08) 0%, transparent 30%),
+        radial-gradient(circle at 25% 25%, rgba(50, 50, 50, 0.08) 0%, transparent 30%),
+        radial-gradient(circle at 75% 75%, rgba(50, 50, 50, 0.08) 0%, transparent 30%),
         repeating-linear-gradient(
             0deg,
             transparent,
             transparent 40px,
-            rgba(255, 255, 255, 0.02) 40px,
-            rgba(255, 255, 255, 0.02) 41px
+            rgba(50, 50, 50, 0.02) 40px,
+            rgba(50, 50, 50, 0.02) 41px
         ),
         repeating-linear-gradient(
             90deg,
             transparent,
             transparent 40px,
-            rgba(255, 255, 255, 0.02) 40px,
-            rgba(255, 255, 255, 0.02) 41px
+            rgba(50, 50, 50, 0.02) 40px,
+            rgba(50, 50, 50, 0.02) 41px
         ),
         repeating-linear-gradient(
             45deg,
             transparent,
             transparent 80px,
-            rgba(255, 255, 255, 0.015) 80px,
-            rgba(255, 255, 255, 0.015) 81px
+            rgba(50, 50, 50, 0.015) 80px,
+            rgba(50, 50, 50, 0.015) 81px
         );
     pointer-events: none;
     animation: bgGridMove 20s linear infinite;
@@ -2497,9 +2497,9 @@ body.light-theme {
     right: 0;
     bottom: 0;
     background: 
-        radial-gradient(ellipse 600px 400px at 20% 30%, rgba(255, 255, 255, 0.06) 0%, transparent 70%),
-        radial-gradient(ellipse 600px 400px at 80% 70%, rgba(255, 255, 255, 0.06) 0%, transparent 70%),
-        radial-gradient(circle 300px at 50% 50%, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+        radial-gradient(ellipse 600px 400px at 20% 30%, rgba(50, 50, 50, 0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 600px 400px at 80% 70%, rgba(50, 50, 50, 0.06) 0%, transparent 70%),
+        radial-gradient(circle 300px at 50% 50%, rgba(50, 50, 50, 0.03) 0%, transparent 70%);
     pointer-events: none;
     animation: glowPulse 8s ease-in-out infinite;
 }
@@ -2517,8 +2517,8 @@ body.light-theme {
 .rune-container {
     position: absolute;
     z-index: 20;
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-    border: 2px solid #0f3460;
+    background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+    border: 2px solid #0a0a0a;
     border-radius: 15px;
     padding: 0.8rem;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
@@ -2553,7 +2553,7 @@ body.light-theme {
     width: 50px;
     height: 50px;
     object-fit: contain;
-    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+    filter: drop-shadow(0 0 10px rgba(50, 50, 50, 0.5));
     animation: runeGlow 2s ease-in-out infinite;
     cursor: help;
 }
@@ -2575,7 +2575,7 @@ body.light-theme {
     left: 50%;
     transform: translateX(-50%) scale(0.95);
     padding: 0.9rem 1.2rem;
-    background: linear-gradient(135deg, rgba(26, 26, 46, 0.97) 0%, rgba(22, 33, 62, 0.97) 100%);
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.97) 0%, rgba(22, 22, 22, 0.97) 100%);
     color: #ffd700;
     border: 2px solid #ffd700;
     border-radius: 10px;
@@ -2587,9 +2587,9 @@ body.light-theme {
     z-index: 100000;
     box-shadow: 
         0 4px 20px rgba(0, 0, 0, 0.7),
-        0 0 30px rgba(255, 215, 0, 0.25),
-        inset 0 1px 0 rgba(255, 215, 0, 0.4);
-    text-shadow: 0 0 6px rgba(255, 215, 0, 0.4);
+        0 0 30px rgba(50, 50, 50, 0.25),
+        inset 0 1px 0 rgba(50, 50, 50, 0.4);
+    text-shadow: 0 0 6px rgba(50, 50, 50, 0.4);
     font-weight: 700;
     text-align: center;
     line-height: 1.4;
@@ -2611,7 +2611,7 @@ body.light-theme {
     content: '';
     position: absolute;
     inset: 2px;
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.03) 0%, transparent 50%);
+    background: linear-gradient(135deg, rgba(50, 50, 50, 0.03) 0%, transparent 50%);
     border-radius: 8px;
     pointer-events: none;
 }
@@ -2622,7 +2622,7 @@ body.light-theme {
     color: #fbbf24;
     font-weight: 800;
     font-size: 0.95rem;
-    text-shadow: 0 0 10px rgba(251, 191, 36, 0.7);
+    text-shadow: 0 0 10px rgba(50, 50, 50, 0.7);
 }
 
 .rune-icon-wrapper:hover .rune-tooltip {
@@ -2635,7 +2635,7 @@ body.light-theme {
     font-weight: 600;
     color: #ffd700;
     text-align: center;
-    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+    text-shadow: 0 0 5px rgba(50, 50, 50, 0.5);
 }
 
 .rune-use-btn {
@@ -2661,31 +2661,31 @@ body.light-theme {
 }
 
 .shielded-card {
-    box-shadow: 0 0 20px rgba(0, 191, 255, 0.8) !important;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8) !important;
     border: 2px solid #00bfff !important;
     animation: shieldPulse 1.5s ease-in-out infinite;
 }
 
 .rune-target {
-    box-shadow: 0 0 25px rgba(255, 215, 0, 0.9) !important;
+    box-shadow: 0 0 25px rgba(50, 50, 50, 0.9) !important;
     border: 3px solid #ffd700 !important;
     animation: runeTargetPulse 1s ease-in-out infinite;
     cursor: pointer !important;
 }
 
 @keyframes runeGlow {
-    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5)); }
-    50% { transform: scale(1.1); filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8)); }
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(50, 50, 50, 0.5)); }
+    50% { transform: scale(1.1); filter: drop-shadow(0 0 20px rgba(50, 50, 50, 0.8)); }
 }
 
 @keyframes shieldPulse {
-    0%, 100% { box-shadow: 0 0 20px rgba(0, 191, 255, 0.8); }
-    50% { box-shadow: 0 0 30px rgba(0, 191, 255, 1); }
+    0%, 100% { box-shadow: 0 0 20px rgba(0, 0, 0, 0.8); }
+    50% { box-shadow: 0 0 30px rgba(0, 0, 0, 1); }
 }
 
 @keyframes runeTargetPulse {
-    0%, 100% { box-shadow: 0 0 25px rgba(255, 215, 0, 0.9); transform: scale(1); }
-    50% { box-shadow: 0 0 35px rgba(255, 215, 0, 1); transform: scale(1.05); }
+    0%, 100% { box-shadow: 0 0 25px rgba(50, 50, 50, 0.9); transform: scale(1); }
+    50% { box-shadow: 0 0 35px rgba(50, 50, 50, 1); transform: scale(1.05); }
 }
 
 /* КОНЕЦ СИСТЕМЫ РУН */
@@ -2709,7 +2709,7 @@ body.light-theme {
     justify-content: center;
     transition: all 0.3s ease;
     z-index: 15;
-    box-shadow: 0 3px 10px rgba(59, 130, 246, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 3px 10px rgba(50, 50, 50, 0.6), inset 0 1px 2px rgba(50, 50, 50, 0.3);
     animation: skillGlow 2s ease-in-out infinite;
 }
 
@@ -2734,13 +2734,13 @@ body.light-theme {
 }
 
 @keyframes skillGlow {
-    0%, 100% { box-shadow: 0 3px 10px rgba(59, 130, 246, 0.6), inset 0 1px 2px rgba(255, 255, 255, 0.3); }
-    50% { box-shadow: 0 5px 20px rgba(59, 130, 246, 1), inset 0 1px 2px rgba(255, 255, 255, 0.5); }
+    0%, 100% { box-shadow: 0 3px 10px rgba(50, 50, 50, 0.6), inset 0 1px 2px rgba(50, 50, 50, 0.3); }
+    50% { box-shadow: 0 5px 20px rgba(50, 50, 50, 1), inset 0 1px 2px rgba(50, 50, 50, 0.5); }
 }
 
 .skill-btn:hover:not(:disabled) {
     transform: scale(1.15);
-    box-shadow: 0 0 25px rgba(255, 215, 0, 1);
+    box-shadow: 0 0 25px rgba(50, 50, 50, 1);
     border-color: #ffd700;
     background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
 }
@@ -2751,7 +2751,7 @@ body.light-theme {
     left: 50%;
     transform: translateX(-50%) scale(0.95);
     padding: 0.9rem 1.2rem;
-    background: linear-gradient(135deg, rgba(26, 26, 46, 0.97) 0%, rgba(22, 33, 62, 0.97) 100%);
+    background: linear-gradient(135deg, rgba(26, 26, 26, 0.97) 0%, rgba(22, 22, 22, 0.97) 100%);
     color: #60a5fa;
     border: 2px solid #3b82f6;
     border-radius: 10px;
@@ -2763,9 +2763,9 @@ body.light-theme {
     z-index: 100000;
     box-shadow: 
         0 4px 20px rgba(0, 0, 0, 0.7),
-        0 0 30px rgba(59, 130, 246, 0.25),
-        inset 0 1px 0 rgba(59, 130, 246, 0.4);
-    text-shadow: 0 0 6px rgba(59, 130, 246, 0.4);
+        0 0 30px rgba(50, 50, 50, 0.25),
+        inset 0 1px 0 rgba(50, 50, 50, 0.4);
+    text-shadow: 0 0 6px rgba(50, 50, 50, 0.4);
     font-weight: 600;
     text-align: center;
     line-height: 1.4;
@@ -2787,7 +2787,7 @@ body.light-theme {
     content: '';
     position: absolute;
     inset: 2px;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.03) 0%, transparent 50%);
+    background: linear-gradient(135deg, rgba(50, 50, 50, 0.03) 0%, transparent 50%);
     border-radius: 8px;
     pointer-events: none;
 }
@@ -2805,7 +2805,7 @@ body.light-theme {
     font-size: 0.95rem;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    text-shadow: 0 0 10px rgba(251, 191, 36, 0.7);
+    text-shadow: 0 0 10px rgba(50, 50, 50, 0.7);
 }
 
 .skill-icon-fallback {
@@ -2822,15 +2822,15 @@ body.light-theme {
 }
 
 .skill-target {
-    box-shadow: 0 0 30px rgba(138, 43, 226, 0.9) !important;
+    box-shadow: 0 0 30px rgba(50, 50, 50, 0.9) !important;
     border: 3px solid #8a2be2 !important;
     animation: skillTargetPulse 0.8s ease-in-out infinite;
     cursor: crosshair !important;
 }
 
 @keyframes skillTargetPulse {
-    0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(138, 43, 226, 0.9); }
-    50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(138, 43, 226, 1); }
+    0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(50, 50, 50, 0.9); }
+    50% { transform: scale(1.05); box-shadow: 0 0 40px rgba(50, 50, 50, 1); }
 }
 
 /* Анимации скиллов */
@@ -2851,16 +2851,16 @@ body.light-theme {
     width: 100%;
     height: 100%;
     background: radial-gradient(circle, 
-        rgba(255, 50, 50, 1) 0%,
-        rgba(220, 38, 38, 0.9) 30%,
-        rgba(150, 20, 20, 0.7) 60%,
-        rgba(100, 10, 10, 0) 100%
+        rgba(50, 50, 50, 1) 0%,
+        rgba(50, 50, 50, 0.9) 30%,
+        rgba(50, 50, 50, 0.7) 60%,
+        rgba(50, 50, 50, 0) 100%
     );
     border-radius: 50%;
     box-shadow: 
-        0 0 20px rgba(255, 50, 50, 1),
-        0 0 40px rgba(220, 38, 38, 0.8),
-        inset 0 0 15px rgba(255, 100, 100, 0.6);
+        0 0 20px rgba(50, 50, 50, 1),
+        0 0 40px rgba(50, 50, 50, 0.8),
+        inset 0 0 15px rgba(50, 50, 50, 0.6);
     animation: soulPulse 0.3s ease-in-out infinite alternate;
 }
 
@@ -2869,9 +2869,9 @@ body.light-theme {
     width: 100%;
     height: 100%;
     background: radial-gradient(ellipse, 
-        rgba(220, 38, 38, 0.6) 0%,
-        rgba(150, 20, 20, 0.3) 50%,
-        rgba(100, 10, 10, 0) 100%
+        rgba(50, 50, 50, 0.6) 0%,
+        rgba(50, 50, 50, 0.3) 50%,
+        rgba(50, 50, 50, 0) 100%
     );
     border-radius: 50%;
     transform: scale(1.5);
@@ -2912,14 +2912,14 @@ body.light-theme {
     0% {
         transform: scale(0.9);
         box-shadow: 
-            0 0 15px rgba(255, 50, 50, 0.8),
-            0 0 30px rgba(220, 38, 38, 0.6);
+            0 0 15px rgba(50, 50, 50, 0.8),
+            0 0 30px rgba(50, 50, 50, 0.6);
     }
     100% {
         transform: scale(1.1);
         box-shadow: 
-            0 0 25px rgba(255, 50, 50, 1),
-            0 0 50px rgba(220, 38, 38, 0.9);
+            0 0 25px rgba(50, 50, 50, 1),
+            0 0 50px rgba(50, 50, 50, 0.9);
     }
 }
 
@@ -2929,7 +2929,7 @@ body.light-theme {
 
 @keyframes requiemFlash {
     0% { background-color: transparent; }
-    50% { background-color: rgba(139, 0, 0, 0.3); }
+    50% { background-color: rgba(50, 50, 50, 0.3); }
     100% { background-color: transparent; }
 }
 
@@ -2950,11 +2950,11 @@ body.light-theme {
     width: 100px;
     height: 100%;
     background: linear-gradient(180deg, 
-        rgba(255, 215, 0, 0) 0%,
-        rgba(255, 140, 0, 0.8) 40%,
-        rgba(255, 69, 0, 1) 60%,
-        rgba(255, 0, 0, 0.8) 80%,
-        rgba(139, 0, 0, 0) 100%
+        rgba(50, 50, 50, 0) 0%,
+        rgba(50, 50, 50, 0.8) 40%,
+        rgba(50, 50, 50, 1) 60%,
+        rgba(50, 50, 50, 0.8) 80%,
+        rgba(50, 50, 50, 0) 100%
     );
     transform: translateX(-50%);
     opacity: 0;
@@ -2987,7 +2987,7 @@ body.light-theme {
 .frozen {
     animation: frozenShake 0.5s ease-in-out;
     border-color: #00bfff !important;
-    box-shadow: 0 0 20px rgba(0, 191, 255, 1) !important;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 1) !important;
 }
 
 .ice-crystal {
@@ -3016,16 +3016,16 @@ body.light-theme {
     position: absolute;
     height: 4px;
     background: linear-gradient(90deg, 
-        rgba(138, 43, 226, 0) 0%,
-        rgba(138, 43, 226, 1) 50%,
-        rgba(138, 43, 226, 0) 100%
+        rgba(50, 50, 50, 0) 0%,
+        rgba(50, 50, 50, 1) 50%,
+        rgba(50, 50, 50, 0) 100%
     );
     transform-origin: left center;
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
     z-index: 40;
-    box-shadow: 0 0 10px rgba(138, 43, 226, 0.8);
+    box-shadow: 0 0 10px rgba(50, 50, 50, 0.8);
 }
 
 .sunder-line.active {
@@ -3034,8 +3034,8 @@ body.light-theme {
 }
 
 @keyframes sunderPulse {
-    0%, 100% { height: 4px; box-shadow: 0 0 10px rgba(138, 43, 226, 0.8); }
-    50% { height: 8px; box-shadow: 0 0 20px rgba(138, 43, 226, 1); }
+    0%, 100% { height: 4px; box-shadow: 0 0 10px rgba(50, 50, 50, 0.8); }
+    50% { height: 8px; box-shadow: 0 0 20px rgba(50, 50, 50, 1); }
 }
 
 .sunder-glow {
@@ -3044,18 +3044,18 @@ body.light-theme {
 
 @keyframes sunderGlow {
     0%, 100% { filter: brightness(1); box-shadow: none; }
-    50% { filter: brightness(2); box-shadow: 0 0 30px rgba(138, 43, 226, 1); }
+    50% { filter: brightness(2); box-shadow: 0 0 30px rgba(50, 50, 50, 1); }
 }
 
 /* Spirit Breaker - Charge */
 .charging {
     animation: chargePulse 2s ease-in-out;
-    box-shadow: 0 0 25px rgba(255, 255, 0, 1) !important;
+    box-shadow: 0 0 25px rgba(50, 50, 50, 1) !important;
 }
 
 @keyframes chargePulse {
-    0%, 100% { transform: scale(1); box-shadow: 0 0 25px rgba(255, 255, 0, 1); }
-    50% { transform: scale(1.1); box-shadow: 0 0 40px rgba(255, 255, 0, 1); }
+    0%, 100% { transform: scale(1); box-shadow: 0 0 25px rgba(50, 50, 50, 1); }
+    50% { transform: scale(1.1); box-shadow: 0 0 40px rgba(50, 50, 50, 1); }
 }
 
 /* Эффекты контроля */
@@ -3079,7 +3079,7 @@ body.light-theme {
 
 .fear-icon {
     font-size: 3rem;
-    filter: drop-shadow(0 0 10px rgba(220, 38, 38, 1));
+    filter: drop-shadow(0 0 10px rgba(50, 50, 50, 1));
     animation: fearPulse 0.5s ease infinite;
 }
 
@@ -3091,7 +3091,7 @@ body.light-theme {
     padding: 0.4rem 1.2rem;
     border-radius: 12px;
     border: 3px solid #fff;
-    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.8), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(50, 50, 50, 0.8), inset 0 2px 4px rgba(50, 50, 50, 0.3);
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     letter-spacing: 2px;
 }
@@ -3102,7 +3102,7 @@ body.light-theme {
 
 .freeze-icon {
     font-size: 3rem;
-    filter: drop-shadow(0 0 10px rgba(59, 130, 246, 1));
+    filter: drop-shadow(0 0 10px rgba(50, 50, 50, 1));
     animation: freezePulse 0.5s ease infinite;
 }
 
@@ -3114,7 +3114,7 @@ body.light-theme {
     padding: 0.4rem 1.2rem;
     border-radius: 12px;
     border: 3px solid #fff;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.8), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(50, 50, 50, 0.8), inset 0 2px 4px rgba(50, 50, 50, 0.3);
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     letter-spacing: 2px;
 }
@@ -3174,7 +3174,7 @@ body.light-theme {
 .damage-number.crit {
     font-size: 2rem;
     color: #ffd700;
-    text-shadow: 0 0 10px rgba(255, 215, 0, 1);
+    text-shadow: 0 0 10px rgba(50, 50, 50, 1);
 }
 
 .damage-number.blocked {
@@ -3184,7 +3184,7 @@ body.light-theme {
 /* Статусы контроля на картах */
 .frozen-status {
     border-color: #00bfff !important;
-    box-shadow: 0 0 15px rgba(0, 191, 255, 0.6) !important;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.6) !important;
 }
 
 .frozen-status::after {
@@ -3199,7 +3199,7 @@ body.light-theme {
 
 .feared-status {
     border-color: #dc143c !important;
-    box-shadow: 0 0 15px rgba(220, 20, 60, 0.6) !important;
+    box-shadow: 0 0 15px rgba(50, 50, 50, 0.6) !important;
 }
 
 .feared-status::after {
@@ -3234,7 +3234,7 @@ body.light-theme {
 }
 
 .leaderboard-desc {
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(50, 50, 50, 0.7);
     text-align: center;
     margin-top: -1rem;
 }
@@ -3248,8 +3248,8 @@ body.light-theme {
 
 .filter-btn {
     padding: 0.7rem 1.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: rgba(50, 50, 50, 0.1);
+    border: 2px solid rgba(50, 50, 50, 0.3);
     border-radius: 10px;
     color: #fff;
     font-weight: 600;
@@ -3258,14 +3258,14 @@ body.light-theme {
 }
 
 .filter-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(50, 50, 50, 0.2);
+    border-color: rgba(50, 50, 50, 0.5);
 }
 
 .filter-btn.active {
     background: linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%);
     border-color: #60a5fa;
-    box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+    box-shadow: 0 0 15px rgba(50, 50, 50, 0.5);
 }
 
 .leaderboard-list {
@@ -3285,21 +3285,21 @@ body.light-theme {
     gap: 1rem;
     padding: 1rem;
     background: linear-gradient(135deg, rgba(30, 30, 30, 0.95) 0%, rgba(20, 20, 20, 0.95) 100%);
-    border: 2px solid rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(50, 50, 50, 0.1);
     border-radius: 12px;
     transition: all 0.3s ease;
 }
 
 .leaderboard-item:hover {
     transform: translateX(5px);
-    border-color: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+    border-color: rgba(50, 50, 50, 0.3);
+    box-shadow: 0 4px 15px rgba(50, 50, 50, 0.1);
 }
 
 .leaderboard-item.current-user {
     border: 3px solid #ffd700;
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 140, 0, 0.1) 100%);
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    background: linear-gradient(135deg, rgba(50, 50, 50, 0.2) 0%, rgba(50, 50, 50, 0.1) 100%);
+    box-shadow: 0 0 20px rgba(50, 50, 50, 0.3);
 }
 
 .leader-rank {
@@ -3308,14 +3308,14 @@ body.light-theme {
     min-width: 60px;
     text-align: center;
     color: #ffd700;
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+    text-shadow: 0 0 10px rgba(50, 50, 50, 0.5);
 }
 
 .leader-avatar {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(50, 50, 50, 0.3);
     object-fit: cover;
 }
 
@@ -3344,14 +3344,14 @@ body.light-theme {
 }
 
 .leader-exp {
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(50, 50, 50, 0.7);
 }
 
 .loading, .error, .no-results {
     text-align: center;
     padding: 2rem;
     font-size: 1.1rem;
-    color: rgba(255, 255, 255, 0.6);
+    color: rgba(50, 50, 50, 0.6);
 }
 
 .error {
@@ -3395,28 +3395,28 @@ body.light-theme {
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    border: 4px solid rgba(255, 255, 255, 0.3);
+    border: 4px solid rgba(50, 50, 50, 0.3);
     box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.5),
-        inset 0 2px 8px rgba(255, 255, 255, 0.1);
+        inset 0 2px 8px rgba(50, 50, 50, 0.1);
     object-fit: cover;
     transition: all 0.3s ease;
 }
 
 .battle-player-avatar img {
-    border-color: rgba(100, 200, 255, 0.6);
+    border-color: rgba(50, 50, 50, 0.6);
     box-shadow: 
-        0 8px 32px rgba(100, 200, 255, 0.4),
-        0 0 40px rgba(100, 200, 255, 0.2),
-        inset 0 2px 8px rgba(255, 255, 255, 0.1);
+        0 8px 32px rgba(50, 50, 50, 0.4),
+        0 0 40px rgba(50, 50, 50, 0.2),
+        inset 0 2px 8px rgba(50, 50, 50, 0.1);
 }
 
 .battle-bot-avatar img {
-    border-color: rgba(255, 100, 100, 0.6);
+    border-color: rgba(50, 50, 50, 0.6);
     box-shadow: 
-        0 8px 32px rgba(255, 100, 100, 0.4),
-        0 0 40px rgba(255, 100, 100, 0.2),
-        inset 0 2px 8px rgba(255, 255, 255, 0.1);
+        0 8px 32px rgba(50, 50, 50, 0.4),
+        0 0 40px rgba(50, 50, 50, 0.2),
+        inset 0 2px 8px rgba(50, 50, 50, 0.1);
 }
 
 .player-name-battle,
@@ -3447,12 +3447,12 @@ body.light-theme {
     background: linear-gradient(135deg, rgba(40, 40, 40, 0.9), rgba(20, 20, 20, 0.9));
     padding: 0.8rem 2rem;
     border-radius: 25px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(50, 50, 50, 0.2);
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(15px);
     box-shadow: 
         0 4px 20px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        inset 0 1px 0 rgba(50, 50, 50, 0.1);
     position: relative;
     overflow: hidden;
 }
@@ -3464,7 +3464,7 @@ body.light-theme {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, rgba(50, 50, 50, 0.2), transparent);
     animation: roundShine 3s infinite;
 }
 
@@ -3482,8 +3482,8 @@ body.light-theme {
     font-weight: 900;
     color: #fff;
     text-shadow: 
-        0 0 30px rgba(255, 255, 255, 0.8),
-        0 0 60px rgba(255, 255, 255, 0.4),
+        0 0 30px rgba(50, 50, 50, 0.8),
+        0 0 60px rgba(50, 50, 50, 0.4),
         3px 3px 15px rgba(0, 0, 0, 1);
     animation: vsPulse 2s infinite;
     letter-spacing: 8px;
@@ -3522,15 +3522,15 @@ body.light-theme {
     0%, 100% {
         transform: scale(1);
         text-shadow: 
-            0 0 30px rgba(255, 255, 255, 0.8),
-            0 0 60px rgba(255, 255, 255, 0.4),
+            0 0 30px rgba(50, 50, 50, 0.8),
+            0 0 60px rgba(50, 50, 50, 0.4),
             3px 3px 15px rgba(0, 0, 0, 1);
     }
     50% {
         transform: scale(1.15);
         text-shadow: 
-            0 0 50px rgba(255, 255, 255, 1),
-            0 0 100px rgba(255, 255, 255, 0.6),
+            0 0 50px rgba(50, 50, 50, 1),
+            0 0 100px rgba(50, 50, 50, 0.6),
             3px 3px 15px rgba(0, 0, 0, 1);
     }
 }
@@ -3561,15 +3561,15 @@ body.light-theme {
     color: #fff;
     text-shadow: 
         0 2px 10px rgba(0, 0, 0, 0.8),
-        0 0 20px rgba(255, 255, 255, 0.5);
+        0 0 20px rgba(50, 50, 50, 0.5);
     background: linear-gradient(135deg, rgba(50, 50, 50, 0.95), rgba(30, 30, 30, 0.95));
     padding: 1rem 2.5rem;
     border-radius: 20px;
-    border: 3px solid rgba(255, 255, 255, 0.3);
+    border: 3px solid rgba(50, 50, 50, 0.3);
     box-shadow: 
         0 4px 15px rgba(0, 0, 0, 0.5),
-        0 0 30px rgba(255, 255, 255, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        0 0 30px rgba(50, 50, 50, 0.2),
+        inset 0 1px 0 rgba(50, 50, 50, 0.1);
     position: relative;
     overflow: hidden;
     text-transform: uppercase;
@@ -3584,7 +3584,7 @@ body.light-theme {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    background: linear-gradient(90deg, transparent, rgba(50, 50, 50, 0.15), transparent);
     animation: labelShine 4s infinite;
 }
 
@@ -3599,22 +3599,22 @@ body.light-theme {
 
 /* Стили для имени игрока */
 .player-battle-side .side-label {
-    background: linear-gradient(135deg, rgba(0, 100, 0, 0.3), rgba(0, 150, 0, 0.2));
-    border-color: rgba(0, 255, 0, 0.4);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.2));
+    border-color: rgba(0, 0, 0, 0.4);
     box-shadow: 
         0 4px 15px rgba(0, 0, 0, 0.5),
-        0 0 30px rgba(0, 255, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        0 0 30px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(50, 50, 50, 0.1);
 }
 
 /* Стили для имени бота */
 .enemy-battle-side .side-label {
-    background: linear-gradient(135deg, rgba(100, 0, 0, 0.3), rgba(150, 0, 0, 0.2));
-    border-color: rgba(255, 0, 0, 0.4);
+    background: linear-gradient(135deg, rgba(50, 50, 50, 0.3), rgba(50, 50, 50, 0.2));
+    border-color: rgba(50, 50, 50, 0.4);
     box-shadow: 
         0 4px 15px rgba(0, 0, 0, 0.5),
-        0 0 30px rgba(255, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        0 0 30px rgba(50, 50, 50, 0.3),
+        inset 0 1px 0 rgba(50, 50, 50, 0.1);
 }
 
 .battle-cards-row {
@@ -3627,13 +3627,13 @@ body.light-theme {
     width: 2px;
     background: linear-gradient(180deg, 
         transparent 0%,
-        rgba(255, 255, 255, 0.2) 20%,
-        rgba(255, 255, 255, 0.6) 50%,
-        rgba(255, 255, 255, 0.2) 80%,
+        rgba(50, 50, 50, 0.2) 20%,
+        rgba(50, 50, 50, 0.6) 50%,
+        rgba(50, 50, 50, 0.2) 80%,
         transparent 100%);
     box-shadow: 
-        0 0 10px rgba(255, 255, 255, 0.3),
-        0 0 20px rgba(255, 255, 255, 0.1);
+        0 0 10px rgba(50, 50, 50, 0.3),
+        0 0 20px rgba(50, 50, 50, 0.1);
     animation: lineGlow 2s infinite;
 }
 
@@ -3641,21 +3641,21 @@ body.light-theme {
     0%, 100% {
         opacity: 0.4;
         box-shadow: 
-            0 0 10px rgba(255, 255, 255, 0.3),
-            0 0 20px rgba(255, 255, 255, 0.1);
+            0 0 10px rgba(50, 50, 50, 0.3),
+            0 0 20px rgba(50, 50, 50, 0.1);
     }
     50% {
         opacity: 1;
         box-shadow: 
-            0 0 20px rgba(255, 255, 255, 0.5),
-            0 0 40px rgba(255, 255, 255, 0.2);
+            0 0 20px rgba(50, 50, 50, 0.5),
+            0 0 40px rgba(50, 50, 50, 0.2);
     }
 }
 
 .battle-card-new {
     width: 340px;
     height: 160px;
-    background: linear-gradient(135deg, #1a1a2e 0%, #0f1419 100%);
+    background: linear-gradient(135deg, #1a1a1a 0%, #0f1419 100%);
     border-radius: 20px;
     display: flex;
     overflow: hidden;
@@ -3664,7 +3664,7 @@ body.light-theme {
     border: 3px solid;
     box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.8),
-        inset 0 2px 4px rgba(255, 255, 255, 0.1),
+        inset 0 2px 4px rgba(50, 50, 50, 0.1),
         inset 0 -2px 4px rgba(0, 0, 0, 0.5);
     z-index: 1;
 }
@@ -3680,15 +3680,15 @@ body.light-theme {
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, rgba(50, 50, 50, 0.2), transparent);
 }
 
 .battle-card-new:not(.dead):hover {
     transform: translateY(-5px) scale(1.08);
     box-shadow: 
-        0 15px 50px rgba(255, 255, 255, 0.3),
+        0 15px 50px rgba(50, 50, 50, 0.3),
         0 8px 32px rgba(0, 0, 0, 0.8),
-        inset 0 2px 8px rgba(255, 255, 255, 0.2);
+        inset 0 2px 8px rgba(50, 50, 50, 0.2);
 }
 
 .battle-card-image {
@@ -3744,11 +3744,11 @@ body.light-theme {
 
 .battle-card-stars .star.filled {
     color: #fff;
-    text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    text-shadow: 0 0 8px rgba(50, 50, 50, 0.8);
 }
 
 .battle-card-stars .star.empty {
-    color: rgba(255, 255, 255, 0.2);
+    color: rgba(50, 50, 50, 0.2);
 }
 
 .battle-card-stats {
@@ -3775,7 +3775,7 @@ body.light-theme {
     background: linear-gradient(145deg, rgba(50, 50, 50, 0.8), rgba(30, 30, 30, 0.8));
     border-radius: 11px;
     overflow: hidden;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(50, 50, 50, 0.3);
     box-shadow: 
         inset 0 2px 5px rgba(0, 0, 0, 0.5),
         0 2px 10px rgba(0, 0, 0, 0.3);
@@ -3791,9 +3791,9 @@ body.light-theme {
     transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 8px;
     box-shadow: 
-        0 0 15px rgba(255, 255, 255, 0.6),
-        inset 0 2px 4px rgba(255, 255, 255, 0.8),
-        inset 0 -2px 4px rgba(200, 200, 200, 0.6);
+        0 0 15px rgba(50, 50, 50, 0.6),
+        inset 0 2px 4px rgba(50, 50, 50, 0.8),
+        inset 0 -2px 4px rgba(50, 50, 50, 0.6);
     position: relative;
 }
 
@@ -3801,7 +3801,7 @@ body.light-theme {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.6) 0%, transparent 50%, rgba(200, 200, 200, 0.4) 100%);
+    background: linear-gradient(180deg, rgba(50, 50, 50, 0.6) 0%, transparent 50%, rgba(50, 50, 50, 0.4) 100%);
     border-radius: 8px;
     pointer-events: none;
 }
@@ -3815,8 +3815,8 @@ body.light-theme {
     font-weight: 900;
     color: #000;
     text-shadow: 
-        0 0 3px rgba(255, 255, 255, 0.8),
-        1px 1px 2px rgba(255, 255, 255, 0.6);
+        0 0 3px rgba(50, 50, 50, 0.8),
+        1px 1px 2px rgba(50, 50, 50, 0.6);
     z-index: 2;
     letter-spacing: 0.5px;
 }
@@ -3879,7 +3879,7 @@ body.light-theme {
     }
     60% {
         transform: scale(1.15) translateX(20px);
-        box-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
+        box-shadow: 0 0 40px rgba(50, 50, 50, 0.8);
         filter: brightness(1.5);
     }
     100% {
@@ -3919,7 +3919,7 @@ body.light-theme {
     font-size: 2.5rem;
     pointer-events: none;
     z-index: 1001;
-    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8));
+    filter: drop-shadow(0 0 15px rgba(50, 50, 50, 0.8));
     animation: swordRotate 0.5s linear infinite;
 }
 
@@ -3936,7 +3936,7 @@ body.light-theme {
     animation: 
         swordArc 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
         swordRotate 0.5s linear infinite;
-    filter: drop-shadow(0 0 25px rgba(255, 255, 255, 1));
+    filter: drop-shadow(0 0 25px rgba(50, 50, 50, 1));
 }
 
 @keyframes swordArc {
@@ -3956,7 +3956,7 @@ body.light-theme {
 
 .flying-sword.critical {
     font-size: 3.5rem;
-    filter: drop-shadow(0 0 35px rgba(255, 0, 0, 1)) drop-shadow(0 0 50px rgba(255, 0, 0, 0.6));
+    filter: drop-shadow(0 0 35px rgba(50, 50, 50, 1)) drop-shadow(0 0 50px rgba(50, 50, 50, 0.6));
 }
 
 .flying-sword.critical.flying {
@@ -3972,7 +3972,7 @@ body.light-theme {
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle, rgba(255, 0, 0, 0.5) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(50, 50, 50, 0.5) 0%, transparent 70%);
     pointer-events: none;
     z-index: 999;
     opacity: 0;
@@ -3992,18 +3992,18 @@ body.light-theme {
     background: linear-gradient(135deg, rgba(40, 40, 40, 0.98), rgba(20, 20, 20, 0.98));
     padding: 1.5rem 3rem;
     border-radius: 20px;
-    border: 3px solid rgba(255, 255, 255, 0.4);
+    border: 3px solid rgba(50, 50, 50, 0.4);
     font-size: 1.5rem;
     font-weight: 700;
     color: #fff;
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+    text-shadow: 0 0 20px rgba(50, 50, 50, 0.8);
     z-index: 10000;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
     backdrop-filter: blur(10px);
     box-shadow: 
-        0 0 40px rgba(255, 255, 255, 0.3),
+        0 0 40px rgba(50, 50, 50, 0.3),
         0 10px 40px rgba(0, 0, 0, 0.8);
     animation: hintPulse 2s ease infinite;
 }
@@ -4015,12 +4015,12 @@ body.light-theme {
 @keyframes hintPulse {
     0%, 100% {
         box-shadow: 
-            0 0 40px rgba(255, 255, 255, 0.3),
+            0 0 40px rgba(50, 50, 50, 0.3),
             0 10px 40px rgba(0, 0, 0, 0.8);
     }
     50% {
         box-shadow: 
-            0 0 60px rgba(255, 255, 255, 0.5),
+            0 0 60px rgba(50, 50, 50, 0.5),
             0 10px 40px rgba(0, 0, 0, 0.8);
     }
 }
@@ -4029,9 +4029,9 @@ body.light-theme {
 .battle-card-new.hint-glow {
     border-color: #00ff00 !important;
     box-shadow: 
-        0 0 30px rgba(0, 255, 0, 0.6),
+        0 0 30px rgba(0, 0, 0, 0.6),
         0 4px 20px rgba(0, 0, 0, 0.5),
-        inset 0 0 20px rgba(0, 255, 0, 0.2);
+        inset 0 0 20px rgba(0, 0, 0, 0.2);
     animation: hintGlowPulse 1.5s ease infinite;
     transform: scale(1.05);
     position: relative;
@@ -4046,7 +4046,7 @@ body.light-theme {
     transform: translateX(-50%);
     font-size: 2.5rem;
     animation: swordReady 1s ease infinite;
-    filter: drop-shadow(0 0 10px rgba(0, 255, 0, 0.8));
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.8));
 }
 
 @keyframes swordReady {
@@ -4063,15 +4063,15 @@ body.light-theme {
 @keyframes hintGlowPulse {
     0%, 100% {
         box-shadow: 
-            0 0 30px rgba(0, 255, 0, 0.6),
+            0 0 30px rgba(0, 0, 0, 0.6),
             0 4px 20px rgba(0, 0, 0, 0.5),
-            inset 0 0 20px rgba(0, 255, 0, 0.2);
+            inset 0 0 20px rgba(0, 0, 0, 0.2);
     }
     50% {
         box-shadow: 
-            0 0 50px rgba(0, 255, 0, 0.9),
+            0 0 50px rgba(0, 0, 0, 0.9),
             0 4px 20px rgba(0, 0, 0, 0.5),
-            inset 0 0 30px rgba(0, 255, 0, 0.4);
+            inset 0 0 30px rgba(0, 0, 0, 0.4);
     }
 }
 
@@ -4079,9 +4079,9 @@ body.light-theme {
 .battle-card-new.selected {
     border-color: #ffff00 !important;
     box-shadow: 
-        0 0 40px rgba(255, 255, 0, 0.8),
+        0 0 40px rgba(50, 50, 50, 0.8),
         0 8px 30px rgba(0, 0, 0, 0.6),
-        inset 0 0 30px rgba(255, 255, 0, 0.3);
+        inset 0 0 30px rgba(50, 50, 50, 0.3);
     transform: scale(1.08);
     z-index: 100;
     animation: selectedPulse 1s ease infinite;
@@ -4091,16 +4091,16 @@ body.light-theme {
     0%, 100% {
         transform: scale(1.08);
         box-shadow: 
-            0 0 40px rgba(255, 255, 0, 0.8),
+            0 0 40px rgba(50, 50, 50, 0.8),
             0 8px 30px rgba(0, 0, 0, 0.6),
-            inset 0 0 30px rgba(255, 255, 0, 0.3);
+            inset 0 0 30px rgba(50, 50, 50, 0.3);
     }
     50% {
         transform: scale(1.1);
         box-shadow: 
-            0 0 60px rgba(255, 255, 0, 1),
+            0 0 60px rgba(50, 50, 50, 1),
             0 8px 30px rgba(0, 0, 0, 0.6),
-            inset 0 0 40px rgba(255, 255, 0, 0.5);
+            inset 0 0 40px rgba(50, 50, 50, 0.5);
     }
 }
 
@@ -4108,9 +4108,9 @@ body.light-theme {
 .battle-card-new.target-available {
     border-color: #ff0000 !important;
     box-shadow: 
-        0 0 30px rgba(255, 0, 0, 0.6),
+        0 0 30px rgba(50, 50, 50, 0.6),
         0 4px 20px rgba(0, 0, 0, 0.5),
-        inset 0 0 20px rgba(255, 0, 0, 0.2);
+        inset 0 0 20px rgba(50, 50, 50, 0.2);
     animation: targetAvailablePulse 1.5s ease infinite;
     cursor: crosshair !important;
 }
@@ -4122,7 +4122,7 @@ body.light-theme {
     right: 10px;
     font-size: 2rem;
     animation: targetBounce 1s ease infinite;
-    filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.8));
+    filter: drop-shadow(0 0 10px rgba(50, 50, 50, 0.8));
 }
 
 @keyframes targetBounce {
@@ -4137,15 +4137,15 @@ body.light-theme {
 @keyframes targetAvailablePulse {
     0%, 100% {
         box-shadow: 
-            0 0 30px rgba(255, 0, 0, 0.6),
+            0 0 30px rgba(50, 50, 50, 0.6),
             0 4px 20px rgba(0, 0, 0, 0.5),
-            inset 0 0 20px rgba(255, 0, 0, 0.2);
+            inset 0 0 20px rgba(50, 50, 50, 0.2);
     }
     50% {
         box-shadow: 
-            0 0 50px rgba(255, 0, 0, 0.9),
+            0 0 50px rgba(50, 50, 50, 0.9),
             0 4px 20px rgba(0, 0, 0, 0.5),
-            inset 0 0 30px rgba(255, 0, 0, 0.4);
+            inset 0 0 30px rgba(50, 50, 50, 0.4);
     }
 }
 
@@ -4210,23 +4210,23 @@ body.light-theme {
     /* Увеличиваем подсветку для лучшей видимости */
     .battle-card-new.hint-glow {
         box-shadow: 
-            0 0 40px rgba(0, 255, 0, 0.8),
+            0 0 40px rgba(0, 0, 0, 0.8),
             0 4px 20px rgba(0, 0, 0, 0.5),
-            inset 0 0 30px rgba(0, 255, 0, 0.3);
+            inset 0 0 30px rgba(0, 0, 0, 0.3);
     }
     
     .battle-card-new.target-available {
         box-shadow: 
-            0 0 40px rgba(255, 0, 0, 0.8),
+            0 0 40px rgba(50, 50, 50, 0.8),
             0 4px 20px rgba(0, 0, 0, 0.5),
-            inset 0 0 30px rgba(255, 0, 0, 0.3);
+            inset 0 0 30px rgba(50, 50, 50, 0.3);
     }
     
     .battle-card-new.selected {
         box-shadow: 
-            0 0 50px rgba(255, 255, 0, 1),
+            0 0 50px rgba(50, 50, 50, 1),
             0 8px 30px rgba(0, 0, 0, 0.6),
-            inset 0 0 40px rgba(255, 255, 0, 0.4);
+            inset 0 0 40px rgba(50, 50, 50, 0.4);
     }
 }
 
@@ -4261,7 +4261,7 @@ body.light-theme {
     position: relative;
     z-index: 1;
     max-width: 500px;
-    border: 3px solid rgba(255, 255, 255, 0.2);
+    border: 3px solid rgba(50, 50, 50, 0.2);
     box-shadow: 0 10px 50px rgba(0, 0, 0, 0.8);
 }
 
@@ -4278,12 +4278,12 @@ body.light-theme {
 
 .battle-result.victory {
     border: 3px solid #fff;
-    box-shadow: 0 0 50px rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 50px rgba(50, 50, 50, 0.5);
 }
 
 .battle-result.defeat {
     border: 3px solid #666;
-    box-shadow: 0 0 50px rgba(100, 100, 100, 0.5);
+    box-shadow: 0 0 50px rgba(50, 50, 50, 0.5);
 }
 
 .result-title {
@@ -4295,12 +4295,12 @@ body.light-theme {
 
 .victory .result-title {
     color: #fff;
-    text-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
+    text-shadow: 0 0 30px rgba(50, 50, 50, 0.8);
 }
 
 .defeat .result-title {
     color: #999;
-    text-shadow: 0 0 20px rgba(150, 150, 150, 0.5);
+    text-shadow: 0 0 20px rgba(50, 50, 50, 0.5);
 }
 
 .result-icon {
@@ -4329,18 +4329,18 @@ body.light-theme {
     font-size: 1.5rem;
     font-weight: 700;
     padding: 1rem 2rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(50, 50, 50, 0.1);
     border-radius: 15px;
-    border: 2px solid rgba(255, 255, 255, 0.4);
+    border: 2px solid rgba(50, 50, 50, 0.4);
     animation: rewardPulse 2s ease infinite;
 }
 
 @keyframes rewardPulse {
     0%, 100% {
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        box-shadow: 0 0 10px rgba(50, 50, 50, 0.3);
     }
     50% {
-        box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        box-shadow: 0 0 20px rgba(50, 50, 50, 0.5);
     }
 }
 
@@ -4371,8 +4371,8 @@ body.light-theme {
     right: 0;
     bottom: 0;
     background: 
-        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
-        radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+        radial-gradient(circle at 30% 30%, rgba(50, 50, 50, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 70% 70%, rgba(50, 50, 50, 0.05) 0%, transparent 50%);
     pointer-events: none;
     z-index: 0;
 }
@@ -4388,7 +4388,7 @@ body.light-theme {
     align-items: center;
     padding: 1.5rem;
     background: linear-gradient(135deg, rgba(40, 40, 40, 0.8), rgba(20, 20, 20, 0.8));
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 2px solid rgba(50, 50, 50, 0.1);
     margin-bottom: 1rem;
 }
 
@@ -4404,8 +4404,8 @@ body.light-theme {
     min-width: 60px;
     min-height: 60px;
     border-radius: 50%;
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    border: 3px solid rgba(50, 50, 50, 0.3);
+    box-shadow: 0 0 20px rgba(50, 50, 50, 0.2);
     object-fit: cover;
 }
 
@@ -4413,7 +4413,7 @@ body.light-theme {
     font-size: 1.2rem;
     font-weight: 700;
     color: #fff;
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+    text-shadow: 0 0 15px rgba(50, 50, 50, 0.5);
 }
 
 .admin-search-bar {
@@ -4424,8 +4424,8 @@ body.light-theme {
 .admin-search-bar input {
     width: 100%;
     padding: 1rem 1.5rem;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: rgba(50, 50, 50, 0.05);
+    border: 2px solid rgba(50, 50, 50, 0.2);
     border-radius: 15px;
     color: #fff;
     font-size: 1rem;
@@ -4434,13 +4434,13 @@ body.light-theme {
 
 .admin-search-bar input:focus {
     outline: none;
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.4);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    background: rgba(50, 50, 50, 0.1);
+    border-color: rgba(50, 50, 50, 0.4);
+    box-shadow: 0 0 20px rgba(50, 50, 50, 0.2);
 }
 
 .admin-search-bar input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(50, 50, 50, 0.5);
 }
 
 .user-meta {
@@ -4452,10 +4452,10 @@ body.light-theme {
 
 .user-nick,
 .user-id {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(50, 50, 50, 0.05);
     padding: 0.3rem 0.8rem;
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(50, 50, 50, 0.1);
 }
 
 .no-users-found {
@@ -4474,9 +4474,9 @@ body.light-theme {
     right: 0;
     bottom: 0;
     background: 
-        radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 60%),
-        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.08) 0%, transparent 40%),
-        radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(50, 50, 50, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at 30% 30%, rgba(50, 50, 50, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 70% 70%, rgba(50, 50, 50, 0.08) 0%, transparent 40%),
         rgba(0, 0, 0, 0.8);
     z-index: 999;
     opacity: 0;
@@ -4506,7 +4506,7 @@ body.light-theme {
     background: #ffffff;
     border-radius: 50%;
     animation: adminParticleFloat 2s ease-in-out infinite;
-    box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 8px rgba(50, 50, 50, 0.8);
 }
 
 @keyframes adminParticleFloat {
@@ -4864,9 +4864,9 @@ body.light-theme {
         height: 2px;
         background: linear-gradient(90deg, 
             transparent 0%,
-            rgba(255, 255, 255, 0.2) 20%,
-            rgba(255, 255, 255, 0.6) 50%,
-            rgba(255, 255, 255, 0.2) 80%,
+            rgba(50, 50, 50, 0.2) 20%,
+            rgba(50, 50, 50, 0.6) 50%,
+            rgba(50, 50, 50, 0.2) 80%,
             transparent 100%);
     }
     
@@ -5107,9 +5107,9 @@ body.light-theme {
         height: 100%;
         background: linear-gradient(180deg, 
             transparent 0%,
-            rgba(255, 255, 255, 0.2) 20%,
-            rgba(255, 255, 255, 0.6) 50%,
-            rgba(255, 255, 255, 0.2) 80%,
+            rgba(50, 50, 50, 0.2) 20%,
+            rgba(50, 50, 50, 0.6) 50%,
+            rgba(50, 50, 50, 0.2) 80%,
             transparent 100%);
     }
     
@@ -5153,7 +5153,7 @@ body.light-theme {
     display: flex;
     gap: 1rem;
     margin-bottom: 1rem;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 2px solid rgba(50, 50, 50, 0.2);
     padding-bottom: 1rem;
 }
 
@@ -5161,7 +5161,7 @@ body.light-theme {
     padding: 0.8rem 2rem;
     background: transparent;
     border: none;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(50, 50, 50, 0.7);
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
@@ -5171,13 +5171,13 @@ body.light-theme {
 
 .friends-nav-btn:hover {
     color: #fff;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(50, 50, 50, 0.1);
 }
 
 .friends-nav-btn.active {
     color: #fff;
     border-bottom-color: #fff;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(50, 50, 50, 0.05);
 }
 
 .light-theme .friends-nav-btn {
@@ -5233,9 +5233,9 @@ body.light-theme {
     align-items: center;
     gap: 1.5rem;
     padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(50, 50, 50, 0.1);
     border-radius: 15px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(50, 50, 50, 0.2);
     transition: all 0.3s ease;
 }
 
@@ -5243,8 +5243,8 @@ body.light-theme {
 .search-result-item:hover,
 .request-item:hover {
     transform: translateX(5px);
-    box-shadow: 0 5px 20px rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 5px 20px rgba(50, 50, 50, 0.2);
+    border-color: rgba(50, 50, 50, 0.4);
 }
 
 .light-theme .friend-item,
@@ -5268,7 +5268,7 @@ body.light-theme {
     height: 80px;
     border-radius: 50%;
     overflow: hidden;
-    border: 3px solid rgba(255, 255, 255, 0.3);
+    border: 3px solid rgba(50, 50, 50, 0.3);
     flex-shrink: 0;
 }
 
@@ -5343,9 +5343,9 @@ body.light-theme {
 .search-box input {
     flex: 1;
     padding: 1rem 1.5rem;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(50, 50, 50, 0.3);
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(50, 50, 50, 0.1);
     color: #fff;
     font-size: 1rem;
 }
@@ -5358,7 +5358,7 @@ body.light-theme {
 
 .search-box input:focus {
     outline: none;
-    border-color: rgba(255, 255, 255, 0.6);
+    border-color: rgba(50, 50, 50, 0.6);
 }
 
 .light-theme .search-box input:focus {
@@ -5369,7 +5369,7 @@ body.light-theme {
     color: #00ff00;
     font-weight: 600;
     padding: 0.5rem 1rem;
-    background: rgba(0, 255, 0, 0.1);
+    background: rgba(0, 0, 0, 0.1);
     border-radius: 8px;
 }
 
@@ -5377,7 +5377,7 @@ body.light-theme {
     color: #ffaa00;
     font-weight: 600;
     padding: 0.5rem 1rem;
-    background: rgba(255, 170, 0, 0.1);
+    background: rgba(50, 50, 50, 0.1);
     border-radius: 8px;
 }
 
@@ -5395,7 +5395,7 @@ body.light-theme {
 
 .requests-divider {
     height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    background: linear-gradient(90deg, transparent, rgba(50, 50, 50, 0.3), transparent);
     margin: 1rem 0;
 }
 
@@ -5477,9 +5477,9 @@ body.light-theme {
     text-align: center;
     position: relative;
     overflow: hidden;
-    border: 3px solid rgba(255, 255, 255, 0.3);
+    border: 3px solid rgba(50, 50, 50, 0.3);
     box-shadow: 
-        0 0 50px rgba(255, 255, 255, 0.3),
+        0 0 50px rgba(50, 50, 50, 0.3),
         0 10px 50px rgba(0, 0, 0, 0.8);
     animation: levelUpAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
@@ -5504,7 +5504,7 @@ body.light-theme {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(50, 50, 50, 0.15) 0%, transparent 70%);
     animation: levelUpGlowRotate 4s linear infinite;
 }
 
@@ -5530,7 +5530,7 @@ body.light-theme {
     position: absolute;
     font-size: 2rem;
     animation: sparkleFloat 3s ease-in-out infinite;
-    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+    filter: drop-shadow(0 0 10px rgba(50, 50, 50, 0.8));
 }
 
 @keyframes sparkleFloat {
@@ -5548,7 +5548,7 @@ body.light-theme {
     font-size: 6rem;
     margin-bottom: 1rem;
     animation: levelUpIconBounce 1s ease infinite;
-    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.8));
+    filter: drop-shadow(0 0 20px rgba(50, 50, 50, 0.8));
     position: relative;
     z-index: 1;
 }
@@ -5568,8 +5568,8 @@ body.light-theme {
     margin-bottom: 1rem;
     color: #fff;
     text-shadow: 
-        0 0 30px rgba(255, 255, 255, 0.8),
-        0 0 60px rgba(255, 255, 255, 0.4),
+        0 0 30px rgba(50, 50, 50, 0.8),
+        0 0 60px rgba(50, 50, 50, 0.4),
         3px 3px 10px rgba(0, 0, 0, 1);
     letter-spacing: 3px;
     animation: levelUpTitlePulse 2s ease infinite;
@@ -5580,14 +5580,14 @@ body.light-theme {
 @keyframes levelUpTitlePulse {
     0%, 100% {
         text-shadow: 
-            0 0 30px rgba(255, 255, 255, 0.8),
-            0 0 60px rgba(255, 255, 255, 0.4),
+            0 0 30px rgba(50, 50, 50, 0.8),
+            0 0 60px rgba(50, 50, 50, 0.4),
             3px 3px 10px rgba(0, 0, 0, 1);
     }
     50% {
         text-shadow: 
-            0 0 50px rgba(255, 255, 255, 1),
-            0 0 100px rgba(255, 255, 255, 0.6),
+            0 0 50px rgba(50, 50, 50, 1),
+            0 0 100px rgba(50, 50, 50, 0.6),
             3px 3px 10px rgba(0, 0, 0, 1);
     }
 }
@@ -5600,7 +5600,7 @@ body.light-theme {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.8));
+    filter: drop-shadow(0 0 20px rgba(50, 50, 50, 0.8));
     animation: levelNumberPulse 1.5s ease infinite;
     position: relative;
     z-index: 1;
@@ -5626,10 +5626,10 @@ body.light-theme {
 }
 
 .level-up-reward-item {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(50, 50, 50, 0.1);
     padding: 1.5rem 2rem;
     border-radius: 20px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(50, 50, 50, 0.3);
     min-width: 150px;
     animation: rewardItemPulse 2s ease infinite;
     transition: all 0.3s ease;
@@ -5637,15 +5637,15 @@ body.light-theme {
 
 .level-up-reward-item:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(50, 50, 50, 0.3);
 }
 
 @keyframes rewardItemPulse {
     0%, 100% {
-        box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        box-shadow: 0 0 15px rgba(50, 50, 50, 0.2);
     }
     50% {
-        box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+        box-shadow: 0 0 30px rgba(50, 50, 50, 0.4);
     }
 }
 
@@ -5682,10 +5682,10 @@ body.light-theme {
 
 @keyframes btnPulseGlow {
     0%, 100% {
-        box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        box-shadow: 0 0 20px rgba(50, 50, 50, 0.3);
     }
     50% {
-        box-shadow: 0 0 40px rgba(255, 255, 255, 0.6);
+        box-shadow: 0 0 40px rgba(50, 50, 50, 0.6);
     }
 }
 
@@ -5774,8 +5774,8 @@ body.light-theme {
     width: 38px;
     height: 38px;
     padding: 0;
-    background: linear-gradient(135deg, rgba(80, 80, 80, 0.9), rgba(50, 50, 50, 0.9)) !important;
-    border: 2px solid rgba(255, 255, 255, 0.4) !important;
+    background: linear-gradient(135deg, rgba(50, 50, 50, 0.9), rgba(50, 50, 50, 0.9)) !important;
+    border: 2px solid rgba(50, 50, 50, 0.4) !important;
     border-radius: 10px !important;
     display: flex;
     align-items: center;
@@ -5788,11 +5788,11 @@ body.light-theme {
     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     z-index: 10;
     text-shadow: 
-        0 0 15px rgba(255, 255, 255, 0.8),
+        0 0 15px rgba(50, 50, 50, 0.8),
         0 2px 5px rgba(0, 0, 0, 0.8);
     box-shadow: 
         0 4px 15px rgba(0, 0, 0, 0.5),
-        inset 0 1px 2px rgba(255, 255, 255, 0.3),
+        inset 0 1px 2px rgba(50, 50, 50, 0.3),
         inset 0 -1px 2px rgba(0, 0, 0, 0.5);
     position: relative;
     overflow: hidden;
@@ -5805,7 +5805,7 @@ body.light-theme {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(50, 50, 50, 0.3) 0%, transparent 70%);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -5816,16 +5816,16 @@ body.light-theme {
 }
 
 .mode-info-btn:hover {
-    background: linear-gradient(135deg, rgba(120, 120, 120, 0.95), rgba(80, 80, 80, 0.95)) !important;
+    background: linear-gradient(135deg, rgba(50, 50, 50, 0.95), rgba(50, 50, 50, 0.95)) !important;
     transform: scale(1.2) rotate(8deg);
-    border-color: rgba(255, 255, 255, 0.6) !important;
+    border-color: rgba(50, 50, 50, 0.6) !important;
     box-shadow: 
-        0 6px 25px rgba(255, 255, 255, 0.4),
-        inset 0 1px 3px rgba(255, 255, 255, 0.5),
+        0 6px 25px rgba(50, 50, 50, 0.4),
+        inset 0 1px 3px rgba(50, 50, 50, 0.5),
         inset 0 -1px 3px rgba(0, 0, 0, 0.5);
     text-shadow: 
-        0 0 20px rgba(255, 255, 255, 1),
-        0 0 30px rgba(255, 255, 255, 0.6),
+        0 0 20px rgba(50, 50, 50, 1),
+        0 0 30px rgba(50, 50, 50, 0.6),
         0 2px 5px rgba(0, 0, 0, 1);
 }
 
@@ -5842,26 +5842,26 @@ body.light-theme {
 }
 
 .reward-badge {
-    background: rgba(0, 255, 100, 0.2);
+    background: rgba(0, 0, 0, 0.2);
     padding: 0.4rem 1rem;
     border-radius: 20px;
     font-size: 0.9rem;
-    border: 1px solid rgba(0, 255, 100, 0.3);
+    border: 1px solid rgba(0, 0, 0, 0.3);
     font-weight: bold;
 }
 
 .reward-badge.no-reward {
-    background: rgba(255, 100, 0, 0.2);
-    border-color: rgba(255, 100, 0, 0.3);
+    background: rgba(50, 50, 50, 0.2);
+    border-color: rgba(50, 50, 50, 0.3);
 }
 
 .coming-soon-badge {
-    background: rgba(255, 200, 0, 0.2);
+    background: rgba(50, 50, 50, 0.2);
     padding: 0.6rem 1.2rem;
     border-radius: 10px;
     text-align: center;
     margin: 1rem 0;
-    border: 1px solid rgba(255, 200, 0, 0.3);
+    border: 1px solid rgba(50, 50, 50, 0.3);
     font-weight: bold;
     display: inline-block;
 }
@@ -5886,8 +5886,8 @@ body.light-theme {
 
 /* Приглашения в кланы */
 #clan-invites-container {
-    background: rgba(255, 165, 0, 0.1);
-    border: 2px solid rgba(255, 165, 0, 0.3);
+    background: rgba(50, 50, 50, 0.1);
+    border: 2px solid rgba(50, 50, 50, 0.3);
     border-radius: 15px;
     padding: 1.5rem;
     margin-bottom: 2rem;
@@ -5900,7 +5900,7 @@ body.light-theme {
 }
 
 .clan-invite-item {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(50, 50, 50, 0.05);
     border-radius: 10px;
     padding: 1rem;
     margin-bottom: 1rem;
@@ -5908,7 +5908,7 @@ body.light-theme {
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(50, 50, 50, 0.1);
 }
 
 .light-theme .clan-invite-item {
@@ -5938,8 +5938,8 @@ body.light-theme {
 
 /* Запросы на вступление в клан (для лидера) */
 #clan-join-requests {
-    background: rgba(100, 150, 255, 0.1);
-    border: 2px solid rgba(100, 150, 255, 0.3);
+    background: rgba(50, 50, 50, 0.1);
+    border: 2px solid rgba(50, 50, 50, 0.3);
     border-radius: 15px;
     padding: 1.5rem;
     margin-bottom: 2rem;
@@ -5952,7 +5952,7 @@ body.light-theme {
 }
 
 .join-request-item {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(50, 50, 50, 0.05);
     border-radius: 10px;
     padding: 1rem;
     margin-bottom: 1rem;
@@ -5960,7 +5960,7 @@ body.light-theme {
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(50, 50, 50, 0.1);
 }
 
 .light-theme .join-request-item {
@@ -5989,10 +5989,10 @@ body.light-theme {
 }
 
 .clan-card {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(50, 50, 50, 0.1);
     border-radius: 20px;
     padding: 2rem;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(50, 50, 50, 0.2);
     display: flex;
     gap: 2rem;
     align-items: center;
@@ -6036,10 +6036,10 @@ body.light-theme {
 
 .clan-tag {
     display: inline-block;
-    background: rgba(255, 200, 0, 0.2);
+    background: rgba(50, 50, 50, 0.2);
     padding: 0.3rem 0.8rem;
     border-radius: 5px;
-    border: 1px solid rgba(255, 200, 0, 0.5);
+    border: 1px solid rgba(50, 50, 50, 0.5);
     font-weight: bold;
     margin-bottom: 0.5rem;
 }
@@ -6077,7 +6077,7 @@ body.light-theme {
     justify-content: space-between;
     align-items: center;
     padding: 0.8rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(50, 50, 50, 0.05);
     border-radius: 8px;
     margin-bottom: 0.5rem;
 }
@@ -6118,7 +6118,7 @@ body.light-theme {
     justify-content: center;
     background: rgba(0, 0, 0, 0.3);
     border-radius: 15px;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(50, 50, 50, 0.2);
 }
 
 .part-section {
@@ -6141,8 +6141,8 @@ body.light-theme {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: rgba(50, 50, 50, 0.1);
+    border: 2px solid rgba(50, 50, 50, 0.2);
     border-radius: 8px;
     cursor: pointer;
     font-size: 1.8rem;
@@ -6150,13 +6150,13 @@ body.light-theme {
 }
 
 .avatar-option:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(50, 50, 50, 0.2);
     transform: scale(1.1);
 }
 
 .avatar-option.selected {
     border-color: #ffd700;
-    background: rgba(255, 215, 0, 0.2);
+    background: rgba(50, 50, 50, 0.2);
 }
 
 .avatar-option.color {
@@ -6241,7 +6241,7 @@ body.light-theme {
     color: #fff;
     margin: 1rem 0;
     font-family: monospace;
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+    text-shadow: 0 0 20px rgba(50, 50, 50, 0.8);
 }
 
 #opponent-status {
@@ -6319,16 +6319,16 @@ body.light-theme {
     align-items: center;
     gap: 1rem;
     padding: 1rem;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(50, 50, 50, 0.05);
     border-radius: 10px;
     margin-bottom: 0.8rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(50, 50, 50, 0.1);
     transition: all 0.2s ease;
 }
 
 .search-result-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(50, 50, 50, 0.1);
+    border-color: rgba(50, 50, 50, 0.2);
 }
 
 .no-results {
@@ -6342,8 +6342,8 @@ body.light-theme {
 .form-input {
     width: 100%;
     padding: 0.8rem 1.2rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: rgba(50, 50, 50, 0.1);
+    border: 2px solid rgba(50, 50, 50, 0.2);
     border-radius: 10px;
     color: #fff;
     font-size: 1rem;
@@ -6353,13 +6353,13 @@ body.light-theme {
 
 .form-input:focus {
     outline: none;
-    border-color: rgba(255, 215, 0, 0.5);
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+    border-color: rgba(50, 50, 50, 0.5);
+    background: rgba(50, 50, 50, 0.15);
+    box-shadow: 0 0 15px rgba(50, 50, 50, 0.3);
 }
 
 .form-input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(50, 50, 50, 0.5);
 }
 
 textarea.form-input {
@@ -6445,10 +6445,10 @@ textarea.form-input {
 }
 
 .speech-bubble {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(50, 50, 50, 0.1);
     border-radius: 20px;
     padding: 2rem;
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(50, 50, 50, 0.2);
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(10px);
 }
@@ -6503,18 +6503,18 @@ textarea.form-input {
     animation: tutorialPulse 2s ease-in-out infinite !important;
     z-index: 10004 !important;
     position: relative !important;
-    box-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 0 5000px rgba(0, 0, 0, 0.85) !important;
+    box-shadow: 0 0 30px rgba(50, 50, 50, 0.8), 0 0 0 5000px rgba(0, 0, 0, 0.85) !important;
     clip-path: inset(0 -5000px -5000px -5000px);
 }
 
 @keyframes tutorialPulse {
     0%, 100% {
         transform: scale(1);
-        box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+        box-shadow: 0 0 30px rgba(50, 50, 50, 0.8);
     }
     50% {
         transform: scale(1.05);
-        box-shadow: 0 0 50px rgba(255, 215, 0, 1);
+        box-shadow: 0 0 50px rgba(50, 50, 50, 1);
     }
 }
 
@@ -6527,7 +6527,7 @@ textarea.form-input {
     animation: arrowBounce 1s ease-in-out infinite;
     z-index: 10001;
     pointer-events: none;
-    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8));
+    filter: drop-shadow(0 0 10px rgba(50, 50, 50, 0.8));
 }
 
 @keyframes arrowBounce {
