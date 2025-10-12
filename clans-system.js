@@ -614,8 +614,15 @@ class ClansSystem {
                 return;
             }
             
+            // Проверяем лимит клана (максимум 5 человек)
+            const currentMembers = clan.members || [];
+            if (currentMembers.length >= 5) {
+                await this.gameData.showAlert('Клан переполнен! Максимум 5 участников.', '⚠️', 'Ограничение');
+                return;
+            }
+            
             // Добавляем в клан
-            const updatedMembers = [...(clan.members || []), this.gameData.currentUser];
+            const updatedMembers = [...currentMembers, this.gameData.currentUser];
             
             if (this.gameData.useFirebase) {
                 await firebase.database().ref(`clans/${invite.clanId}/members`).set(updatedMembers);
