@@ -4664,8 +4664,8 @@ class GameData {
                 card.health < weakest.health ? card : weakest
             );
             this.battleState.invisibleCards.push(targetCard.name);
-            this.battleState.runeDurations[targetCard.name] = 2; // 2 хода
-            console.log('👻 Бот сделал карту невидимой на 2 хода:', targetCard.name);
+            this.battleState.runeDurations[targetCard.name] = 1; // 1 раунд
+            console.log('👻 Бот сделал карту невидимой на 1 раунд:', targetCard.name);
             
             const cardEl = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
             if (cardEl) {
@@ -4682,9 +4682,9 @@ class GameData {
                 card.health > strongest.health ? card : strongest
             );
             this.battleState.shieldedCards.push(targetCard.name);
-            this.battleState.runeDurations[targetCard.name] = 2; // 2 хода
+            this.battleState.runeDurations[targetCard.name] = 1; // 1 раунд
             targetCard.tempDefense = (targetCard.tempDefense || 0) + 40;
-            console.log('🛡️ Бот дал щит карте на 2 хода:', targetCard.name);
+            console.log('🛡️ Бот дал щит карте на 1 раунд:', targetCard.name);
             
             const cardEl = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
             if (cardEl) {
