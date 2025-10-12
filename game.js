@@ -1050,10 +1050,16 @@ class GameData {
             await this.saveUser({ avatar: user.avatar });
         }
         
+        // Убираем заголовок "Мой профиль"
+        const profileTitle = document.querySelector('.profile-header h2');
+        if (profileTitle) {
+            profileTitle.style.display = 'none';
+        }
+        
         // Обновляем UI
         document.getElementById('user-avatar').src = user.avatar;
-        document.getElementById('display-nickname').textContent = user.nickname;
-        document.getElementById('display-userid').textContent = user.userid || user.userId;
+        document.getElementById('display-nickname').textContent = user.nickname || 'Игрок';
+        document.getElementById('display-userid').textContent = user.userid || user.userId || 'ID';
         document.getElementById('profile-level').textContent = user.level;
         document.getElementById('profile-gold').textContent = user.gold;
         document.getElementById('profile-gems').textContent = user.gems;
@@ -1098,10 +1104,14 @@ class GameData {
         
         if (field === 'nickname') {
             title.textContent = 'Изменить никнейм';
-            input.value = user.nickname;
+            input.value = user.nickname || '';
+            input.placeholder = user.nickname || 'Никнейм';
         } else if (field === 'userid') {
             title.textContent = 'Изменить ID';
-            input.value = user.userId;
+            const currentId = user.userid || user.userId || '';
+            input.value = currentId;
+            input.placeholder = currentId || 'ID';
+            console.log('📝 Редактирование ID:', currentId);
         }
         
         modal.classList.add('active');
@@ -2260,7 +2270,13 @@ class GameData {
             return;
         }
         
-        leaderboardList.innerHTML = '<div class="loading">Загрузка топа...</div>';
+        // Добавляем сообщение о конкурсе топ-1
+        const weeklyMessage = this.getWeeklyTopMessage();
+        
+        leaderboardList.innerHTML = `
+            <div class="weekly-competition-banner">${weeklyMessage}</div>
+            <div class="loading">Загрузка топа...</div>
+        `;
         
         try {
             // Получаем всех пользователей
