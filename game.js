@@ -345,7 +345,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/terrorblade.png',
                 skill: {
                     name: 'Sunder',
-                    icon: 'images/skills/terrorblade_sunder',
+                    icon: 'images/skills/terrorblade_sunder.webp',
                     description: 'Меняется HP с выбранной картой',
                     cooldown: 2
                 }
@@ -360,7 +360,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/crystal_maiden.png',
                 skill: {
                     name: 'Frostbite',
-                    icon: 'images/skills/crystal_maiden_frostbite',
+                    icon: 'images/skills/crystal_maiden_frostbite.webp',
                     description: 'Заморозка: карта пропускает следующий ход',
                     cooldown: 2
                 }
@@ -375,7 +375,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/spirit_breaker.png',
                 skill: {
                     name: 'Charge of Darkness',
-                    icon: 'images/skills/spirit_breaker_charge',
+                    icon: 'images/skills/spirit_breaker_charge.webp',
                     description: '+20 скорости на раунд, можно ударить любую карту',
                     cooldown: 2
                 }
@@ -391,7 +391,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/nevermore.png',
                 skill: {
                     name: 'Реквием душ',
-                    icon: 'images/skills/shadow_fiend_requiem',
+                    icon: 'images/skills/shadow_fiend_requiem.webp',
                     description: '50 урона карте напротив, 20 остальным. Все в страхе (пропуск хода)',
                     cooldown: 2
                 }
@@ -406,7 +406,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/pudge.png',
                 skill: {
                     name: 'Dismember',
-                    icon: 'images/skills/pudge_dismember',
+                    icon: 'images/skills/pudge_dismember.png',
                     description: 'Снимает 50 HP врага, восстанавливает 25 HP',
                     cooldown: 2
                 }
@@ -421,7 +421,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/invoker.png',
                 skill: {
                     name: 'Sun Strike',
-                    icon: 'images/skills/invoker_sun_strike',
+                    icon: 'images/skills/invoker_sun_strike.png',
                     description: '100 урона + Cold Snap (пропуск следующего хода)',
                     cooldown: 2
                 }
@@ -444,11 +444,11 @@ class GameData {
         };
     }
 
-    initUI() {
+    async initUI() {
         console.log('🔧 initUI() вызван - настраиваем интерфейс');
         this.applyTheme();
         this.setupEventListeners();
-        this.checkAuth();
+        await this.checkAuth();
     }
 
     applyTheme() {
@@ -711,12 +711,55 @@ class GameData {
         return `${adj}${noun}${num}`;
     }
 
-    checkAuth() {
+    async checkAuth() {
+        console.log('🔍 Проверка авторизации...');
+        
+        // Проверяем Firebase авторизацию
+        if (this.useFirebase && typeof firebaseAdapter !== 'undefined') {
+            const currentFirebaseUser = firebaseAdapter.auth.currentUser;
+            
+            if (currentFirebaseUser) {
+                console.log('✅ Firebase пользователь найден:', currentFirebaseUser.uid);
+                
+                try {
+                    // Загружаем данные пользователя из Firebase
+                    const userData = await firebaseAdapter.getUserData(currentFirebaseUser.uid);
+                    
+                    if (userData) {
+                        this.currentUser = currentFirebaseUser.uid;
+                        this.currentUserData = userData;
+                        
+                        // Сохраняем в localStorage
+                        localStorage.setItem('dotaCardsCurrentUser', currentFirebaseUser.uid);
+                        
+                        // Подписываемся на обновления
+                        firebaseAdapter.listenToUserData(currentFirebaseUser.uid, (data) => {
+                            this.currentUserData = data;
+                            this.updateUserInfo();
+                        });
+                        
+                        // Загружаем кеш пользователей
+                        this.allUsersCache = await firebaseAdapter.getAllUsers();
+                        
+                        console.log('✅ Автовход через Firebase успешен');
+                        this.showMainMenu();
+                        return;
+                    }
+                } catch (error) {
+                    console.error('❌ Ошибка автовхода Firebase:', error);
+                }
+            }
+        }
+        
+        // Проверяем localStorage (старый метод)
         const currentUser = localStorage.getItem('dotaCardsCurrentUser');
         if (currentUser && this.users[currentUser]) {
+            console.log('✅ Автовход через localStorage:', currentUser);
             this.currentUser = currentUser;
+            this.currentUserData = this.users[currentUser];
             this.showMainMenu();
         } else {
+            console.log('❌ Автовход не удался, показываем экран входа');
             this.showAuthScreen();
         }
     }
@@ -1045,6 +1088,10 @@ class GameData {
                 this.currentUser = result.userId;
                 this.currentUserData = result.userData;
                 
+                // Сохраняем сессию в localStorage для автовхода
+                localStorage.setItem('dotaCardsCurrentUser', result.userId);
+                console.log('💾 Сессия сохранена в localStorage');
+                
                 console.log('📊 Данные пользователя:', this.currentUserData);
                 
                 // Подписываемся на изменения данных в реальном времени
@@ -1201,19 +1248,26 @@ class GameData {
     }
 
     async logout() {
+        console.log('👋 Выход из аккаунта...');
+        
         if (this.useFirebase) {
             // Firebase выход
-            firebaseAdapter.unlistenToUserData(this.currentUser);
+            if (this.currentUser) {
+                firebaseAdapter.unlistenToUserData(this.currentUser);
+            }
             await firebaseAdapter.logout();
             console.log('✅ Выход из Firebase');
-        } else {
-            // localStorage выход
-        localStorage.removeItem('dotaCardsCurrentUser');
         }
+        
+        // Очищаем localStorage в любом случае
+        localStorage.removeItem('dotaCardsCurrentUser');
+        console.log('💾 Сессия удалена из localStorage');
         
         this.currentUser = null;
         this.currentUserData = null;
         this.allUsersCache = {};
+        
+        console.log('🔐 Переход к экрану входа');
         this.showAuthScreen();
     }
 
@@ -3589,13 +3643,17 @@ class GameData {
                 card.health < weakest.health ? card : weakest
             );
             this.battleState.invisibleCards.push(targetCard.name);
-            this.battleState.runeDurations[targetCard.name] = 1; // 1 раунд (бот + игрок)
-            console.log('👻 Бот сделал карту невидимой на 1 раунд:', targetCard.name);
+            this.battleState.runeDurations[targetCard.name] = 2; // 2 хода
+            console.log('👻 Бот сделал карту невидимой на 2 хода:', targetCard.name);
             
             const cardEl = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
             if (cardEl) {
-                cardEl.classList.add('invisible-card');
+                this.showRuneActivationAnimation(cardEl, 'invisibility');
+                cardEl.classList.add('invisible-card', 'has-rune-effect', 'invisibility');
                 cardEl.style.opacity = '0.5';
+                
+                // Добавляем индикатор
+                this.addRuneIndicator(cardEl, 'invisibility', '👻 НЕВИДИМОСТЬ');
             }
         } else if (rune.type === 'shield') {
             // Применяем на карту с наибольшим HP
@@ -3603,13 +3661,17 @@ class GameData {
                 card.health > strongest.health ? card : strongest
             );
             this.battleState.shieldedCards.push(targetCard.name);
-            this.battleState.runeDurations[targetCard.name] = 1; // 1 раунд (бот + игрок)
+            this.battleState.runeDurations[targetCard.name] = 2; // 2 хода
             targetCard.tempDefense = (targetCard.tempDefense || 0) + 40;
-            console.log('🛡️ Бот дал щит карте на 1 раунд:', targetCard.name);
+            console.log('🛡️ Бот дал щит карте на 2 хода:', targetCard.name);
             
             const cardEl = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
             if (cardEl) {
-                cardEl.classList.add('shielded-card');
+                this.showRuneActivationAnimation(cardEl, 'shield');
+                cardEl.classList.add('shielded-card', 'has-rune-effect', 'shield');
+                
+                // Добавляем индикатор
+                this.addRuneIndicator(cardEl, 'shield', '🛡️ ЩИТ');
             }
         } else if (rune.type === 'water') {
             // Применяем на раненую карту
@@ -4009,27 +4071,35 @@ class GameData {
         // Применяем эффект руны
         if (rune.type === 'invisibility') {
             this.battleState.invisibleCards.push(targetCard.name);
-            this.battleState.runeDurations[targetCard.name] = 1; // 1 раунд (игрок + бот)
-            this.showBattleHint(`${targetCard.name} невидим! Не может быть атакован этот раунд.`);
-            console.log('👻 Карта стала невидимой на 1 раунд:', targetCard.name);
+            this.battleState.runeDurations[targetCard.name] = 2; // 2 хода
+            this.showBattleHint(`${targetCard.name} невидим! Не может быть атакован 2 хода.`);
+            console.log('👻 Карта стала невидимой на 2 хода:', targetCard.name);
             
-            // Визуальный эффект
+            // Анимация активации руны
             const cardEl = document.querySelector(`.player-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
             if (cardEl) {
-                cardEl.classList.add('invisible-card');
+                this.showRuneActivationAnimation(cardEl, 'invisibility');
+                cardEl.classList.add('invisible-card', 'has-rune-effect', 'invisibility');
                 cardEl.style.opacity = '0.5';
+                
+                // Добавляем индикатор
+                this.addRuneIndicator(cardEl, 'invisibility', '👻 НЕВИДИМОСТЬ');
             }
         } else if (rune.type === 'shield') {
             this.battleState.shieldedCards.push(targetCard.name);
-            this.battleState.runeDurations[targetCard.name] = 1; // 1 раунд (игрок + бот)
+            this.battleState.runeDurations[targetCard.name] = 2; // 2 хода
             targetCard.tempDefense = (targetCard.tempDefense || 0) + 40;
-            this.showBattleHint(`${targetCard.name} получил щит! +40% защиты на этот раунд.`);
-            console.log('🛡️ Карта получила щит на 1 раунд:', targetCard.name);
+            this.showBattleHint(`${targetCard.name} получил щит! +40% защиты на 2 хода.`);
+            console.log('🛡️ Карта получила щит на 2 хода:', targetCard.name);
             
-            // Визуальный эффект
+            // Анимация активации руны
             const cardEl = document.querySelector(`.player-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
             if (cardEl) {
-                cardEl.classList.add('shielded-card');
+                this.showRuneActivationAnimation(cardEl, 'shield');
+                cardEl.classList.add('shielded-card', 'has-rune-effect', 'shield');
+                
+                // Добавляем индикатор
+                this.addRuneIndicator(cardEl, 'shield', '🛡️ ЩИТ');
             }
         } else if (rune.type === 'water') {
             const healAmount = Math.floor(targetCard.maxHealth * 0.2);
@@ -4739,6 +4809,62 @@ class GameData {
                 if (cardEl.contains(freezeMarker)) cardEl.removeChild(freezeMarker);
             }, 2500);
         }
+    }
+    
+    // Анимация активации руны
+    showRuneActivationAnimation(cardEl, runeType) {
+        if (!cardEl) return;
+        
+        // Основная анимация (вспышка)
+        const activation = document.createElement('div');
+        activation.className = `rune-activation ${runeType}`;
+        cardEl.appendChild(activation);
+        
+        // Частицы
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.className = `rune-particle ${runeType}`;
+            
+            const angle = (i / 20) * Math.PI * 2;
+            const distance = 60 + Math.random() * 40;
+            const tx = Math.cos(angle) * distance;
+            const ty = Math.sin(angle) * distance;
+            
+            particle.style.setProperty('--tx', tx + 'px');
+            particle.style.setProperty('--ty', ty + 'px');
+            particle.style.left = '50%';
+            particle.style.top = '50%';
+            
+            cardEl.appendChild(particle);
+            
+            setTimeout(() => {
+                if (cardEl.contains(particle)) cardEl.removeChild(particle);
+            }, 1500);
+        }
+        
+        setTimeout(() => {
+            if (cardEl.contains(activation)) cardEl.removeChild(activation);
+        }, 1500);
+        
+        console.log('✨ Анимация активации руны:', runeType);
+    }
+    
+    // Добавление индикатора руны на карточку
+    addRuneIndicator(cardEl, runeType, text) {
+        if (!cardEl) return;
+        
+        // Удаляем старый индикатор если есть
+        const oldIndicator = cardEl.querySelector('.card-rune-indicator');
+        if (oldIndicator) {
+            cardEl.removeChild(oldIndicator);
+        }
+        
+        const indicator = document.createElement('div');
+        indicator.className = `card-rune-indicator ${runeType}`;
+        indicator.textContent = text;
+        cardEl.appendChild(indicator);
+        
+        console.log('📍 Индикатор руны добавлен:', text);
     }
     
     showDamageNumber(target, damage, isBlocked, isCrit) {
