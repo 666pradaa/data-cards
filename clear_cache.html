@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Очистка кэша</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+            padding: 3rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            max-width: 600px;
+        }
+        h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+        .button {
+            display: inline-block;
+            padding: 1.5rem 3rem;
+            margin: 1rem;
+            background: white;
+            color: black;
+            text-decoration: none;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        .button:hover { transform: scale(1.05); }
+        .info { margin: 2rem 0; font-size: 1.1rem; line-height: 1.8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 Очистите кэш!</h1>
+        <div class="info">
+            Код исправлен, но браузер использует старую версию.<br>
+            Нажмите комбинацию клавиш:<br>
+            <br>
+            <strong>Mac:</strong> Cmd + Shift + R<br>
+            <strong>Windows:</strong> Ctrl + Shift + R
+        </div>
+        <a href="index.html" class="button" onclick="location.reload(true)">
+            Перейти к игре
+        </a>
+    </div>
+    <script>
+        // Добавляем версию к запросу для обхода кэша
+        if (!sessionStorage.getItem('cache_cleared')) {
+            sessionStorage.setItem('cache_cleared', 'true');
+            location.href = 'index.html?v=' + Date.now();
+        }
+    </script>
+</body>
+</html>
