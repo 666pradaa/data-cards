@@ -699,7 +699,7 @@ class GameData {
         });
     }
 
-    handleAvatarUpload(event) {
+    async handleAvatarUpload(event) {
         const file = event.target.files[0];
         if (!file) return;
         
@@ -1653,7 +1653,7 @@ class GameData {
         console.log('📧 Сообщение в поддержку отправлено');
     }
     
-    showSupportAdminPanel() {
+    async showSupportAdminPanel() {
         console.log('💬 Открываем админ панель поддержки');
         const user = this.getUser();
         
