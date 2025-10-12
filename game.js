@@ -658,9 +658,7 @@ class GameData {
         }
         
         // Старая кнопка support-btn удалена, используется support-btn-floating (плавающая кнопка)
-        console.log('ℹ️ Плавающая кнопка поддержки будет инициализирована в showMainMenu()'); else {
-            console.error('❌ Кнопка support-btn не найдена!');
-        }
+        console.log('ℹ️ Плавающая кнопка поддержки будет инициализирована в showMainMenu()');
 
         // Навигация
         document.querySelectorAll('.nav-btn').forEach(btn => {
