@@ -2552,57 +2552,41 @@ class GameData {
     }
 
     animateTabTransition() {
-        // Создаем креативную анимацию с частицами
-        this.createParticleTransition();
-    }
-
-    createParticleTransition() {
-        // Создаем волновой эффект
-        this.createWaveEffect();
-        
-        // Добавляем частицы
-        setTimeout(() => {
-            this.createFloatingParticles();
-        }, 200);
-    }
-
-    createWaveEffect() {
-        const wave = document.createElement('div');
-        wave.className = 'wave-transition';
-        wave.style.cssText = `
+        // Простой blur эффект без обрезания
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: ${this.currentTheme === 'dark' ? 
-                'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)' : 
-                'radial-gradient(circle, rgba(0,0,0,0.1) 0%, transparent 70%)'};
-            z-index: 999;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            z-index: 500;
             opacity: 0;
-            transform: scale(0.8);
-            transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             pointer-events: none;
+            transition: opacity 0.2s ease;
         `;
         
-        document.body.appendChild(wave);
+        document.body.appendChild(overlay);
         
-        // Анимация волны
+        // Показываем
         setTimeout(() => {
-            wave.style.opacity = '1';
-            wave.style.transform = 'scale(1)';
+            overlay.style.opacity = '1';
         }, 10);
         
+        // Скрываем
         setTimeout(() => {
-            wave.style.opacity = '0';
-            wave.style.transform = 'scale(1.2)';
-        }, 300);
+            overlay.style.opacity = '0';
+        }, 200);
         
+        // Удаляем
         setTimeout(() => {
-            if (document.body.contains(wave)) {
-                document.body.removeChild(wave);
+            if (document.body.contains(overlay)) {
+                document.body.removeChild(overlay);
             }
-        }, 900);
+        }, 400);
     }
 
     createFloatingParticles() {
