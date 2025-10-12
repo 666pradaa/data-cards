@@ -696,12 +696,7 @@ class GameData {
             useCodeBtn.addEventListener('click', () => this.usePromoCode());
         }
         
-        // Поддержка
-        const supportBtn = document.getElementById('support-btn');
-        if (supportBtn) {
-            supportBtn.addEventListener('click', () => this.openSupportPanel());
-        }
-        
+        // Поддержка - закрытие и отправка
         const closeSupportBtn = document.getElementById('close-support');
         if (closeSupportBtn) {
             closeSupportBtn.addEventListener('click', () => this.closeSupportPanel());
@@ -723,18 +718,7 @@ class GameData {
             sendSupportAdminBtn.addEventListener('click', () => this.sendSupportAdminMessage());
         }
 
-        // Переключение темы
-        document.getElementById('theme-toggle').addEventListener('click', () => this.toggleTheme());
-
-        // Переключение музыки
-        const musicToggleBtn = document.getElementById('music-toggle');
-        if (musicToggleBtn) {
-            musicToggleBtn.addEventListener('click', () => this.toggleMusic());
-            this.updateMusicButton();
-        }
-
-        // Переключение звука
-        document.getElementById('sound-toggle').addEventListener('click', () => this.toggleSound());
+        // Дубликаты обработчиков удалены - они уже добавлены выше
 
         // Админ панель
         const closeAdminBtn = document.getElementById('close-admin');
