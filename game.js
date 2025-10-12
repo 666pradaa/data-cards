@@ -1935,14 +1935,24 @@ class GameData {
     }
     
     closeSupportAdminPanel() {
+        console.log('❌ Закрываем панель администратора поддержки');
+        
         const supportAdminPanel = document.getElementById('support-admin-panel');
         const mainMenu = document.getElementById('main-menu');
         
-        if (supportAdminPanel && mainMenu) {
+        if (supportAdminPanel) {
             supportAdminPanel.classList.remove('active');
             supportAdminPanel.style.display = 'none';
-            mainMenu.classList.add('active');
+            supportAdminPanel.style.visibility = 'hidden';
+            supportAdminPanel.style.opacity = '0';
         }
+        
+        if (mainMenu) {
+            mainMenu.classList.add('active');
+            mainMenu.style.display = 'block';
+        }
+        
+        console.log('✅ Панель администратора поддержки закрыта, возврат в меню');
     }
     
     async loadSupportTickets() {
