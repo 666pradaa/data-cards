@@ -539,16 +539,18 @@ class GameData {
         
         if (loginBtn) {
             console.log('✅ Кнопка входа найдена, устанавливаем обработчик');
-            loginBtn.addEventListener('click', (e) => {
+            loginBtn.addEventListener('click', async (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 console.log('🔵 Клик по кнопке входа!');
                 
-                // Вызываем login без await в event listener
-                this.login().catch(async (error) => {
+                // Вызываем login
+                try {
+                    await this.login();
+                } catch (error) {
                     console.error('❌ Критическая ошибка входа:', error);
                     await this.showAlert('Ошибка входа: ' + error.message, '❌', 'Ошибка');
-                });
+                }
             });
         } else {
             console.error('❌ Кнопка login-btn не найдена!');
