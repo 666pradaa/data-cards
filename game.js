@@ -1010,13 +1010,11 @@ class GameData {
         // Плавающая кнопка поддержки (в правом нижнем углу)
         const supportBtnFloating = document.getElementById('support-btn-floating');
         if (supportBtnFloating) {
-            console.log('✅ Переустанавливаем плавающую кнопку поддержки');
-            const newSupportBtn = supportBtnFloating.cloneNode(true);
-            supportBtnFloating.parentNode.replaceChild(newSupportBtn, supportBtnFloating);
-            newSupportBtn.addEventListener('click', () => {
+            console.log('✅ Устанавливаем плавающую кнопку поддержки');
+            supportBtnFloating.onclick = () => {
                 console.log('🔵 Клик по плавающей кнопке поддержки');
                 this.openSupportPanel();
-            });
+            };
         }
         
         // Кнопка боя с ботом
@@ -1772,14 +1770,12 @@ class GameData {
             // Переустанавливаем кнопку закрытия
             const closeBtn = document.getElementById('close-support');
             if (closeBtn) {
-                console.log('✅ Переустанавливаем кнопку закрытия поддержки');
-                const newCloseBtn = closeBtn.cloneNode(true);
-                closeBtn.parentNode.replaceChild(newCloseBtn, closeBtn);
-                newCloseBtn.addEventListener('click', (e) => {
+                console.log('✅ Устанавливаем кнопку закрытия поддержки');
+                closeBtn.onclick = (e) => {
                     e.preventDefault();
                     console.log('🔵🔵🔵 ЗАКРЫТИЕ ПАНЕЛИ ПОДДЕРЖКИ 🔵🔵🔵');
                     this.closeSupportPanel();
-                });
+                };
             }
         } else {
             console.error('❌ Не найдены элементы для поддержки!');

@@ -1,26 +1,29 @@
 /* Плавающая кнопка поддержки в правом нижнем углу */
 
 .support-btn-floating {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%);
-    color: #000;
-    border: 3px solid rgba(255, 255, 255, 0.3);
-    font-size: 1.8rem;
-    cursor: pointer;
+    position: fixed !important;
+    bottom: 2rem !important;
+    right: 2rem !important;
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 50% !important;
+    background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%) !important;
+    color: #000 !important;
+    border: 3px solid rgba(255, 255, 255, 0.3) !important;
+    font-size: 1.8rem !important;
+    cursor: pointer !important;
     box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.3),
-        0 0 20px rgba(255, 255, 255, 0.2);
-    z-index: 10000;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: floatSupport 3s ease-in-out infinite;
+        0 0 20px rgba(255, 255, 255, 0.2) !important;
+    z-index: 99999 !important;
+    transition: all 0.3s ease !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    animation: floatSupport 3s ease-in-out infinite !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
 }
 
 @keyframes floatSupport {
