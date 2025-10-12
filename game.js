@@ -6058,8 +6058,10 @@ class GameData {
         if (attacker.isDead || target.isDead) return;
 
         // 🔮 Проверяем невидимость цели
-        if (this.battleState.invisibleCards.includes(target.name)) {
+        if (this.battleState.invisibleCards && this.battleState.invisibleCards.includes(target.name)) {
             console.log('👻 Цель невидима! Атака не проходит');
+            console.log('   invisibleCards:', this.battleState.invisibleCards);
+            console.log('   target.name:', target.name);
             this.showBattleHint(`${target.name} невидим! Атака промахнулась!`);
             setTimeout(() => this.hideBattleHint(), 1500);
             return;
