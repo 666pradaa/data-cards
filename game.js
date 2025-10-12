@@ -4629,10 +4629,10 @@ class GameData {
         const attackText = attacksCount > 1 ? ` (${attacksCount} атаки)` : '';
         this.showBattleHint(`${attackerCard.name}${attackText} выбирает цель...`);
         
-        // Через небольшую задержку выбираем цель
+        // Через задержку выбираем цель (замедлено для читаемости)
         setTimeout(() => {
             this.selectBotTarget(attackerCard, alivePlayerCards);
-        }, 400);
+        }, 1200);
     }
     
     selectBotTarget(attackerCard, alivePlayerCards) {
