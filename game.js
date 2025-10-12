@@ -6397,6 +6397,9 @@ class GameData {
             document.body.removeChild(overlay);
         }
         
+        // Очищаем сохраненное состояние боя
+        this.clearBattleState();
+        
         // Переключаем экраны
         const battleScreen = document.getElementById('battle-screen');
         const mainMenu = document.getElementById('main-menu');
@@ -6410,6 +6413,10 @@ class GameData {
             mainMenu.classList.add('active');
             mainMenu.style.display = 'block';
         }
+        
+        // Обновляем информацию пользователя
+        this.updateUserInfo();
+        this.loadProfile();
         
         console.log('✅ Возврат в меню завершен');
     }
