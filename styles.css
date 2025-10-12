@@ -7134,3 +7134,7 @@ body.light-theme .nav-btn:hover {
     background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.2) 100%);
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
+.profile-header {
+    /* Убрано по просьбе - пустой прямоугольник над информацией */
+    display: none !important;
+}
