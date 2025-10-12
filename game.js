@@ -1236,12 +1236,13 @@ class GameData {
                 console.log('✅ Загружено пользователей:', Object.keys(this.allUsersCache).length);
                 
                 console.log('✅ Вход через Firebase завершен:', username);
-                console.log('🏠 Переход в главное меню...');
+                console.log('🔍 ФИНАЛЬНАЯ ПРОВЕРКА:');
+                console.log('   this.currentUser:', this.currentUser);
+                console.log('   this.currentUserData:', !!this.currentUserData);
                 
-                // Принудительно показываем меню
-                setTimeout(() => {
-                    this.showMainMenu();
-                }, 100);
+                // ВАЖНО: показываем меню БЕЗ setTimeout
+                console.log('🏠 Переход в главное меню...');
+                this.showMainMenu();
             } else {
                 console.error('❌ Firebase вход не удался:', result.error);
                 await this.showAlert(result.error || 'Неверные данные', '❌', 'Ошибка входа');
