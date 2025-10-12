@@ -1181,6 +1181,7 @@ class GameData {
             } else {
                 console.error('❌ Firebase вход не удался:', result.error);
                 await this.showAlert(result.error || 'Неверные данные', '❌', 'Ошибка входа');
+                // Не возвращаемся, кнопка разблокируется в finally
             }
         } else {
             console.log('💾 Используем localStorage для входа');
