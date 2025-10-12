@@ -3586,9 +3586,11 @@ class GameData {
         console.log('Available upgrades:', Object.keys(this.upgrades));
         
         const user = this.getUser();
-        const isFirstBattle = !user.battlesPlayed || user.battlesPlayed === 0;
+        const wins = user.wins || 0;
+        const isFirstBattle = wins === 0;
         
-        console.log('Is first battle:', isFirstBattle);
+        console.log('Побед у игрока:', wins);
+        console.log('Первый бой (100% победа):', isFirstBattle);
         
         // Подсчитываем среднее количество улучшений у игрока
         let totalPlayerUpgrades = 0;
@@ -3635,24 +3637,25 @@ class GameData {
                     skillCooldown: 0 // Кулдаун скилла
                 };
                 
-                // Если первый бой - делаем бота очень слабым (100% победа игрока)
+                // Если первый бой - делаем бота ОЧЕНЬ слабым (100% победа игрока)
                 if (isFirstBattle) {
-                    console.log('First battle - making bot weak');
-                    botCard.damage = Math.floor(botCard.damage * 0.3);
-                    botCard.health = Math.floor(botCard.health * 0.3);
-                    botCard.maxHealth = Math.floor(botCard.maxHealth * 0.3);
-                    botCard.defense = Math.floor(botCard.defense * 0.5);
+                    console.log('🎓 ПЕРВЫЙ БОЙ - бот очень слабый (100% победа игрока)');
+                    botCard.damage = Math.floor(botCard.damage * 0.2);
+                    botCard.health = Math.floor(botCard.health * 0.2);
+                    botCard.maxHealth = Math.floor(botCard.maxHealth * 0.2);
+                    botCard.defense = Math.floor(botCard.defense * 0.3);
+                    botCard.speed = Math.floor(botCard.speed * 0.5);
                 } else {
                     // После первого боя бот усиливается для ~50% шанса победы
-                    console.log('Regular battle - making bot strong');
+                    console.log('⚔️ ОБЫЧНЫЙ БОЙ - бот сильный (~50% шанс победы)');
                     
-                    // Случайный множитель силы от 1.5 до 2.2 для баланса
-                    const strengthMultiplier = 1.5 + Math.random() * 0.7;
+                    // Множитель силы для баланса
+                    const strengthMultiplier = 1.0 + Math.random() * 0.3; // 1.0-1.3x
                     
                     botCard.damage = Math.floor(botCard.damage * strengthMultiplier);
                     botCard.health = Math.floor(botCard.health * strengthMultiplier);
                     botCard.maxHealth = Math.floor(botCard.maxHealth * strengthMultiplier);
-                    botCard.defense = Math.min(80, Math.floor(botCard.defense * (1 + Math.random() * 0.5))); // до 80% защиты
+                    botCard.defense = Math.min(70, Math.floor(botCard.defense * (1 + Math.random() * 0.3))); // до 70% защиты
                     
                     // Добавляем улучшения боту (столько же сколько у игрока в среднем)
                     const upgradesCount = avgPlayerUpgrades;
