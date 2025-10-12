@@ -1007,14 +1007,14 @@ class GameData {
             });
         }
         
-        // Кнопка поддержки
-        const supportBtnMain = document.getElementById('support-btn');
-        if (supportBtnMain) {
-            console.log('✅ Переустанавливаем обработчик кнопки поддержки');
-            const newSupportBtn = supportBtnMain.cloneNode(true);
-            supportBtnMain.parentNode.replaceChild(newSupportBtn, supportBtnMain);
+        // Плавающая кнопка поддержки (в правом нижнем углу)
+        const supportBtnFloating = document.getElementById('support-btn-floating');
+        if (supportBtnFloating) {
+            console.log('✅ Переустанавливаем плавающую кнопку поддержки');
+            const newSupportBtn = supportBtnFloating.cloneNode(true);
+            supportBtnFloating.parentNode.replaceChild(newSupportBtn, supportBtnFloating);
             newSupportBtn.addEventListener('click', () => {
-                console.log('🔵 Клик по главной кнопке поддержки');
+                console.log('🔵 Клик по плавающей кнопке поддержки');
                 this.openSupportPanel();
             });
         }
@@ -2764,7 +2764,7 @@ class GameData {
         const deck = user.deck || [];
         
         if (deck.length >= 3) {
-            await this.showAlert('Колода заполнена!\nМаксимум 3 карты.', '⚠️', 'Ограничение');
+            await this.showAlert('Колода заполнена!\nРовно 3 карты для боя.', 'ℹ️', 'Колода полная');
             return;
         }
         
@@ -3385,11 +3385,16 @@ class GameData {
             console.log('User deck:', deck);
             console.log('User cards:', Object.keys(userCards));
             
-            // Проверяем наличие колоды
+            // Проверяем наличие полной колоды (ровно 3 карты)
             if (deck.length === 0) {
                 await this.showAlert('Сначала соберите колоду во вкладке "Колода"!', '📋', 'Нет колоды');
-            return;
-        }
+                return;
+            }
+            
+            if (deck.length < 3) {
+                await this.showAlert(`В колоде только ${deck.length} карты!\nДля боя нужно ровно 3 карты.`, '⚠️', 'Неполная колода');
+                return;
+            }
 
             // Создаем колоду игрока из выбранных карт
         const playerDeck = [];
