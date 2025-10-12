@@ -2288,6 +2288,24 @@ class GameData {
             console.log('👤 Текущий пользователь для фильтрации:', currentUser.userid);
             console.log('👥 Друзья:', currentUser.friends);
             
+            // Если выбран топ кланов
+            if (filter === 'clans') {
+                await this.loadClansLeaderboard();
+                return;
+            }
+            
+            // Если выбран топ клана, но пользователь не в клане
+            if (filter === 'my-clan' && !currentUser.clanId) {
+                leaderboardList.innerHTML = `
+                    <div class="no-data" style="text-align: center; padding: 3rem;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🏰</div>
+                        <h3 style="margin-bottom: 0.5rem;">Вы не состоите в клане</h3>
+                        <p style="opacity: 0.7;">Вступите в клан, чтобы увидеть топ своего клана</p>
+                    </div>
+                `;
+                return;
+            }
+            
             if (filter === 'my-clan' && currentUser.clanId) {
                 console.log('🏰 Фильтр по клану:', currentUser.clanId);
                 usersArray = usersArray.filter(u => u.clanId === currentUser.clanId);
