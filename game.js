@@ -2356,6 +2356,74 @@ class GameData {
         }
     }
     
+    async loadClansLeaderboard() {
+        console.log('🏰 Загружаем топ кланов');
+        
+        const leaderboardList = document.getElementById('leaderboard-list');
+        if (!leaderboardList) return;
+        
+        try {
+            let allClans = [];
+            
+            if (this.useFirebase) {
+                const snapshot = await firebase.database().ref('clans').once('value');
+                const clansData = snapshot.val();
+                
+                if (clansData) {
+                    allClans = Object.entries(clansData).map(([id, data]) => ({
+                        id,
+                        ...data
+                    }));
+                }
+            } else {
+                const clans = JSON.parse(localStorage.getItem('clans') || '{}');
+                allClans = Object.entries(clans).map(([id, data]) => ({
+                    id,
+                    ...data
+                }));
+            }
+            
+            // Сортируем по уровню
+            allClans.sort((a, b) => (b.level || 1) - (a.level || 1));
+            
+            // Берем топ-50
+            const topClans = allClans.slice(0, 50);
+            
+            if (topClans.length === 0) {
+                leaderboardList.innerHTML = '<div class="no-data">Кланов пока нет</div>';
+                return;
+            }
+            
+            // Отображаем
+            leaderboardList.innerHTML = topClans.map((clan, index) => {
+                const rank = index + 1;
+                const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '';
+                const membersCount = (clan.members || []).length;
+                
+                return `
+                    <div class="leaderboard-item ${rank <= 3 ? 'top-three' : ''}">
+                        <div class="leaderboard-rank">${medal || rank}</div>
+                        <div class="leaderboard-avatar" style="background-image: url('${clan.avatar || 'images/default-clan.jpg'}')"></div>
+                        <div class="leaderboard-info">
+                            <div class="leaderboard-name">
+                                <span style="color: #ffd700; font-weight: bold; margin-right: 0.5rem;">[${clan.tag}]</span>
+                                ${clan.name}
+                            </div>
+                            <div class="leaderboard-level">
+                                <span>Уровень: ${clan.level || 1}</span>
+                                <span>Участников: ${membersCount}/5</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+        } catch (error) {
+            console.error('❌ Ошибка загрузки топа кланов:', error);
+            leaderboardList.innerHTML = '<div class="error">Ошибка загрузки топа кланов</div>';
+        }
+    }
+    
     calculateTotalExp(level, currentExp) {
         // Подсчитываем общий опыт с учетом уровня
         let totalExp = currentExp;
