@@ -575,7 +575,9 @@ class GameData {
         }
         
         if (logoutBtn) {
+            console.log('✅ Кнопка выхода найдена');
             logoutBtn.addEventListener('click', async () => {
+                console.log('🔵 Клик по кнопке выхода');
                 try {
                     await this.logout();
                 } catch (error) {
@@ -583,6 +585,56 @@ class GameData {
                     await this.showAlert('Ошибка выхода: ' + error.message, '❌', 'Ошибка');
                 }
             });
+        } else {
+            console.error('❌ Кнопка logout-btn не найдена!');
+        }
+        
+        // Кнопки управления
+        const themeToggle = document.getElementById('theme-toggle');
+        const soundToggle = document.getElementById('sound-toggle');
+        const musicToggle = document.getElementById('music-toggle');
+        const supportBtn = document.getElementById('support-btn');
+        
+        if (themeToggle) {
+            console.log('✅ Кнопка темы найдена');
+            themeToggle.addEventListener('click', () => {
+                console.log('🔵 Клик по кнопке темы');
+                this.toggleTheme();
+            });
+        } else {
+            console.error('❌ Кнопка theme-toggle не найдена!');
+        }
+        
+        if (soundToggle) {
+            console.log('✅ Кнопка звуков найдена');
+            soundToggle.addEventListener('click', () => {
+                console.log('🔵 Клик по кнопке звуков');
+                const enabled = this.soundSystem.toggleSound();
+                soundToggle.textContent = enabled ? '🔊' : '🔇';
+            });
+        } else {
+            console.error('❌ Кнопка sound-toggle не найдена!');
+        }
+        
+        if (musicToggle) {
+            console.log('✅ Кнопка музыки найдена');
+            musicToggle.addEventListener('click', () => {
+                console.log('🔵 Клик по кнопке музыки');
+                const enabled = this.soundSystem.toggleMusic();
+                musicToggle.textContent = enabled ? '🎵' : '🔇';
+            });
+        } else {
+            console.error('❌ Кнопка music-toggle не найдена!');
+        }
+        
+        if (supportBtn) {
+            console.log('✅ Кнопка поддержки найдена');
+            supportBtn.addEventListener('click', () => {
+                console.log('🔵 Клик по кнопке поддержки');
+                this.openSupportPanel();
+            });
+        } else {
+            console.error('❌ Кнопка support-btn не найдена!');
         }
 
         // Навигация
@@ -1374,11 +1426,25 @@ class GameData {
 
     getUser() {
         // Получить текущего пользователя
+        let user = null;
+        
         if (this.useFirebase) {
-            return this.currentUserData;
+            user = this.currentUserData;
         } else {
-            return this.users[this.currentUser];
+            user = this.users[this.currentUser];
         }
+        
+        if (!user) {
+            console.error('❌❌❌ getUser() вернул null!');
+            console.error('   useFirebase:', this.useFirebase);
+            console.error('   currentUser:', this.currentUser);
+            console.error('   currentUserData:', this.currentUserData);
+            if (!this.useFirebase) {
+                console.error('   users:', Object.keys(this.users || {}));
+            }
+        }
+        
+        return user;
     }
 
     async saveUser(updates) {
