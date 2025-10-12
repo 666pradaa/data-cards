@@ -683,22 +683,8 @@ class GameData {
         
         document.getElementById('close-case-info-modal').addEventListener('click', () => this.closeCaseInfoModal());
 
-        // Бои
-        const botBtn = document.getElementById('bot-battle-btn');
-        if (botBtn) {
-            console.log('✅ Кнопка бота найдена');
-            botBtn.addEventListener('click', async () => {
-                console.log('🔵 Клик на бой с ботом');
-                try {
-                    await this.startBotBattle();
-                } catch (error) {
-                    console.error('❌ Ошибка запуска боя:', error);
-                    await this.showAlert('Ошибка запуска боя: ' + error.message, '❌', 'Ошибка');
-                }
-            });
-        } else {
-            console.error('❌ Кнопка bot-battle-btn не найдена!');
-        }
+        // Бои (НЕ устанавливаем здесь, будет в showMainMenu)
+        console.log('ℹ️ Кнопка боя будет установлена в showMainMenu()');
         
         const onlineBtn = document.getElementById('online-battle-btn');
         if (onlineBtn) {
