@@ -3853,12 +3853,18 @@ class GameData {
         const saved = localStorage.getItem('currentBattle');
         const savedTimestamp = localStorage.getItem('battleStateTimestamp');
         
+        console.log('🔍 Проверяем сохраненный бой...');
+        console.log('   saved:', !!saved);
+        console.log('   savedTimestamp:', savedTimestamp);
+        
         if (saved) {
             try {
                 // Проверяем не слишком ли старое сохранение (больше 24 часов)
                 if (savedTimestamp) {
                     const age = Date.now() - parseInt(savedTimestamp);
                     const hours = age / (1000 * 60 * 60);
+                    
+                    console.log('⏰ Возраст сохраненного боя:', hours.toFixed(1), 'часов');
                     
                     if (hours > 24) {
                         console.log('⏰ Сохраненный бой старше 24 часов, очищаем');
@@ -3870,16 +3876,46 @@ class GameData {
                 
                 this.battleState = JSON.parse(saved);
                 if (this.battleState && this.battleState.inProgress) {
-                    console.log('🔄 Восстанавливаем бой...');
+                    console.log('⚔️⚔️⚔️ ВОССТАНАВЛИВАЕМ НЕЗАВЕРШЕННЫЙ БОЙ! ⚔️⚔️⚔️');
+                    console.log('   Раунд:', this.battleState.round);
+                    console.log('   Ход игрока:', this.battleState.isPlayerTurn);
+                    console.log('   Игрок:', this.battleState.playerName);
+                    console.log('   Бот:', this.battleState.botName);
                     
                     // ✅ Обновляем skill.icon у всех карт из актуальных данных
                     this.updateBattleCardsSkills(this.battleState.playerDeck);
                     this.updateBattleCardsSkills(this.battleState.botDeck);
                     
-                    document.getElementById('main-menu')?.classList.remove('active');
-                    document.getElementById('battle-screen')?.classList.add('active');
+                    // Скрываем меню, показываем бой
+                    const mainMenu = document.getElementById('main-menu');
+                    const battleScreen = document.getElementById('battle-screen');
+                    
+                    if (mainMenu) {
+                        mainMenu.classList.remove('active');
+                        mainMenu.style.display = 'none';
+                    }
+                    
+                    if (battleScreen) {
+                        battleScreen.classList.add('active');
+                        battleScreen.style.display = 'flex';
+                    }
+                    
+                    console.log('📺 Переключились на экран боя');
+                    
                     this.renderBattle();
-                    this.startInteractiveBattle();
+                    
+                    console.log('🎮 Продолжаем бой...');
+                    
+                    // Продолжаем интерактивный бой
+                    if (this.battleState.isPlayerTurn) {
+                        console.log('👤 Ход игрока');
+                        this.startPlayerTurn();
+                    } else {
+                        console.log('🤖 Ход бота');
+                        this.startBotTurn();
+                    }
+                    
+                    console.log('✅ Бой успешно восстановлен!');
                     return true;
                 }
             } catch (e) {
@@ -3889,6 +3925,8 @@ class GameData {
                 localStorage.removeItem('battleStateTimestamp');
             }
         }
+        
+        console.log('ℹ️ Нет сохраненного боя');
         return false;
     }
     
