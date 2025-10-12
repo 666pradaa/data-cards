@@ -553,6 +553,8 @@ body.light-theme .stat-item {
     gap: 1rem;
     margin-bottom: 2rem;
     flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
 }
 
 .filter-btn {
@@ -3270,6 +3272,8 @@ body.light-theme .stat-item {
     gap: 1rem;
     justify-content: center;
     margin-bottom: 1rem;
+    min-height: 50px;
+    align-items: center;
 }
 
 .filter-btn {
