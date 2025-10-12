@@ -1,0 +1,210 @@
+/* Красивые модальные окна вместо alert/confirm */
+
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    animation: overlayFadeIn 0.3s ease-out forwards;
+}
+
+@keyframes overlayFadeIn {
+    to { opacity: 1; }
+}
+
+.custom-modal {
+    background: linear-gradient(135deg, 
+        rgba(30, 41, 59, 0.98) 0%,
+        rgba(15, 23, 42, 0.98) 100%);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 2.5rem;
+    min-width: 400px;
+    max-width: 600px;
+    box-shadow: 
+        0 30px 90px rgba(0, 0, 0, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        0 0 60px rgba(255, 255, 255, 0.1);
+    position: relative;
+    transform: scale(0.8);
+    opacity: 0;
+    animation: modalAppear 0.3s ease-out 0.1s forwards;
+}
+
+@keyframes modalAppear {
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Декоративная линия сверху */
+.custom-modal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 20%;
+    right: 20%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #ffffff, transparent);
+    border-radius: 0 0 3px 3px;
+}
+
+/* Иконка */
+.custom-modal-icon {
+    font-size: 3.5rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
+    animation: iconFloat 2s ease-in-out infinite;
+}
+
+@keyframes iconFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Заголовок */
+.custom-modal-title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Сообщение */
+.custom-modal-message {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+    text-align: center;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    white-space: pre-line;
+}
+
+/* Кнопки */
+.custom-modal-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.custom-modal-btn {
+    padding: 1rem 2.5rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    min-width: 140px;
+}
+
+.custom-modal-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.5s, height 0.5s;
+}
+
+.custom-modal-btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.custom-modal-btn-primary {
+    background: linear-gradient(135deg, #ffffff, #e5e5e5);
+    color: #000;
+    box-shadow: 0 4px 20px rgba(255, 255, 255, 0.2);
+}
+
+.custom-modal-btn-primary:hover {
+    background: linear-gradient(135deg, #ffffff, #f5f5f5);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 30px rgba(255, 255, 255, 0.3);
+}
+
+.custom-modal-btn-secondary {
+    background: linear-gradient(135deg, #3a3a3a, #2a2a2a);
+    color: #fff;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.custom-modal-btn-secondary:hover {
+    background: linear-gradient(135deg, #4a4a4a, #3a3a3a);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.custom-modal-btn:active {
+    transform: translateY(0) scale(0.98);
+}
+
+/* Типы модальных окон */
+.custom-modal.alert .custom-modal-icon {
+    animation: iconBounce 0.5s ease-out;
+}
+
+@keyframes iconBounce {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.custom-modal.confirm .custom-modal-icon {
+    animation: iconPulse 1.5s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .custom-modal {
+        min-width: auto;
+        max-width: 90vw;
+        padding: 2rem 1.5rem;
+    }
+    
+    .custom-modal-icon {
+        font-size: 2.5rem;
+    }
+    
+    .custom-modal-title {
+        font-size: 1.4rem;
+    }
+    
+    .custom-modal-message {
+        font-size: 1rem;
+    }
+    
+    .custom-modal-buttons {
+        flex-direction: column;
+    }
+    
+    .custom-modal-btn {
+        width: 100%;
+    }
+}
+

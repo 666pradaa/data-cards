@@ -244,6 +244,9 @@ class GameData {
         
         console.log('🎮 Режим работы:', this.useFirebase ? '☁️ Firebase' : '💾 localStorage');
         
+        // Очищаем старый battleState если он устарел
+        this.checkAndCleanOldBattle();
+        
         this.initData();
         this.initUI();
     }
@@ -702,7 +705,7 @@ class GameData {
         
         // Проверяем что это изображение
         if (!file.type.startsWith('image/')) {
-            alert('Пожалуйста, выберите изображение!');
+            await this.showAlert('Пожалуйста, выберите изображение!', '🖼️', 'Ошибка');
             return;
         }
         
@@ -979,7 +982,7 @@ class GameData {
         const value = input.value.trim();
         
         if (!value) {
-            alert('Поле не может быть пустым!');
+            await this.showAlert('Поле не может быть пустым!', '⚠️', 'Ошибка');
             return;
         }
         
@@ -990,12 +993,12 @@ class GameData {
         } else if (this.editingField === 'userid') {
             // Проверяем что ID содержит только цифры
             if (!/^\d+$/.test(value)) {
-                alert('ID должен содержать только цифры!');
+                await this.showAlert('ID должен содержать только цифры!', '⚠️', 'Ошибка');
                 return;
             }
             
             if (value.length < 3 || value.length > 9) {
-                alert('ID должен быть от 3 до 9 цифр!');
+                await this.showAlert('ID должен быть от 3 до 9 цифр!', '⚠️', 'Ошибка');
                 return;
             }
             
@@ -1010,7 +1013,7 @@ class GameData {
             });
             
             if (idExists) {
-                alert('Этот ID уже занят!');
+                await this.showAlert('Этот ID уже занят!', '⚠️', 'Ошибка');
                 return;
             }
             
@@ -1122,7 +1125,7 @@ class GameData {
         console.log('   - password длина:', password.length);
 
         if (!username || !password) {
-            alert('Заполните все поля');
+            await this.showAlert('Заполните все поля', '⚠️', 'Ошибка');
             console.log('⚠️ Поля не заполнены');
             return;
         }
@@ -1170,7 +1173,7 @@ class GameData {
                 this.showMainMenu();
             } else {
                 console.error('❌ Firebase вход не удался:', result.error);
-                alert(result.error || 'Неверные данные');
+                await this.showAlert(result.error || 'Неверные данные', '❌', 'Ошибка входа');
             }
         } else {
             console.log('💾 Используем localStorage для входа');
@@ -1184,7 +1187,7 @@ class GameData {
                 this.showMainMenu();
             } else {
                 console.error('❌ Неверные данные для localStorage');
-                alert('Неверные данные');
+                await this.showAlert('Неверные данные', '❌', 'Ошибка входа');
             }
         }
         
@@ -1201,12 +1204,12 @@ class GameData {
         const registerBtn = document.getElementById('register-btn');
 
         if (!username || !password) {
-            alert('Заполните все поля');
+            await this.showAlert('Заполните все поля', '⚠️', 'Ошибка');
             return;
         }
 
         if (password.length < 6) {
-            alert('Пароль должен быть минимум 6 символов');
+            await this.showAlert('Пароль должен быть минимум 6 символов', '⚠️', 'Ошибка');
             return;
         }
 
@@ -1261,19 +1264,17 @@ class GameData {
                 console.log('💾 Сессия сохранена');
                 console.log('🏠 Переход в главное меню...');
                 
-                alert('Регистрация успешна!');
+                await this.showAlert('Регистрация успешна!', '✅', 'Успех');
                 
-                // Убеждаемся что переход произойдет
-                setTimeout(() => {
-                    this.showMainMenu();
-                }, 100);
+                // Переход в меню
+                this.showMainMenu();
             } else {
-                alert(result.error || 'Ошибка регистрации');
+                await this.showAlert(result.error || 'Ошибка регистрации', '❌', 'Ошибка');
             }
         } else {
             // localStorage регистрация (старый метод)
         if (this.users[username]) {
-            alert('Пользователь уже существует');
+            await this.showAlert('Пользователь уже существует', '⚠️', 'Ошибка');
             return;
         }
 
@@ -1311,12 +1312,10 @@ class GameData {
         console.log('✅ Регистрация через localStorage:', username);
         console.log('🏠 Переход в главное меню...');
         
-        alert('Регистрация успешна!');
+        await this.showAlert('Регистрация успешна!', '✅', 'Успех');
         
-        // Убеждаемся что переход произойдет
-        setTimeout(() => {
-            this.showMainMenu();
-        }, 100);
+        // Переход в меню
+        this.showMainMenu();
         }
         } finally {
             // Разблокируем кнопку
@@ -1444,13 +1443,13 @@ class GameData {
             };
             await this.saveUser(updates);
             this.createSupportAdminButton();
-            alert('✅ Доступ к админ поддержке получен!');
+            await this.showAlert('Доступ к админ поддержке получен!', '✅', 'Успех');
             document.getElementById('promo-code').value = '';
             return;
         }
         
         if (user.usedCodes && user.usedCodes.includes(code)) {
-            alert('Код уже использован');
+            await this.showAlert('Код уже использован', '⚠️', 'Внимание');
             return;
         }
 
@@ -1461,13 +1460,13 @@ class GameData {
         if (code === 'FREE50') {
             updates.gold = (user.gold || 0) + 50;
             updates.gems = (user.gems || 0) + 5;
-            alert('Получено: 50 золота и 5 гемов!');
+            await this.showAlert('Получено:\n50 золота 🪙\n5 гемов 💎', '🎁', 'Промокод активирован');
         } else if (code === 'ADMINPANEL666') {
             updates.isAdmin = true;
             this.createAdminButton();
-            alert('Админ доступ получен!');
+            await this.showAlert('Админ доступ получен!', '⚙️', 'Успех');
         } else {
-            alert('Неверный код');
+            await this.showAlert('Неверный код', '❌', 'Ошибка');
             return;
         }
 
@@ -1516,7 +1515,7 @@ class GameData {
         const user = this.getUser();
         
         if (!user.isAdmin) {
-            alert('❌ Доступ запрещен!\n\nАдмин-панель доступна только после активации специального промокода.\n\n💡 Подсказка: промокод начинается с "ADMIN"');
+            await this.showAlert('Доступ запрещен!\n\nАдмин-панель доступна только после активации специального промокода.\n\n💡 Подсказка: промокод начинается с "ADMIN"', '🔒', 'Нет доступа');
             return;
         }
         
@@ -1627,7 +1626,7 @@ class GameData {
         const message = input.value.trim();
         
         if (!message) {
-            alert('Введите сообщение');
+            await this.showAlert('Введите сообщение', '⚠️', 'Ошибка');
             return;
         }
         
@@ -1647,7 +1646,7 @@ class GameData {
         await this.saveUser(updates);
         
         input.value = '';
-        alert('✅ Сообщение отправлено! Поддержка ответит в ближайшее время.');
+        await this.showAlert('Сообщение отправлено!\nПоддержка ответит в ближайшее время.', '✅', 'Успех');
         
         this.loadSupportMessages();
         
@@ -1659,7 +1658,7 @@ class GameData {
         const user = this.getUser();
         
         if (!user.isSupportAdmin) {
-            alert('❌ Доступ запрещен!\n\nАдмин поддержка доступна только после активации промокода POD777');
+            await this.showAlert('Доступ запрещен!\n\nАдмин поддержка доступна только после активации промокода POD777', '🔒', 'Нет доступа');
             return;
         }
         
@@ -1786,7 +1785,7 @@ class GameData {
         const response = input.value.trim();
         
         if (!response) {
-            alert('Введите ответ');
+            await this.showAlert('Введите ответ', '⚠️', 'Ошибка');
             return;
         }
         
@@ -1797,7 +1796,7 @@ class GameData {
         const userData = await this.getUserById(userId);
         
         if (!userData || !userData.supportTickets || !userData.supportTickets[ticketIndex]) {
-            alert('Ошибка: обращение не найдено');
+            await this.showAlert('Ошибка: обращение не найдено', '❌', 'Ошибка');
             return;
         }
         
@@ -1819,7 +1818,7 @@ class GameData {
         input.value = '';
         chatArea.style.display = 'none';
         
-        alert('✅ Ответ отправлен!');
+        await this.showAlert('Ответ отправлен!', '✅', 'Успех');
         this.loadSupportTickets();
         
         console.log('📧 Ответ на обращение отправлен');
@@ -1899,7 +1898,7 @@ class GameData {
         }
         
         await this.loadUsersList();
-        alert(`✅ Баланс обновлен!`);
+        await this.showAlert('Баланс обновлен!', '✅', 'Успех');
     }
 
 
@@ -1933,7 +1932,11 @@ class GameData {
             }
             
             await this.loadUsersList();
-            alert(`✅ Прогресс ${username} сброшен!\n\n• Баланс: 300 🪙 + 5 💎\n• Промокоды можно применить снова\n• ID, аватар и друзья сохранены`);
+            await this.showAlert(`Прогресс ${username} сброшен!
+
+• Баланс: 300 🪙 + 5 💎
+• Промокоды можно применить снова
+• ID, аватар и друзья сохранены`, '✅', 'Успех');
         }
     }
 
@@ -2524,12 +2527,12 @@ class GameData {
         const deck = user.deck || [];
         
         if (deck.length >= 3) {
-            alert('Колода заполнена! Максимум 3 карты.');
+            await this.showAlert('Колода заполнена!\nМаксимум 3 карты.', '⚠️', 'Ограничение');
             return;
         }
         
         if (deck.includes(cardName)) {
-            alert('Эта карта уже в колоде!');
+            await this.showAlert('Эта карта уже в колоде!', 'ℹ️', 'Внимание');
             return;
         }
         
@@ -2692,7 +2695,7 @@ class GameData {
         const upgradeCount = userUpgrades[this.selectedUpgrade] || 0;
         
         if (upgradeCount <= 0) {
-            alert('У вас нет этого улучшения!');
+            await this.showAlert('У вас нет этого улучшения!', '❌', 'Ошибка');
             return;
         }
         
@@ -2700,7 +2703,7 @@ class GameData {
         if (!userCard.upgrades) userCard.upgrades = [];
         
         if (userCard.upgrades.length >= 3) {
-            alert('На карту можно применить максимум 3 улучшения!');
+            await this.showAlert('На карту можно применить максимум 3 улучшения!', '⚠️', 'Ограничение');
             return;
         }
         
@@ -2722,7 +2725,7 @@ class GameData {
         // Звук улучшения
         this.soundSystem.playSound('upgrade');
         
-        alert(`Улучшение ${this.selectedUpgrade} применено к ${cardName}!`);
+        await this.showAlert(`Улучшение ${this.selectedUpgrade} применено к ${cardName}!`, '✅', 'Успех');
         
         this.loadUpgrades();
         this.loadCards();
@@ -2743,12 +2746,12 @@ class GameData {
             }
         
         if (caseData.currency === 'gold' && user.gold < caseData.cost) {
-            alert('Недостаточно золота');
+            await this.showAlert('Недостаточно золота', '💰', 'Ошибка');
             return;
         }
         
         if (caseData.currency === 'gems' && user.gems < caseData.cost) {
-            alert('Недостаточно гемов');
+            await this.showAlert('Недостаточно гемов', '💎', 'Ошибка');
             return;
         }
 
@@ -2844,7 +2847,7 @@ class GameData {
             }
         } catch (error) {
             console.error('❌ Ошибка в buyCase:', error);
-            alert(`❌ Ошибка при открытии кейса: ${error.message}`);
+            await this.showAlert(`Ошибка при открытии кейса: ${error.message}`, '❌', 'Ошибка');
         }
     }
 
@@ -2894,7 +2897,7 @@ class GameData {
             
             if (!upgradeData) {
                 console.error('❌ Улучшение не найдено в this.upgrades:', upgradeName);
-                alert('Ошибка: данные улучшения не найдены');
+                await this.showAlert('Ошибка: данные улучшения не найдены', '❌', 'Ошибка');
                 return;
             }
         }
@@ -3135,7 +3138,7 @@ class GameData {
             
             // Проверяем наличие колоды
             if (deck.length === 0) {
-                alert('Сначала соберите колоду во вкладке "Колода"!');
+                await this.showAlert('Сначала соберите колоду во вкладке "Колода"!', '📋', 'Нет колоды');
             return;
         }
 
@@ -3153,7 +3156,9 @@ class GameData {
                         console.log('Card added to deck:', cardName);
                     } catch (error) {
                         console.error('Error creating battle card:', cardName, error);
-                        alert(`Ошибка с картой "${cardName}": ${error.message}\n\nПопробуйте очистить колоду и собрать заново.`);
+                        await this.showAlert(`Ошибка с картой "${cardName}": ${error.message}
+
+Попробуйте очистить колоду и собрать заново.`, '❌', 'Ошибка');
                     }
                 }
             });
@@ -3161,7 +3166,7 @@ class GameData {
             console.log('Player deck created:', playerDeck.length, 'cards');
 
             if (playerDeck.length === 0) {
-                alert('У вас нет карт из вашей колоды!');
+                await this.showAlert('У вас нет карт из вашей колоды!', '❌', 'Ошибка');
                 return;
             }
 
@@ -3177,7 +3182,7 @@ class GameData {
             this.startBattle(playerDeck, botDeck);
         } catch (error) {
             console.error('Error starting battle:', error);
-            alert('Ошибка при запуске боя: ' + error.message);
+            await this.showAlert('Ошибка при запуске боя: ' + error.message, '❌', 'Ошибка');
         }
     }
 
@@ -3418,7 +3423,7 @@ class GameData {
         this.startInteractiveBattle();
         } catch (error) {
             console.error('Error in startBattle:', error);
-            alert('Ошибка в бою: ' + error.message);
+            await this.showAlert('Ошибка в бою: ' + error.message, '❌', 'Ошибка');
         }
     }
 
@@ -3498,6 +3503,20 @@ class GameData {
         });
     }
 
+    checkAndCleanOldBattle() {
+        const savedTimestamp = localStorage.getItem('battleStateTimestamp');
+        if (savedTimestamp) {
+            const age = Date.now() - parseInt(savedTimestamp);
+            const hours = age / (1000 * 60 * 60);
+            
+            if (hours > 24) {
+                console.log('⏰ Очищаем старый battleState (возраст:', hours.toFixed(1), 'часов)');
+                localStorage.removeItem('currentBattle');
+                localStorage.removeItem('battleStateTimestamp');
+            }
+        }
+    }
+    
     clearBattleState() {
         localStorage.removeItem('currentBattle');
         localStorage.removeItem('battleStateTimestamp');
@@ -3505,6 +3524,122 @@ class GameData {
             this.battleState.inProgress = false;
         }
         console.log('🗑️ BattleState очищен');
+    }
+    
+    // ===== КРАСИВЫЕ МОДАЛЬНЫЕ ОКНА =====
+    
+    showAlert(message, icon = 'ℹ️', title = 'Уведомление') {
+        return new Promise((resolve) => {
+            // Создаем overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'custom-modal-overlay';
+            
+            // Создаем модальное окно
+            const modal = document.createElement('div');
+            modal.className = 'custom-modal alert';
+            modal.innerHTML = `
+                <div class="custom-modal-icon">${icon}</div>
+                <div class="custom-modal-title">${title}</div>
+                <div class="custom-modal-message">${message}</div>
+                <div class="custom-modal-buttons">
+                    <button class="custom-modal-btn custom-modal-btn-primary">OK</button>
+                </div>
+            `;
+            
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+            
+            // Обработчик закрытия
+            const closeModal = () => {
+                overlay.style.opacity = '0';
+                modal.style.transform = 'scale(0.8)';
+                modal.style.opacity = '0';
+                
+                setTimeout(() => {
+                    if (document.body.contains(overlay)) {
+                        document.body.removeChild(overlay);
+                    }
+                    resolve();
+                }, 300);
+            };
+            
+            // Кнопка OK
+            const okBtn = modal.querySelector('.custom-modal-btn-primary');
+            okBtn.addEventListener('click', closeModal);
+            
+            // Закрытие по клику на overlay
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) closeModal();
+            });
+            
+            // Закрытие по Escape
+            const escHandler = (e) => {
+                if (e.key === 'Escape') {
+                    document.removeEventListener('keydown', escHandler);
+                    closeModal();
+                }
+            };
+            document.addEventListener('keydown', escHandler);
+        });
+    }
+    
+    showConfirm(message, icon = '❓', title = 'Подтверждение') {
+        return new Promise((resolve) => {
+            // Создаем overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'custom-modal-overlay';
+            
+            // Создаем модальное окно
+            const modal = document.createElement('div');
+            modal.className = 'custom-modal confirm';
+            modal.innerHTML = `
+                <div class="custom-modal-icon">${icon}</div>
+                <div class="custom-modal-title">${title}</div>
+                <div class="custom-modal-message">${message}</div>
+                <div class="custom-modal-buttons">
+                    <button class="custom-modal-btn custom-modal-btn-secondary cancel-btn">Отмена</button>
+                    <button class="custom-modal-btn custom-modal-btn-primary confirm-btn">Подтвердить</button>
+                </div>
+            `;
+            
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+            
+            // Обработчик закрытия
+            const closeModal = (result) => {
+                overlay.style.opacity = '0';
+                modal.style.transform = 'scale(0.8)';
+                modal.style.opacity = '0';
+                
+                setTimeout(() => {
+                    if (document.body.contains(overlay)) {
+                        document.body.removeChild(overlay);
+                    }
+                    resolve(result);
+                }, 300);
+            };
+            
+            // Кнопки
+            const confirmBtn = modal.querySelector('.confirm-btn');
+            const cancelBtn = modal.querySelector('.cancel-btn');
+            
+            confirmBtn.addEventListener('click', () => closeModal(true));
+            cancelBtn.addEventListener('click', () => closeModal(false));
+            
+            // Закрытие по клику на overlay
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) closeModal(false);
+            });
+            
+            // Закрытие по Escape
+            const escHandler = (e) => {
+                if (e.key === 'Escape') {
+                    document.removeEventListener('keydown', escHandler);
+                    closeModal(false);
+                }
+            };
+            document.addEventListener('keydown', escHandler);
+        });
     }
 
     updateRoundDisplay() {
@@ -4478,7 +4613,7 @@ class GameData {
         }
         
         if (targets.length === 0) {
-            alert('Нет доступных целей для этой руны!');
+            await this.showAlert('Нет доступных целей для этой руны!', '⚠️', 'Ошибка');
             return;
         }
         
@@ -4696,7 +4831,7 @@ class GameData {
         }
         
         if (targets.length === 0) {
-            alert('Нет доступных целей!');
+            await this.showAlert('Нет доступных целей!', '⚠️', 'Ошибка');
             return;
         }
         
@@ -6387,7 +6522,7 @@ class GameData {
         const targetUser = await this.getUserById(targetUserId);
         
         if (!targetUser) {
-            alert('Пользователь не найден');
+            await this.showAlert('Пользователь не найден', '❌', 'Ошибка');
             return;
         }
         
@@ -6396,12 +6531,12 @@ class GameData {
         
         // Проверки
         if (currentUser.friends && currentUser.friends.includes(targetUserId)) {
-            alert('Этот игрок уже ваш друг!');
+            await this.showAlert('Этот игрок уже ваш друг!', 'ℹ️', 'Внимание');
             return;
         }
         
         if (currentUser.friendRequests && currentUser.friendRequests.outgoing && currentUser.friendRequests.outgoing.includes(targetUserId)) {
-            alert('Вы уже отправили запрос этому игроку!');
+            await this.showAlert('Вы уже отправили запрос этому игроку!', 'ℹ️', 'Внимание');
             return;
         }
         
@@ -6419,7 +6554,7 @@ class GameData {
         }
         
         this.soundSystem.playSound('whoosh');
-        alert(`Запрос в друзья отправлен игроку ${targetUser.nickname || targetUser.username}!`);
+        await this.showAlert(`Запрос в друзья отправлен игроку ${targetUser.nickname || targetUser.username}!`, '✅', 'Успех');
         this.searchPlayers(); // Обновляем результаты поиска
     }
 
@@ -6456,7 +6591,7 @@ class GameData {
         }
         
         this.soundSystem.playSound('upgrade');
-        alert(`Теперь вы друзья с ${sender.nickname || sender.username}!`);
+        await this.showAlert(`Теперь вы друзья с ${sender.nickname || sender.username}!`, '✅', 'Успех');
         this.loadFriendRequests();
     }
 
