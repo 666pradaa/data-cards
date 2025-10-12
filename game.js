@@ -885,6 +885,73 @@ class GameData {
         }
     }
 
+    showCompetitionHint() {
+        const user = this.getUser();
+        
+        // Проверяем флаг "не показывать больше"
+        if (!user || user.hideCompetitionHint) {
+            console.log('ℹ️ Пользователь скрыл подсказку о конкурсе');
+            return;
+        }
+        
+        console.log('🎁 Показываем подсказку о конкурсе');
+        
+        const overlay = document.createElement('div');
+        overlay.className = 'custom-modal-overlay';
+        overlay.style.display = 'flex';
+        
+        const modal = document.createElement('div');
+        modal.className = 'custom-modal competition-hint-modal';
+        modal.innerHTML = `
+            <div class="modal-icon" style="font-size: 4rem; margin-bottom: 1rem;">🏆</div>
+            <h2 style="margin: 0 0 1rem 0; font-size: 1.8rem;">Не забудь про конкурс!</h2>
+            <p style="margin: 0 0 1.5rem 0; font-size: 1.1rem; line-height: 1.6; opacity: 0.9;">
+                Скорее загляни в <strong style="color: #FFD700;">топ игроков</strong>! 
+                Ведь там проходит <strong style="color: #FFD700;">еженедельный конкурс</strong>!
+            </p>
+            <p style="margin: 0 0 1.5rem 0; opacity: 0.8;">
+                Игрок на 1-м месте в понедельник 13:00 МСК получит 
+                <strong style="color: #FFD700;">DOTA PLUS на месяц</strong>! 🎁
+            </p>
+            <div class="modal-buttons" style="display: flex; gap: 1rem; justify-content: center;">
+                <button id="competition-hint-close" class="btn secondary">Закрыть</button>
+                <button id="competition-hint-hide" class="btn primary">Больше не показывать</button>
+            </div>
+        `;
+        
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+        
+        // Показываем с анимацией
+        setTimeout(() => {
+            overlay.style.opacity = '1';
+            modal.style.transform = 'scale(1)';
+        }, 10);
+        
+        // Кнопка "Закрыть"
+        document.getElementById('competition-hint-close').onclick = () => {
+            console.log('✅ Подсказка о конкурсе закрыта');
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                if (document.body.contains(overlay)) {
+                    document.body.removeChild(overlay);
+                }
+            }, 300);
+        };
+        
+        // Кнопка "Больше не показывать"
+        document.getElementById('competition-hint-hide').onclick = async () => {
+            console.log('✅ Подсказка о конкурсе скрыта навсегда');
+            await this.saveUser({ hideCompetitionHint: true });
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                if (document.body.contains(overlay)) {
+                    document.body.removeChild(overlay);
+                }
+            }, 300);
+        };
+    }
+    
     showAuthScreen() {
         console.log('🔐 Показываем экран авторизации');
         const authScreen = document.getElementById('auth-screen');
@@ -6321,6 +6388,48 @@ class GameData {
         }, 1500);
     }
 
+    backToMenu() {
+        console.log('🏠 Возврат в главное меню из окна результатов');
+        
+        // Убираем overlay с результатами
+        const overlay = document.querySelector('.battle-result-overlay');
+        if (overlay && document.body.contains(overlay)) {
+            document.body.removeChild(overlay);
+        }
+        
+        // Переключаем экраны
+        const battleScreen = document.getElementById('battle-screen');
+        const mainMenu = document.getElementById('main-menu');
+        
+        if (battleScreen) {
+            battleScreen.classList.remove('active');
+            battleScreen.style.display = 'none';
+        }
+        
+        if (mainMenu) {
+            mainMenu.classList.add('active');
+            mainMenu.style.display = 'block';
+        }
+        
+        console.log('✅ Возврат в меню завершен');
+    }
+    
+    playAgain() {
+        console.log('🔄 Играть еще раз');
+        
+        // Убираем overlay с результатами
+        const overlay = document.querySelector('.battle-result-overlay');
+        if (overlay && document.body.contains(overlay)) {
+            document.body.removeChild(overlay);
+        }
+        
+        // Возвращаемся в меню и сразу запускаем бой
+        this.backToMenu();
+        setTimeout(() => {
+            this.startBotBattle();
+        }, 500);
+    }
+    
     async endBattle(playerWon) {
         console.log('=== endBattle called ===', { playerWon });
         
