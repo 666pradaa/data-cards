@@ -1040,6 +1040,27 @@ class GameData {
             setTimeout(() => this.startTutorial(), 500);
         }
     }
+    
+    // КРИТИЧНАЯ ФУНКЦИЯ: Устанавливает обработчики независимо от других условий
+    setupCriticalButtons() {
+        console.log('🚨 setupCriticalButtons() - устанавливаем критичные кнопки');
+        
+        // Плавающая кнопка поддержки
+        const supportBtn = document.getElementById('support-btn-floating');
+        if (supportBtn) {
+            console.log('✅ Кнопка поддержки найдена, устанавливаем onclick');
+            supportBtn.onclick = (e) => {
+                e.preventDefault();
+                console.log('🔵 КЛИК ПО КНОПКЕ ПОДДЕРЖКИ');
+                this.openSupportPanel();
+            };
+        } else {
+            console.error('❌ КРИТИЧНО: Кнопка support-btn-floating НЕ НАЙДЕНА в DOM!');
+        }
+        
+        // Кнопка боя (устанавливаем позже через showMainMenu)
+        console.log('ℹ️ Кнопка боя будет установлена в showMainMenu()');
+    }
 
     async loadProfile() {
         const user = this.getUser();
