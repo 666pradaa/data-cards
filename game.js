@@ -3842,9 +3842,10 @@ class GameData {
     }
 
     saveBattleState() {
-        if (this.battleState) {
+        if (this.battleState && this.battleState.inProgress) {
             localStorage.setItem('currentBattle', JSON.stringify(this.battleState));
             localStorage.setItem('battleStateTimestamp', Date.now().toString());
+            console.log('💾 Состояние боя сохранено (раунд:', this.battleState.round, ')');
         }
     }
 
