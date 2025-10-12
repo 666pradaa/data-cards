@@ -657,10 +657,17 @@ class GameData {
         const botBtn = document.getElementById('bot-battle-btn');
         if (botBtn) {
             console.log('✅ Кнопка бота найдена');
-            botBtn.addEventListener('click', () => {
+            botBtn.addEventListener('click', async () => {
                 console.log('🔵 Клик на бой с ботом');
-                this.startBotBattle();
+                try {
+                    await this.startBotBattle();
+                } catch (error) {
+                    console.error('❌ Ошибка запуска боя:', error);
+                    await this.showAlert('Ошибка запуска боя: ' + error.message, '❌', 'Ошибка');
+                }
             });
+        } else {
+            console.error('❌ Кнопка bot-battle-btn не найдена!');
         }
         
         const onlineBtn = document.getElementById('online-battle-btn');
