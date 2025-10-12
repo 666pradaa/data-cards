@@ -1484,7 +1484,7 @@ class GameData {
     }
 
     async logout() {
-        console.log('👋 Выход из аккаунта...');
+        console.log('👋👋👋 ВЫХОД ИЗ АККАУНТА 👋👋👋');
         
         if (this.useFirebase) {
             // Firebase выход
@@ -1503,8 +1503,24 @@ class GameData {
         this.currentUserData = null;
         this.allUsersCache = {};
         
-        console.log('🔐 Переход к экрану входа');
-        this.showAuthScreen();
+        console.log('🔐 Переход к экрану регистрации...');
+        
+        // Скрываем главное меню
+        const mainMenu = document.getElementById('main-menu');
+        if (mainMenu) {
+            mainMenu.classList.remove('active');
+            mainMenu.style.display = 'none';
+        }
+        
+        // Показываем экран авторизации
+        const authScreen = document.getElementById('auth-screen');
+        if (authScreen) {
+            authScreen.classList.add('active');
+            authScreen.style.display = 'flex';
+            authScreen.style.zIndex = '10000';
+        }
+        
+        console.log('✅ Перенесен в меню регистрации');
     }
 
     // ========== УНИВЕРСАЛЬНЫЕ МЕТОДЫ РАБОТЫ С ДАННЫМИ ==========
@@ -1731,7 +1747,22 @@ class GameData {
     }
 
     closeAdminPanel() {
-        document.getElementById('admin-panel').classList.remove('active');
+        console.log('❌ Закрываем админ панель');
+        
+        const panel = document.getElementById('admin-panel');
+        const mainMenu = document.getElementById('main-menu');
+        
+        if (panel) {
+            panel.classList.remove('active');
+            panel.style.display = 'none';
+        }
+        
+        if (mainMenu) {
+            mainMenu.classList.add('active');
+            mainMenu.style.display = 'block';
+        }
+        
+        console.log('✅ Админ панель закрыта, возврат в меню');
     }
     
     // ===== СИСТЕМА ПОДДЕРЖКИ =====
