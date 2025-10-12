@@ -94,6 +94,11 @@
     z-index: 1;
 }
 
+.profile-header h2 {
+    color: #ffffff !important;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
 /* Avatar с свечением */
 .profile-avatar {
     width: 100px;

@@ -2458,6 +2458,7 @@ class GameData {
     }
 
     loadCards(rarityFilter = 'all', starsFilter = 'all') {
+        console.log('📦 loadCards вызван, фильтры:', { rarityFilter, starsFilter });
         const container = document.getElementById('cards-grid');
         container.innerHTML = '';
 
@@ -2486,6 +2487,15 @@ class GameData {
                     `<span class="star ${i < upgradeCount ? 'filled' : ''}">★</span>`
                 ).join('');
                 
+                // Добавляем информацию о скилле (как в колоде)
+                const skillHtml = card.skill ? `
+                    <div class="card-skill-info" style="margin-top: 8px; padding: 8px; background: rgba(255, 215, 0, 0.15); border-radius: 8px; border: 1px solid rgba(255, 215, 0, 0.3);">
+                        <div style="font-weight: 600; color: #ffd700; font-size: 0.85rem; margin-bottom: 4px;">⚡ ${card.skill.name}</div>
+                        <div style="font-size: 0.75rem; color: #d4d4d8; line-height: 1.3;">${card.skill.description}</div>
+                        <div style="font-size: 0.7rem; color: #a1a1aa; margin-top: 4px;">Кулдаун: ${card.skill.cooldown} хода</div>
+                    </div>
+                ` : '';
+                
                 cardDiv.innerHTML = `
                     <div class="card-image" style="background-image: url('${card.image}'); background-size: cover; background-position: center; width: 100%; height: 80px; border-radius: 10px; margin-bottom: 10px;"></div>
                     <div class="card-rarity rarity-${card.rarity}">${this.getRarityName(card.rarity)}</div>
@@ -2497,6 +2507,7 @@ class GameData {
                         <div>🛡️ ${card.defense + this.getUpgradeBonus(userCard.upgrades, 'defense')}%</div>
                         <div>⚡ ${card.speed + this.getUpgradeBonus(userCard.upgrades, 'speed')}</div>
                     </div>
+                    ${skillHtml}
                     <div class="card-count">x${userCard.count}</div>
                 `;
                 container.appendChild(cardDiv);
