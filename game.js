@@ -1867,8 +1867,11 @@ class GameData {
     }
     
     async showSupportAdminPanel() {
-        console.log('💬 Открываем админ панель поддержки');
+        console.log('💬💬💬 ОТКРЫВАЕМ АДМИН ПАНЕЛЬ ПОДДЕРЖКИ 💬💬💬');
         const user = this.getUser();
+        
+        console.log('   user найден:', !!user);
+        console.log('   user.isSupportAdmin:', user?.isSupportAdmin);
         
         if (!user.isSupportAdmin) {
             await this.showAlert('Доступ запрещен!\n\nАдмин поддержка доступна только после активации промокода POD777', '🔒', 'Нет доступа');
@@ -1878,11 +1881,23 @@ class GameData {
         const supportAdminPanel = document.getElementById('support-admin-panel');
         const mainMenu = document.getElementById('main-menu');
         
+        console.log('   supportAdminPanel найдена:', !!supportAdminPanel);
+        console.log('   mainMenu найдено:', !!mainMenu);
+        
         if (supportAdminPanel && mainMenu) {
             mainMenu.classList.remove('active');
+            mainMenu.style.display = 'none';
+            
             supportAdminPanel.style.display = 'flex';
+            supportAdminPanel.style.visibility = 'visible';
+            supportAdminPanel.style.opacity = '1';
             supportAdminPanel.classList.add('active');
+            
+            console.log('✅ Панель администратора поддержки открыта');
+            
             this.loadSupportTickets();
+        } else {
+            console.error('❌ Элементы не найдены!');
         }
     }
     
@@ -3650,8 +3665,25 @@ class GameData {
             const newBattlesPlayed = user.battlesPlayed + 1;
             this.saveUserSync({ battlesPlayed: newBattlesPlayed });
             
-        document.getElementById('main-menu').classList.remove('active');
-        document.getElementById('battle-screen').classList.add('active');
+        // Переключаем экраны
+        const mainMenu = document.getElementById('main-menu');
+        const battleScreen = document.getElementById('battle-screen');
+        
+        console.log('🔄 Переключение экранов...');
+        console.log('   mainMenu:', !!mainMenu);
+        console.log('   battleScreen:', !!battleScreen);
+        
+        if (mainMenu) {
+            mainMenu.classList.remove('active');
+            mainMenu.style.display = 'none';
+        }
+        if (battleScreen) {
+            battleScreen.classList.add('active');
+            battleScreen.style.display = 'flex';
+            console.log('✅ Экран боя активирован');
+        } else {
+            console.error('❌ battle-screen НЕ НАЙДЕН!');
+        }
 
         // Генерируем случайное имя для бота
         const botName = this.generateBotName();
