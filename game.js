@@ -6642,21 +6642,7 @@ class GameData {
         });
     }
 
-    backToMenu() {
-        // Удаляем оверлей результата если есть
-        const resultOverlay = document.querySelector('.battle-result-overlay');
-        if (resultOverlay && document.body.contains(resultOverlay)) {
-            document.body.removeChild(resultOverlay);
-        }
-        
-        // Очищаем сохраненное состояние боя (на всякий случай)
-        this.clearBattleState();
-        
-        document.getElementById('battle-screen').classList.remove('active');
-        document.getElementById('main-menu').classList.add('active');
-        this.updateUserInfo();
-        this.loadProfile();
-    }
+    // Функция уже определена выше - удаляем дубликат
 
     showBattleInfo(mode) {
         const modal = document.getElementById('battle-mode-info-modal');
