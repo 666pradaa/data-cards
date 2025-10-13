@@ -406,6 +406,18 @@ class OnlineBattlesSystem {
                     this.roomListener = null;
                 }
                 
+                // Закрываем окно с кодом комнаты (если открыто)
+                const roomCodeOverlay = document.querySelector('.custom-modal-overlay');
+                if (roomCodeOverlay && document.body.contains(roomCodeOverlay)) {
+                    roomCodeOverlay.style.opacity = '0';
+                    setTimeout(() => {
+                        if (document.body.contains(roomCodeOverlay)) {
+                            document.body.removeChild(roomCodeOverlay);
+                        }
+                    }, 300);
+                    console.log('✅ Окно с кодом комнаты закрыто автоматически');
+                }
+                
                 // Закрываем все модалки
                 const onlineModal = document.getElementById('online-battle-modal');
                 if (onlineModal) {
@@ -499,8 +511,8 @@ class OnlineBattlesSystem {
                 turn: 0,
                 round: 1,
                 isPlayerTurn: this.isHost, // хост ходит первым
-                playerName: this.isHost ? roomData.hostNick : roomData.guestNick,
-                botName: this.isHost ? roomData.guestNick : roomData.hostNick,
+                playerName: this.isHost ? (roomData.hostNickname || roomData.hostNick) : (roomData.guestNickname || roomData.guestNick),
+                botName: this.isHost ? (roomData.guestNickname || roomData.guestNick) : (roomData.hostNickname || roomData.hostNick),
                 inProgress: true,
                 isOnline: true,
                 roomCode: roomCode,
