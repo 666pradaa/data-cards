@@ -4174,29 +4174,18 @@ class GameData {
     }
 
     updateBattleNames() {
-        const playerLabel = document.querySelector('.player-battle-side .side-label');
-        const enemyLabel = document.querySelector('.enemy-battle-side .side-label');
-        
-        if (playerLabel) {
-            playerLabel.textContent = this.battleState.playerName;
-        }
-        
-        if (enemyLabel) {
-            enemyLabel.textContent = this.battleState.botName;
-        }
-        
-        // Обновляем аватарки и имена в новом блоке VS
-        const playerAvatarBattle = document.getElementById('player-avatar-battle');
+        // В новой структуре V2 нет .side-label, используем прямые ID
         const playerNameBattle = document.getElementById('player-name-battle');
-        const botAvatarBattle = document.getElementById('bot-avatar-battle');
         const botNameBattle = document.getElementById('bot-name-battle');
+        const playerAvatarBattle = document.getElementById('player-avatar-battle');
+        const botAvatarBattle = document.getElementById('bot-avatar-battle');
         
         if (playerNameBattle) {
-            playerNameBattle.textContent = this.battleState.playerName || 'Игрок';
+            playerNameBattle.textContent = this.battleState.playerName || 'ВЫ';
         }
         
         if (botNameBattle) {
-            botNameBattle.textContent = this.battleState.botName || 'БОТ';
+            botNameBattle.textContent = this.battleState.botName || 'ПРОТИВНИК';
         }
         
         // Устанавливаем аватарки
@@ -4206,9 +4195,13 @@ class GameData {
         }
         
         if (botAvatarBattle) {
-            // Для бота используем случайный аватар
-            const botAvatarIndex = Math.floor(Math.random() * this.avatars.length);
-            botAvatarBattle.src = this.avatars[botAvatarIndex] || 'https://i.imgur.com/EbsmHMK.jpg';
+            // Для онлайн-боя используем аватар противника, для оффлайн - случайный
+            if (this.battleState.isOnline && this.battleState.opponentAvatar) {
+                botAvatarBattle.src = this.battleState.opponentAvatar;
+            } else {
+                const botAvatarIndex = Math.floor(Math.random() * this.avatars.length);
+                botAvatarBattle.src = this.avatars[botAvatarIndex] || 'https://i.imgur.com/EbsmHMK.jpg';
+            }
         }
     }
 
@@ -4474,7 +4467,7 @@ class GameData {
         
         // Помечаем карты которые не могут атаковать
         if (this.battleState.lastPlayerCard) {
-            const usedCardElement = document.querySelector(`.player-battle-side .battle-card-new[data-card-name="${this.battleState.lastPlayerCard.name}"]`);
+            const usedCardElement = document.querySelector(`#player-cards .battle-card-new[data-card-name="${this.battleState.lastPlayerCard.name}"]`);
             if (usedCardElement && availableCards.length > 0) {
                 usedCardElement.classList.add('used-last-round');
             }
@@ -4496,7 +4489,8 @@ class GameData {
         
         // Подсвечиваем доступные карты игрока
         availableCards.forEach(card => {
-            const cardElement = document.querySelector(`.player-battle-side .battle-card-new[data-card-name="${card.name}"]`);
+            // В новой структуре V2 карты игрока в #player-cards
+            const cardElement = document.querySelector(`#player-cards .battle-card-new[data-card-name="${card.name}"]`);
             if (cardElement) {
                 cardElement.classList.add('hint-glow');
                 cardElement.style.pointerEvents = 'auto';
@@ -4522,7 +4516,7 @@ class GameData {
         this.currentAttacker = selectedCard;
         
         // Убираем подсветку с карт игрока и обработчики
-        document.querySelectorAll('.player-battle-side .battle-card-new').forEach(c => {
+        document.querySelectorAll('#player-cards .battle-card-new').forEach(c => {
             c.classList.remove('hint-glow');
             c.style.pointerEvents = 'none';
             c.style.cursor = '';
@@ -4530,7 +4524,7 @@ class GameData {
         });
         
         // Подсвечиваем выбранную карту
-        const attackerElement = document.querySelector(`.player-battle-side .battle-card-new[data-card-name="${selectedCard.name}"]`);
+        const attackerElement = document.querySelector(`#player-cards .battle-card-new[data-card-name="${selectedCard.name}"]`);
         if (attackerElement) {
             attackerElement.classList.add('selected');
             console.log('✅ Карта подсвечена желтым');
@@ -4545,8 +4539,9 @@ class GameData {
     showTargetSelection(attackerCard) {
         // Подсвечиваем доступные цели (исключая невидимые карты)
         // Невидимые карты МОГУТ атаковать, просто их нельзя атаковать
+        // ВАЖНО: Исключаем карту-атакующего, чтобы не бить сам себя!
         const aliveEnemyCards = this.battleState.botDeck.filter(card => {
-            return !card.isDead && card.health > 0;
+            return !card.isDead && card.health > 0 && card.name !== attackerCard.name;
         });
         
         // Показываем подсказку с учетом количества атак
@@ -4554,10 +4549,11 @@ class GameData {
         const attackText = attacksCount > 1 ? ` (${attacksCount} атаки)` : '';
         this.showBattleHint(`${attackerCard.name}${attackText} атакует! Выберите цель.`);
         
-        console.log('🎯 Подсвечиваем', aliveEnemyCards.length, 'целей (исключая невидимых)');
+        console.log('🎯 Подсвечиваем', aliveEnemyCards.length, 'целей (исключая невидимых и атакующего)');
         
         aliveEnemyCards.forEach(enemyCard => {
-            const enemyElement = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${enemyCard.name}"]`);
+            // В новой структуре V2 карты противника в #enemy-cards
+            const enemyElement = document.querySelector(`#enemy-cards .battle-card-new[data-card-name="${enemyCard.name}"]`);
             if (enemyElement) {
                 enemyElement.classList.add('target-available');
                 enemyElement.style.pointerEvents = 'auto';
@@ -4700,7 +4696,7 @@ class GameData {
         
         // Помечаем карту которой ходили в прошлом раунде
         if (this.battleState.lastBotCard) {
-            const usedCardElement = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${this.battleState.lastBotCard.name}"]`);
+            const usedCardElement = document.querySelector(`#enemy-cards .battle-card-new[data-card-name="${this.battleState.lastBotCard.name}"]`);
             if (usedCardElement) {
                 usedCardElement.classList.add('used-last-round');
                 console.log('⏳ Карта бота с кулдауном:', this.battleState.lastBotCard.name);
@@ -4755,7 +4751,7 @@ class GameData {
             this.battleState.runeDurations[targetCard.name] = 1; // 1 раунд
             console.log('👻 Бот сделал карту невидимой на 1 раунд:', targetCard.name);
             
-            const cardEl = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
+            const cardEl = document.querySelector(`#enemy-cards .battle-card-new[data-card-name="${targetCard.name}"]`);
             if (cardEl) {
                 this.showRuneActivationAnimation(cardEl, 'invisibility');
                 cardEl.classList.add('invisible-card', 'has-rune-effect', 'invisibility');
@@ -4774,7 +4770,7 @@ class GameData {
             targetCard.tempDefense = (targetCard.tempDefense || 0) + 40;
             console.log('🛡️ Бот дал щит карте на 1 раунд:', targetCard.name);
             
-            const cardEl = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
+            const cardEl = document.querySelector(`#enemy-cards .battle-card-new[data-card-name="${targetCard.name}"]`);
             if (cardEl) {
                 this.showRuneActivationAnimation(cardEl, 'shield');
                 cardEl.classList.add('shielded-card', 'has-rune-effect', 'shield');
@@ -4873,7 +4869,7 @@ class GameData {
         console.log('🟡 Бот выбрал карту для атаки:', attackerCard.name);
         
         // Подсвечиваем выбранную карту бота
-        const attackerElement = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${attackerCard.name}"]`);
+        const attackerElement = document.querySelector(`#enemy-cards .battle-card-new[data-card-name="${attackerCard.name}"]`);
         if (attackerElement) {
             attackerElement.classList.add('selected');
             console.log('✅ Карта бота подсвечена');
@@ -4893,13 +4889,21 @@ class GameData {
     selectBotTarget(attackerCard, alivePlayerCards) {
         console.log('🎯 Бот выбирает цель из', alivePlayerCards.length, 'карт');
         
+        // ВАЖНО: Исключаем карту-атакующего, чтобы бот не бил сам себя!
+        const validTargets = alivePlayerCards.filter(card => card.name !== attackerCard.name);
+        
+        if (validTargets.length === 0) {
+            console.error('❌ Нет доступных целей для бота!');
+            return;
+        }
+        
         // Выбираем случайную цель
-        const targetCard = alivePlayerCards[Math.floor(Math.random() * alivePlayerCards.length)];
+        const targetCard = validTargets[Math.floor(Math.random() * validTargets.length)];
         
         console.log('🔴 Бот выбрал цель:', targetCard.name);
         
         // Подсвечиваем цель
-        const targetElement = document.querySelector(`.player-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
+        const targetElement = document.querySelector(`#player-cards .battle-card-new[data-card-name="${targetCard.name}"]`);
         if (targetElement) {
             targetElement.classList.add('target-available');
             console.log('✅ Цель подсвечена красным');
@@ -5153,7 +5157,7 @@ class GameData {
         
         // Подсвечиваем доступные цели (свои карты)
         targets.forEach(card => {
-            const cardElement = document.querySelector(`.player-battle-side .battle-card-new[data-card-name="${card.name}"]`);
+            const cardElement = document.querySelector(`#player-cards .battle-card-new[data-card-name="${card.name}"]`);
             if (cardElement) {
                 cardElement.classList.add('rune-target');
                 cardElement.style.cursor = 'pointer';
@@ -5185,7 +5189,7 @@ class GameData {
             console.log('👻 Карта стала невидимой на 2 хода:', targetCard.name);
             
             // Анимация активации руны
-            const cardEl = document.querySelector(`.player-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
+            const cardEl = document.querySelector(`#player-cards .battle-card-new[data-card-name="${targetCard.name}"]`);
             if (cardEl) {
                 this.showRuneActivationAnimation(cardEl, 'invisibility');
                 cardEl.classList.add('invisible-card', 'has-rune-effect', 'invisibility');
@@ -5202,7 +5206,7 @@ class GameData {
             console.log('🛡️ Карта получила щит на 2 хода:', targetCard.name);
             
             // Анимация активации руны
-            const cardEl = document.querySelector(`.player-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
+            const cardEl = document.querySelector(`#player-cards .battle-card-new[data-card-name="${targetCard.name}"]`);
             if (cardEl) {
                 this.showRuneActivationAnimation(cardEl, 'shield');
                 cardEl.classList.add('shielded-card', 'has-rune-effect', 'shield');
@@ -5665,7 +5669,7 @@ class GameData {
             const allEnemies = this.battleState.botDeck.filter(c => !c.isDead && c.health > 0);
             
             allEnemies.forEach(enemy => {
-                const cardElement = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${enemy.name}"]`);
+                const cardElement = document.querySelector(`#enemy-cards .battle-card-new[data-card-name="${enemy.name}"]`);
                 if (cardElement) {
                     cardElement.classList.add('skill-target');
                     cardElement.style.cursor = 'crosshair';
@@ -5705,7 +5709,7 @@ class GameData {
         console.log('Opposite card:', oppositeCard.name);
         
         // Получаем координаты противоположной карты
-        const oppositeCardEl = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${oppositeCard.name}"]`);
+        const oppositeCardEl = document.querySelector(`#enemy-cards .battle-card-new[data-card-name="${oppositeCard.name}"]`);
         if (!oppositeCardEl) {
             console.error('❌ Карта напротив не найдена:', oppositeCard.name);
             return;

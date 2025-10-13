@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="styles_weekly_competition.css?v=1760310000">
     <link rel="stylesheet" href="styles_competition_hint.css?v=1760310000">
     <link rel="stylesheet" href="styles_responsive.css?v=1760310000">
+    <link rel="stylesheet" href="styles_battle_v2.css?v=1760310000">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- Firebase SDK -->
@@ -421,49 +422,61 @@
             </div>
         </div>
 
-        <!-- Экран боя -->
+        <!-- Экран боя - ПОЛНОСТЬЮ НОВЫЙ ДИЗАЙН -->
         <div id="battle-screen" class="screen">
-            <div class="battle-arena">
-                <!-- 🔮 Контейнер руны противника -->
-                <div id="bot-rune-container" class="rune-container bot-rune">
-                    <!-- Руна бота -->
-                </div>
-                
-                <div class="battle-top-bar">
-                    <div class="battle-round">Раунд <span id="battle-round-num">1</span></div>
-                </div>
-                
-                <!-- Блок с аватарками и VS -->
-                <div class="battle-players-vs">
-                    <div class="battle-player-avatar">
-                        <img id="player-avatar-battle" src="https://i.imgur.com/EbsmHMK.jpg" alt="Player">
-                        <div class="player-name-battle" id="player-name-battle">Игрок</div>
-                    </div>
-                    <div class="battle-vs">VS</div>
-                    <div class="battle-bot-avatar">
-                        <img id="bot-avatar-battle" src="https://i.imgur.com/EbsmHMK.jpg" alt="Bot">
-                        <div class="bot-name-battle" id="bot-name-battle">БОТ</div>
+            <div class="battle-arena-v2">
+                <!-- Верхняя панель с информацией -->
+                <div class="battle-header-v2">
+                    <div class="battle-round-indicator">
+                        <span class="round-label">РАУНД</span>
+                        <span class="round-number" id="battle-round-num">1</span>
                     </div>
                 </div>
-                <div class="battle-field-new">
-                    <div class="battle-side player-battle-side">
-                        <div class="side-label">ВАША КОМАНДА</div>
-                        <div id="player-cards" class="battle-cards-row">
-                            <!-- Карты игрока -->
+
+                <!-- Зона противника (верх) -->
+                <div class="enemy-zone-v2">
+                    <!-- Аватар и инфо противника -->
+                    <div class="player-info-card enemy-info">
+                        <img id="bot-avatar-battle" class="player-avatar-v2" src="https://i.imgur.com/EbsmHMK.jpg" alt="Enemy">
+                        <div class="player-name-v2" id="bot-name-battle">ПРОТИВНИК</div>
+                        <!-- Руна противника -->
+                        <div id="bot-rune-container" class="rune-display-v2">
+                            <!-- Руна бота -->
                         </div>
                     </div>
-                    <div class="battle-center-line"></div>
-                    <div class="battle-side enemy-battle-side">
-                        <div class="side-label">ПРОТИВНИК</div>
-                        <div id="enemy-cards" class="battle-cards-row">
+                    
+                    <!-- Карты противника -->
+                    <div class="cards-container-v2 enemy-cards-v2">
+                        <div id="enemy-cards" class="cards-row-v2">
                             <!-- Карты противника -->
                         </div>
                     </div>
                 </div>
-                
-                <!-- 🔮 Контейнер руны игрока -->
-                <div id="player-rune-container" class="rune-container player-rune">
-                    <!-- Руна игрока -->
+
+                <!-- Центральная зона VS -->
+                <div class="battle-center-v2">
+                    <div class="vs-indicator-v2">VS</div>
+                    <div class="battle-line-v2"></div>
+                </div>
+
+                <!-- Зона игрока (низ) -->
+                <div class="player-zone-v2">
+                    <!-- Карты игрока -->
+                    <div class="cards-container-v2 player-cards-v2">
+                        <div id="player-cards" class="cards-row-v2">
+                            <!-- Карты игрока -->
+                        </div>
+                    </div>
+                    
+                    <!-- Аватар и инфо игрока -->
+                    <div class="player-info-card player-info">
+                        <img id="player-avatar-battle" class="player-avatar-v2" src="https://i.imgur.com/EbsmHMK.jpg" alt="Player">
+                        <div class="player-name-v2" id="player-name-battle">ВЫ</div>
+                        <!-- Руна игрока -->
+                        <div id="player-rune-container" class="rune-display-v2">
+                            <!-- Руна игрока -->
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
