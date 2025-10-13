@@ -4177,23 +4177,31 @@ body.light-theme .stat-item {
     text-align: center;
     letter-spacing: 0.3px;
     text-transform: uppercase;
+    -webkit-text-stroke: 1.5px #000;
+    text-stroke: 1.5px #000;
+    paint-order: stroke fill;
+    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 1px rgba(255, 255, 255, 0.3));
 }
 
 /* Цвета имен по редкости (как в меню) */
 .battle-card-name.rarity-common {
-    color: #999;
+    color: #bbb;
+    -webkit-text-stroke: 1.5px #000;
 }
 
 .battle-card-name.rarity-rare {
-    color: #4a9eff;
+    color: #6ab4ff;
+    -webkit-text-stroke: 1.5px #000;
 }
 
 .battle-card-name.rarity-epic {
-    color: #9370db;
+    color: #b090ff;
+    -webkit-text-stroke: 1.5px #000;
 }
 
 .battle-card-name.rarity-legendary {
-    color: #ff9900;
+    color: #ffaa33;
+    -webkit-text-stroke: 1.5px #000;
 }
 
 .battle-card-stars {

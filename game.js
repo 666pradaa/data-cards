@@ -4449,7 +4449,17 @@ class GameData {
         }
         
         // Фильтруем карты - убираем ту которой ходили в прошлом раунде и замороженные
+        // ИСКЛЮЧЕНИЕ: Если карта последняя живая - она может атаковать (игнорируем кулдаун)
         const availableCards = alivePlayerCards.filter(card => {
+            // Если это единственная живая карта - она всегда доступна (кроме заморозки/страха)
+            if (alivePlayerCards.length === 1) {
+                const notFrozen = !this.battleState.frozenCards.includes(card.name);
+                const notFeared = !this.battleState.fearedCards.includes(card.name);
+                if (!notFrozen) console.log('❄️ Последняя карта заморожена:', card.name);
+                if (!notFeared) console.log('😱 Последняя карта в страхе:', card.name);
+                return notFrozen && notFeared;
+            }
+            
             const notOnCooldown = !this.battleState.lastPlayerCard || card.name !== this.battleState.lastPlayerCard.name;
             const notFrozen = !this.battleState.frozenCards.includes(card.name);
             const notFeared = !this.battleState.fearedCards.includes(card.name);
@@ -4843,7 +4853,15 @@ class GameData {
             }
         
         // Выбираем карту для атаки (не ту которой ходили в прошлом раунде и не замороженные)
+        // ИСКЛЮЧЕНИЕ: Если карта последняя живая - она может атаковать (игнорируем кулдаун)
         let availableBotCards = aliveBotCards.filter(card => {
+            // Если это единственная живая карта - она всегда доступна (кроме заморозки/страха)
+            if (aliveBotCards.length === 1) {
+                const notFrozen = !this.battleState.frozenCards.includes(card.name);
+                const notFeared = !this.battleState.fearedCards.includes(card.name);
+                return notFrozen && notFeared;
+            }
+            
             const notOnCooldown = !this.battleState.lastBotCard || card.name !== this.battleState.lastBotCard.name;
             const notFrozen = !this.battleState.frozenCards.includes(card.name);
             const notFeared = !this.battleState.fearedCards.includes(card.name);
