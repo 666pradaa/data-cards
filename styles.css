@@ -20,24 +20,6 @@ body.light-theme {
 
 
 /* ЦВЕТА РЕДКОСТЕЙ КАРТ */
-.rarity-border-common {
-    border: 3px solid #808080 !important;
-}
-
-.rarity-border-rare {
-    border: 3px solid #4a9eff !important;
-}
-}
-
-.rarity-border-epic {
-    border: 3px solid #9370db !important;
-}
-}
-
-.rarity-border-legendary {
-    border: 3px solid #ff9900 !important;
-}
-}
 
 .rarity-common {
     background: #808080;
@@ -719,6 +701,27 @@ body.light-theme .stat-item {
         0 5px 15px rgba(50, 50, 50, 0.2);
 }
 
+/* Усиление свечения при наведении для разных редкостей */
+.card.rarity-border-common:hover {
+    box-shadow: 0 0 15px rgba(128, 128, 128, 0.6), 0 0 30px rgba(128, 128, 128, 0.4),
+                0 15px 35px rgba(50, 50, 50, 0.3);
+}
+
+.card.rarity-border-rare:hover {
+    box-shadow: 0 0 18px rgba(74, 158, 255, 0.7), 0 0 35px rgba(74, 158, 255, 0.5),
+                0 15px 35px rgba(74, 158, 255, 0.3);
+}
+
+.card.rarity-border-epic:hover {
+    box-shadow: 0 0 22px rgba(147, 112, 219, 0.8), 0 0 45px rgba(147, 112, 219, 0.6),
+                0 15px 35px rgba(147, 112, 219, 0.4);
+}
+
+.card.rarity-border-legendary:hover {
+    box-shadow: 0 0 30px rgba(255, 153, 0, 0.9), 0 0 60px rgba(255, 153, 0, 0.7),
+                0 15px 35px rgba(255, 153, 0, 0.5);
+}
+
 .light-theme .card:hover {
     box-shadow: 
         0 15px 35px rgba(0, 0, 0, 0.3),
@@ -1306,35 +1309,31 @@ body.light-theme .stat-item {
 /* Обводка карт по редкости */
 .rarity-border-common {
     border: 3px solid #808080 !important;
-}
-    box-shadow: 0 0 15px rgba(50, 50, 50, 0.5);
+    box-shadow: 0 0 10px rgba(128, 128, 128, 0.4), 0 0 20px rgba(128, 128, 128, 0.2);
 }
 
 .rarity-border-rare {
     border: 3px solid #4a9eff !important;
-}
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 12px rgba(74, 158, 255, 0.5), 0 0 25px rgba(74, 158, 255, 0.3);
 }
 
 .rarity-border-epic {
     border: 3px solid #9370db !important;
-}
-    box-shadow: 0 0 15px rgba(50, 50, 50, 0.5);
+    box-shadow: 0 0 15px rgba(147, 112, 219, 0.6), 0 0 30px rgba(147, 112, 219, 0.4);
 }
 
 .rarity-border-legendary {
     border: 3px solid #ff9900 !important;
-}
-    box-shadow: 0 0 20px rgba(50, 50, 50, 0.7);
+    box-shadow: 0 0 20px rgba(255, 153, 0, 0.7), 0 0 40px rgba(255, 153, 0, 0.5);
     animation: legendary-pulse 2s infinite;
 }
 
 @keyframes legendary-pulse {
     0%, 100% {
-        box-shadow: 0 0 20px rgba(50, 50, 50, 0.7);
+        box-shadow: 0 0 20px rgba(255, 153, 0, 0.7), 0 0 40px rgba(255, 153, 0, 0.5);
     }
     50% {
-        box-shadow: 0 0 30px rgba(50, 50, 50, 1);
+        box-shadow: 0 0 30px rgba(255, 153, 0, 0.9), 0 0 60px rgba(255, 153, 0, 0.7);
     }
 }
 
@@ -1904,6 +1903,28 @@ body.light-theme .stat-item {
     padding: 1rem;
     background: rgba(50, 50, 50, 0.1);
     border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.deck-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Усиление свечения при наведении для карт в колоде */
+.deck-card.rarity-border-common:hover {
+    box-shadow: 0 0 15px rgba(128, 128, 128, 0.6), 0 0 30px rgba(128, 128, 128, 0.4);
+}
+
+.deck-card.rarity-border-rare:hover {
+    box-shadow: 0 0 18px rgba(74, 158, 255, 0.7), 0 0 35px rgba(74, 158, 255, 0.5);
+}
+
+.deck-card.rarity-border-epic:hover {
+    box-shadow: 0 0 22px rgba(147, 112, 219, 0.8), 0 0 45px rgba(147, 112, 219, 0.6);
+}
+
+.deck-card.rarity-border-legendary:hover {
+    box-shadow: 0 0 30px rgba(255, 153, 0, 0.9), 0 0 60px rgba(255, 153, 0, 0.7);
 }
 
 .light-theme .deck-card {
@@ -1987,6 +2008,32 @@ body.light-theme .stat-item {
 /* Отключение анимаций для карт в колоде */
 .deck-card-item {
     animation: none !important;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.deck-card-item:hover {
+    transform: translateY(-8px) scale(1.02);
+}
+
+/* Усиление свечения при наведении для доступных карт в колоде */
+.deck-card-item.rarity-border-common:hover {
+    box-shadow: 0 0 15px rgba(128, 128, 128, 0.6), 0 0 30px rgba(128, 128, 128, 0.4),
+                0 15px 35px rgba(50, 50, 50, 0.3);
+}
+
+.deck-card-item.rarity-border-rare:hover {
+    box-shadow: 0 0 18px rgba(74, 158, 255, 0.7), 0 0 35px rgba(74, 158, 255, 0.5),
+                0 15px 35px rgba(74, 158, 255, 0.3);
+}
+
+.deck-card-item.rarity-border-epic:hover {
+    box-shadow: 0 0 22px rgba(147, 112, 219, 0.8), 0 0 45px rgba(147, 112, 219, 0.6),
+                0 15px 35px rgba(147, 112, 219, 0.4);
+}
+
+.deck-card-item.rarity-border-legendary:hover {
+    box-shadow: 0 0 30px rgba(255, 153, 0, 0.9), 0 0 60px rgba(255, 153, 0, 0.7),
+                0 15px 35px rgba(255, 153, 0, 0.5);
 }
 
 .deck-card {
@@ -6581,27 +6628,29 @@ textarea.form-input {
 
 .skip-tutorial-btn {
     position: fixed;
-    top: 1.5rem;
-    right: 1.5rem;
+    top: 1rem;
+    right: 1rem;
     z-index: 10002;
     pointer-events: all;
     background: rgba(220, 38, 38, 0.95);
     color: white;
     border: 2px solid rgba(255, 255, 255, 0.4);
-    font-weight: 700;
-    font-size: 0.95rem;
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
     box-shadow: 
         0 4px 12px rgba(220, 38, 38, 0.4),
         0 0 20px rgba(220, 38, 38, 0.2);
     transition: all 0.3s ease;
     cursor: pointer;
+    width: auto;
+    height: auto;
 }
 
 .skip-tutorial-btn:hover {
     background: rgba(220, 38, 38, 1);
-    transform: scale(1.08) translateY(-2px);
+    transform: scale(1.05) translateY(-2px);
     box-shadow: 
         0 6px 20px rgba(220, 38, 38, 0.6),
         0 0 30px rgba(220, 38, 38, 0.4);

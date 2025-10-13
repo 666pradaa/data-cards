@@ -4042,7 +4042,20 @@ class GameData {
         localStorage.removeItem('battleStateTimestamp');
         if (this.battleState) {
             this.battleState.inProgress = false;
+            // Очищаем все активные эффекты рун
+            this.battleState.invisibleCards = [];
+            this.battleState.shieldedCards = [];
+            this.battleState.wateredCards = [];
+            this.battleState.runeDurations = {};
+            this.battleState.frozenCards = [];
+            this.battleState.fearedCards = [];
         }
+        // Очищаем визуальные эффекты рун
+        document.querySelectorAll('.invisible-card').forEach(el => el.classList.remove('invisible-card'));
+        document.querySelectorAll('.shielded-card').forEach(el => el.classList.remove('shielded-card'));
+        document.querySelectorAll('.watered-card').forEach(el => el.classList.remove('watered-card'));
+        document.querySelectorAll('.has-rune-effect').forEach(el => el.classList.remove('has-rune-effect'));
+        document.querySelectorAll('.rune-indicator').forEach(el => el.remove());
         console.log('🗑️ BattleState очищен');
     }
     
@@ -4232,113 +4245,158 @@ class GameData {
 
     renderDeck(containerId, deck, isPlayer) {
         const container = document.getElementById(containerId);
+        if (!container) {
+            console.error('❌ Контейнер не найден:', containerId);
+            return;
+        }
+        
         container.innerHTML = '';
 
         deck.forEach((card, index) => {
-            // Проверяем что карта валидна
-            if (!card || !card.name || card.damage === undefined) {
-                console.error('❌ Invalid card in deck:', card);
-                return;
-            }
+            // Валидация карты
+            if (!this.validateCard(card)) return;
             
-            // Проверяем наличие HP
-            if (card.health === undefined || card.maxHealth === undefined) {
-                console.error('❌ У карты нет HP:', card.name, 'health:', card.health, 'maxHealth:', card.maxHealth);
-                // Устанавливаем дефолтные значения
-                card.health = card.health || 100;
-                card.maxHealth = card.maxHealth || 100;
-            }
-            
-            const cardDiv = document.createElement('div');
-            const healthPercentage = Math.max(0, (card.health / card.maxHealth) * 100);
-            const isDead = card.isDead || card.health <= 0;
-            const upgradeCount = card.upgrades ? card.upgrades.length : 0;
-            
-            // Генерируем звезды для улучшений (всегда показываем все 3)
-            const starsHtml = `<div class="battle-card-stars">
-                ${Array(3).fill(0).map((_, i) => 
-                    `<span class="star ${i < upgradeCount ? 'filled' : 'empty'}">★</span>`
-                ).join('')}
-            </div>`;
-            
-            // ⚡ Проверяем наличие скилла и его кулдаун
-            const hasSkill = card.skill && (card.rarity === 'epic' || card.rarity === 'legendary');
-            const skillOnCooldown = card.skillCooldown > 0;
-            
-            console.log(`⚡ Карта ${card.name}: скилл=${card.skill ? card.skill.name : 'НЕТ'}, редкость=${card.rarity}, hasSkill=${hasSkill}, isPlayer=${isPlayer}`);
-            
-            // ⚡ Кнопка скилла (только для своих карт с скиллами)
-            let skillButtonHtml = '';
-            if (hasSkill && isPlayer && !isDead) {
-                const cooldownText = skillOnCooldown ? `(${card.skillCooldown})` : '';
-                skillButtonHtml = `
-                    <button class="skill-btn ${skillOnCooldown ? 'on-cooldown' : ''}" 
-                            data-card="${card.name}" 
-                            ${skillOnCooldown ? 'disabled' : ''}>
-                        <img src="${card.skill.icon}" alt="${card.skill.name}"
-                             onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.nextElementSibling.style.display='block';">
-                        ${cooldownText ? '<span class="skill-cooldown">' + cooldownText + '</span>' : ''}
-                        <span class="skill-icon-fallback" style="display: none;">⚡</span>
-                        <div class="skill-tooltip">
-                            <strong>${card.skill.name}</strong><br>
-                            ${card.skill.description}
-                        </div>
-                    </button>
-                `;
-                console.log(`✅ Кнопка скилла добавлена для ${card.name}`);
-            } else if (!hasSkill) {
-                console.log(`ℹ️ У ${card.name} нет скилла (редкость: ${card.rarity})`);
-            }
-            
-            // ⚡ Добавляем классы для замороженных и испуганных карт
-            let statusClasses = '';
-            if (this.battleState.frozenCards && this.battleState.frozenCards.includes(card.name)) {
-                statusClasses += ' frozen-status';
-            }
-            if (this.battleState.fearedCards && this.battleState.fearedCards.includes(card.name)) {
-                statusClasses += ' feared-status';
-            }
-            
-            cardDiv.className = `battle-card-new rarity-border-${card.rarity} ${isDead ? 'dead' : ''}${statusClasses}`;
-            cardDiv.dataset.cardName = card.name;
-            cardDiv.innerHTML = `
-                <div class="battle-card-image" style="background-image: url('${card.image}')"></div>
-                <div class="battle-card-info">
-                    <div class="battle-card-name">${card.name}</div>
-                    ${starsHtml}
-                    <div class="battle-card-stats">
-                        <div class="stat-mini"><span class="stat-icon">⚔️</span>${card.damage}</div>
-                        <div class="stat-mini"><span class="stat-icon">❤️</span>${card.maxHealth}</div>
-                        <div class="stat-mini"><span class="stat-icon">🛡️</span>${card.defense}%</div>
-                        <div class="stat-mini"><span class="stat-icon">⚡</span>${card.speed}</div>
-                </div>
-                    <div class="battle-health-bar">
-                        <div class="battle-health-fill" style="width: ${healthPercentage}%"></div>
-                        <div class="battle-health-text">${Math.max(0, Math.floor(card.health))}/${card.maxHealth}</div>
-                </div>
-                </div>
-                ${skillButtonHtml}
-                ${isDead ? '<div class="battle-dead-overlay"><div class="skull">💀</div></div>' : ''}
-            `;
-            container.appendChild(cardDiv);
-            
-            // ⚡ Добавляем обработчик на кнопку скилла
-            if (hasSkill && isPlayer && !isDead && !skillOnCooldown) {
-                const skillBtn = cardDiv.querySelector('.skill-btn');
-                console.log(`🔍 Кнопка скилла ${card.name}:`, skillBtn ? 'найдена ✅' : 'НЕ найдена ❌');
-                if (skillBtn) {
-                    skillBtn.onclick = (e) => {
-                        e.stopPropagation();
-                        console.log('🔵 КЛИК НА СКИЛЛ:', card.skill.name, 'от', card.name);
-                        this.useSkill(card);
-                    };
-                    console.log(`✅ Обработчик клика добавлен на скилл ${card.name}`);
-                } else {
-                    console.error(`❌ Кнопка скилла не найдена в DOM для ${card.name}`);
-                    console.log('HTML карты:', cardDiv.innerHTML.substring(0, 200));
-                }
+            // Создаем элемент карты
+            const cardElement = this.createBattleCardElement(card, isPlayer);
+            if (cardElement) {
+                container.appendChild(cardElement);
             }
         });
+    }
+    
+    validateCard(card) {
+        if (!card || !card.name || card.damage === undefined) {
+            console.error('❌ Невалидная карта:', card);
+            return false;
+        }
+        
+        // Проверяем и устанавливаем HP
+        if (card.health === undefined || card.maxHealth === undefined) {
+            console.warn('⚠️ У карты нет HP, устанавливаем дефолтные значения:', card.name);
+            card.health = card.health || 100;
+            card.maxHealth = card.maxHealth || 100;
+        }
+        
+        return true;
+    }
+    
+    createBattleCardElement(card, isPlayer) {
+        const cardDiv = document.createElement('div');
+        const isDead = card.isDead || card.health <= 0;
+        
+        // Классы карты
+        const cardClasses = this.getBattleCardClasses(card, isDead);
+        cardDiv.className = cardClasses;
+        cardDiv.dataset.cardName = card.name;
+        
+        // HTML структура карты
+        cardDiv.innerHTML = this.getBattleCardHTML(card, isPlayer, isDead);
+        
+        // Обработчики событий
+        this.attachBattleCardHandlers(cardDiv, card, isPlayer, isDead);
+        
+        return cardDiv;
+    }
+    
+    getBattleCardClasses(card, isDead) {
+        let classes = `battle-card-new rarity-border-${card.rarity}`;
+        
+        if (isDead) classes += ' dead';
+        
+        // Статусы от скиллов
+        if (this.battleState.frozenCards && this.battleState.frozenCards.includes(card.name)) {
+            classes += ' frozen-status';
+        }
+        if (this.battleState.fearedCards && this.battleState.fearedCards.includes(card.name)) {
+            classes += ' feared-status';
+        }
+        
+        return classes;
+    }
+    
+    getBattleCardHTML(card, isPlayer, isDead) {
+        const healthPercentage = Math.max(0, (card.health / card.maxHealth) * 100);
+        const upgradeCount = card.upgrades ? card.upgrades.length : 0;
+        
+        // Звезды улучшений
+        const starsHtml = this.getUpgradeStarsHTML(upgradeCount);
+        
+        // Статистика карты
+        const statsHtml = this.getBattleCardStatsHTML(card);
+        
+        // Кнопка скилла
+        const skillButtonHtml = this.getSkillButtonHTML(card, isPlayer, isDead);
+        
+        return `
+            <div class="battle-card-image" style="background-image: url('${card.image}')"></div>
+            <div class="battle-card-info">
+                <div class="battle-card-name">${card.name}</div>
+                ${starsHtml}
+                ${statsHtml}
+                <div class="battle-health-bar">
+                    <div class="battle-health-fill" style="width: ${healthPercentage}%"></div>
+                    <div class="battle-health-text">${Math.max(0, Math.floor(card.health))}/${card.maxHealth}</div>
+                </div>
+            </div>
+            ${skillButtonHtml}
+            ${isDead ? '<div class="battle-dead-overlay"><div class="skull">💀</div></div>' : ''}
+        `;
+    }
+    
+    getUpgradeStarsHTML(upgradeCount) {
+        return `<div class="battle-card-stars">
+            ${Array(3).fill(0).map((_, i) => 
+                `<span class="star ${i < upgradeCount ? 'filled' : 'empty'}">★</span>`
+            ).join('')}
+        </div>`;
+    }
+    
+    getBattleCardStatsHTML(card) {
+        return `<div class="battle-card-stats">
+            <div class="stat-mini"><span class="stat-icon">⚔️</span>${card.damage}</div>
+            <div class="stat-mini"><span class="stat-icon">❤️</span>${card.maxHealth}</div>
+            <div class="stat-mini"><span class="stat-icon">🛡️</span>${card.defense}%</div>
+            <div class="stat-mini"><span class="stat-icon">⚡</span>${card.speed}</div>
+        </div>`;
+    }
+    
+    getSkillButtonHTML(card, isPlayer, isDead) {
+        const hasSkill = card.skill && (card.rarity === 'epic' || card.rarity === 'legendary');
+        if (!hasSkill || !isPlayer || isDead) return '';
+        
+        const skillOnCooldown = card.skillCooldown > 0;
+        const cooldownText = skillOnCooldown ? `(${card.skillCooldown})` : '';
+        
+        return `
+            <button class="skill-btn ${skillOnCooldown ? 'on-cooldown' : ''}" 
+                    data-card="${card.name}" 
+                    ${skillOnCooldown ? 'disabled' : ''}>
+                <img src="${card.skill.icon}" alt="${card.skill.name}"
+                     onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.nextElementSibling.style.display='block';">
+                ${cooldownText ? '<span class="skill-cooldown">' + cooldownText + '</span>' : ''}
+                <span class="skill-icon-fallback" style="display: none;">⚡</span>
+                <div class="skill-tooltip">
+                    <strong>${card.skill.name}</strong><br>
+                    ${card.skill.description}
+                </div>
+            </button>
+        `;
+    }
+    
+    attachBattleCardHandlers(cardDiv, card, isPlayer, isDead) {
+        const hasSkill = card.skill && (card.rarity === 'epic' || card.rarity === 'legendary');
+        const skillOnCooldown = card.skillCooldown > 0;
+        
+        if (hasSkill && isPlayer && !isDead && !skillOnCooldown) {
+            const skillBtn = cardDiv.querySelector('.skill-btn');
+            if (skillBtn) {
+                skillBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    console.log('⚡ Использование скилла:', card.skill.name, 'от', card.name);
+                    this.useSkill(card);
+                };
+            }
+        }
     }
 
     startInteractiveBattle() {
@@ -5728,15 +5786,23 @@ class GameData {
             soul.style.top = centerY + 'px';
             soul.style.zIndex = '99999';
             soul.style.position = 'fixed';
+            soul.style.transition = 'all 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            
+            // Создаем внутреннюю структуру души
+            soul.innerHTML = `
+                <div class="soul-core"></div>
+                <div class="soul-trail"></div>
+            `;
             
             document.body.appendChild(soul); // Добавляем в body, а не в arena!
             console.log(`✅ Soul ${i} created at window position (${centerX}, ${centerY})`);
             
             // Анимация: душа летит по кругу
             setTimeout(() => {
-                soul.style.transform = `translate(${targetX}px, ${targetY}px)`;
+                soul.style.opacity = '1';
+                soul.style.transform = `translate(${targetX}px, ${targetY}px) scale(1.5) rotate(${360 + angle * 57.3}deg)`;
                 console.log(`🌀 Soul ${i} flying to offset (${targetX}, ${targetY})`);
-            }, 100 + i * 30); // Небольшая задержка между душами для эффекта
+            }, 50 + i * 30); // Небольшая задержка между душами для эффекта
             
             // Удаляем душу
             setTimeout(() => {
