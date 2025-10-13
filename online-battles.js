@@ -114,7 +114,7 @@ class OnlineBattlesSystem {
         console.log('Колода пользователя:', user.deck);
         
         if (!user.deck || user.deck.length !== 3) {
-            alert('Сначала соберите колоду из 3 карт!');
+            await this.gameData.showAlert('Сначала соберите колоду из 3 карт!', '⚠️', 'Ошибка');
             return;
         }
         
@@ -234,7 +234,7 @@ class OnlineBattlesSystem {
             
         } catch (error) {
             console.error('❌ Ошибка создания комнаты:', error);
-            alert('Ошибка создания комнаты: ' + error.message);
+            await this.gameData.showAlert('Ошибка создания комнаты: ' + error.message, '❌', 'Ошибка');
         }
     }
 
@@ -242,7 +242,7 @@ class OnlineBattlesSystem {
         const roomCode = document.getElementById('room-code-input').value.trim();
         
         if (!roomCode) {
-            alert('Введите код комнаты!');
+            await this.gameData.showAlert('Введите код комнаты!', '⚠️', 'Ошибка');
             return;
         }
         
@@ -262,13 +262,13 @@ class OnlineBattlesSystem {
             }
             
             if (!roomData) {
-                alert('Комната не найдена! Проверьте код.');
+                await this.gameData.showAlert('Комната не найдена! Проверьте код.', '❌', 'Ошибка');
                 console.error('❌ Комната не найдена');
                 return;
             }
             
             if (roomData.guest) {
-                alert('Комната уже занята!');
+                await this.gameData.showAlert('Комната уже занята!', '⚠️', 'Занято');
                 console.error('❌ Комната занята');
                 return;
             }
@@ -278,7 +278,7 @@ class OnlineBattlesSystem {
             
             // Проверяем колоду
             if (!user.deck || user.deck.length !== 3) {
-                alert('Сначала соберите колоду из 3 карт!');
+                await this.gameData.showAlert('Сначала соберите колоду из 3 карт!', '⚠️', 'Ошибка');
                 return;
             }
             
@@ -325,7 +325,7 @@ class OnlineBattlesSystem {
             
         } catch (error) {
             console.error('❌ Ошибка входа в комнату:', error);
-            alert('Ошибка входа: ' + error.message);
+            await this.gameData.showAlert('Ошибка входа: ' + error.message, '❌', 'Ошибка');
         }
     }
 
