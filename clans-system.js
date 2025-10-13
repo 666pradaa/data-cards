@@ -107,13 +107,7 @@ class ClansSystem {
             ).join('');
         }
         
-        // Цвета
-        const colorOptions = document.getElementById('color-options');
-        if (colorOptions) {
-            colorOptions.innerHTML = this.clanAvatarParts.colors.map((color, i) => 
-                `<div class="avatar-option color" data-part="color" data-index="${i}" style="background:${color}"></div>`
-            ).join('');
-        }
+        // ЦВЕТА УБРАНЫ - не используются и ничего не меняют
         
         // Обработчики выбора
         document.querySelectorAll('.avatar-option').forEach(option => {
@@ -304,18 +298,29 @@ class ClansSystem {
         
         // Валидация
         if (!tag || tag.length < 2 || tag.length > 5) {
-            alert('Тег должен быть от 2 до 5 символов!');
+            await this.gameData.showAlert('Тег должен быть от 2 до 5 символов!', '⚠️', 'Ошибка');
             return;
         }
         
         if (!name || name.length < 3) {
-            alert('Название должно быть минимум 3 символа!');
+            await this.gameData.showAlert('Название должно быть минимум 3 символа!', '⚠️', 'Ошибка');
             return;
         }
         
         const user = this.gameData.getUser();
         if (user.gems < 25) {
-            alert('Недостаточно гемов!');
+            await this.gameData.showAlert('Недостаточно гемов! Нужно: 25 💎', '⚠️', 'Ошибка');
+            return;
+        }
+        
+        // Красивое подтверждение
+        const confirmed = await this.gameData.showConfirm(
+            `Создать клан "${name}" [${tag}] за 25 гемов?`, 
+            '🏰', 
+            'Создание клана'
+        );
+        
+        if (!confirmed) {
             return;
         }
         
