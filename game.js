@@ -974,9 +974,6 @@ class GameData {
     }
 
     showMainMenu() {
-        console.log('🏠 ========== ПОКАЗЫВАЕМ ГЛАВНОЕ МЕНЮ ==========');
-        console.log('   currentUser:', this.currentUser);
-        console.log('   currentUserData:', this.currentUserData ? 'есть' : 'НЕТ');
         
         // НЕ проверяем сохраненный бой при входе/регистрации
         // Очищаем старый бой чтобы не мешал
@@ -1038,19 +1035,13 @@ class GameData {
         
         // Проверяем админ права
         const user = this.getUser();
-        console.log('🔍 Проверка прав пользователя:', {
-            isAdmin: user?.isAdmin,
-            isSupportAdmin: user?.isSupportAdmin
-        });
         
         if (user && user.isAdmin) {
-            console.log('✅ Создаем кнопку админ панели');
             this.createAdminButton();
         }
         
         // Проверяем права админа поддержки
         if (user && user.isSupportAdmin) {
-            console.log('✅ Создаем кнопку админ поддержки');
             this.createSupportAdminButton();
         }
         
@@ -1352,9 +1343,6 @@ class GameData {
         const username = document.getElementById('username').value.trim();
         const password = document.getElementById('password').value;
 
-        console.log('📝 Введенные данные:');
-        console.log('   - username:', username);
-        console.log('   - password длина:', password.length);
 
         if (!username || !password) {
             await this.showAlert('Заполните все поля', '⚠️', 'Ошибка');
@@ -1367,64 +1355,39 @@ class GameData {
             loginBtn.disabled = true;
             loginBtn.textContent = 'Вход...';
         }
-        
-        console.log('🔵 Начинаем вход:', username);
-        console.log('🔵 Используем Firebase:', this.useFirebase);
 
         if (this.useFirebase) {
-            console.log('🔵 Вызываем firebaseAdapter.login...');
             // Firebase авторизация
             const result = await firebaseAdapter.login(username, password);
-            console.log('🔵 Результат входа:', result);
             
             if (result.success) {
-                console.log('✅ Firebase вход успешен!');
                 this.currentUser = result.userId;
                 this.currentUserData = result.userData;
                 
                 // Сохраняем сессию в localStorage для автовхода
                 localStorage.setItem('dotaCardsCurrentUser', result.userId);
-                console.log('💾 Сессия сохранена в localStorage');
-                
-                console.log('📊 Данные пользователя:', this.currentUserData);
                 
                 // Подписываемся на изменения данных в реальном времени
                 firebaseAdapter.listenToUserData(result.userId, (data) => {
-                    console.log('🔄 Данные обновлены:', data);
                     this.currentUserData = data;
                     this.updateUserInfo();
                 });
                 
                 // Загружаем кеш пользователей для поиска друзей
-                console.log('📥 Загружаем всех пользователей...');
                 this.allUsersCache = await firebaseAdapter.getAllUsers();
-                console.log('✅ Загружено пользователей:', Object.keys(this.allUsersCache).length);
                 
-                console.log('✅ Вход через Firebase завершен:', username);
-                console.log('🔍 ФИНАЛЬНАЯ ПРОВЕРКА:');
-                console.log('   this.currentUser:', this.currentUser);
-                console.log('   this.currentUserData:', !!this.currentUserData);
-                
-                // ВАЖНО: показываем меню БЕЗ setTimeout
-                console.log('🏠 Переход в главное меню...');
                 this.showMainMenu();
             } else {
-                console.error('❌ Firebase вход не удался:', result.error);
                 await this.showAlert(result.error || 'Неверные данные', '❌', 'Ошибка входа');
-                // Не возвращаемся, кнопка разблокируется в finally
             }
         } else {
-            console.log('💾 Используем localStorage для входа');
             // localStorage авторизация (старый метод)
             if (this.users[username] && this.users[username].password === password) {
-                console.log('✅ Пользователь найден в localStorage');
                 this.currentUser = username;
                 this.currentUserData = this.users[username];
                 localStorage.setItem('dotaCardsCurrentUser', username);
-                console.log('🏠 Переход в главное меню...');
                 this.showMainMenu();
             } else {
-                console.error('❌ Неверные данные для localStorage');
                 await this.showAlert('Неверные данные', '❌', 'Ошибка входа');
             }
         }
@@ -1456,15 +1419,10 @@ class GameData {
         registerBtn.disabled = true;
         registerBtn.textContent = 'Регистрация...';
         
-        console.log('🔵 Начинаем регистрацию:', username);
-        console.log('🔵 Используем Firebase:', this.useFirebase);
-
         try {
             if (this.useFirebase) {
-                console.log('🔵 Вызываем firebaseAdapter.register...');
                 // Firebase регистрация
                 const result = await firebaseAdapter.register(username, password);
-                console.log('🔵 Результат регистрации:', result);
             
             if (result.success) {
                 this.currentUser = result.userId;
@@ -1499,20 +1457,12 @@ class GameData {
                 // Сохраняем сессию в localStorage для автовхода
                 localStorage.setItem('dotaCardsCurrentUser', result.userId);
                 
-                console.log('✅ Регистрация через Firebase:', username);
-                console.log('💾 Сессия сохранена');
-                console.log('🏠 Переход в главное меню...');
-                console.log('🔍 Проверка перед переходом:');
-                console.log('   this.currentUser:', this.currentUser);
-                console.log('   this.currentUserData:', !!this.currentUserData);
-                
                 // Показываем меню
                 this.showMainMenu();
                 
                 // Показываем уведомление
                 await this.showAlert('Регистрация успешна!', '✅', 'Успех');
             } else {
-                console.log('❌ Регистрация не удалась, ошибка:', result.error);
                 await this.showAlert(result.error || 'Ошибка регистрации', '❌', 'Ошибка');
                 return;
             }
@@ -1571,20 +1521,16 @@ class GameData {
     }
 
     async logout() {
-        console.log('👋👋👋 ВЫХОД ИЗ АККАУНТА 👋👋👋');
-        
         if (this.useFirebase) {
             // Firebase выход
             if (this.currentUser) {
                 firebaseAdapter.unlistenToUserData(this.currentUser);
             }
             await firebaseAdapter.logout();
-            console.log('✅ Выход из Firebase');
         }
         
         // Очищаем localStorage в любом случае
         localStorage.removeItem('dotaCardsCurrentUser');
-        console.log('💾 Сессия удалена из localStorage');
         
         this.currentUser = null;
         this.currentUserData = null;
@@ -1620,16 +1566,6 @@ class GameData {
             user = this.currentUserData;
         } else {
             user = this.users[this.currentUser];
-        }
-        
-        if (!user) {
-            console.error('❌❌❌ getUser() вернул null!');
-            console.error('   useFirebase:', this.useFirebase);
-            console.error('   currentUser:', this.currentUser);
-            console.error('   currentUserData:', this.currentUserData);
-            if (!this.useFirebase) {
-                console.error('   users:', Object.keys(this.users || {}));
-            }
         }
         
         return user;
@@ -1686,6 +1622,15 @@ class GameData {
 
     async getUserById(userId) {
         // Получить данные любого пользователя по ID
+        // Защита: доступно только администраторам
+        const currentUser = this.getUser();
+        if (!currentUser || (!currentUser.isAdmin && !currentUser.isSupportAdmin)) {
+            // Если не админ, разрешаем получить только свои данные
+            if (this.currentUser !== userId) {
+                return null;
+            }
+        }
+        
         if (this.useFirebase) {
             return this.allUsersCache[userId] || await firebaseAdapter.getUserData(userId);
         } else {
@@ -1695,6 +1640,12 @@ class GameData {
 
     async getAllUsers() {
         // Получить всех пользователей
+        // Защита: доступно только администраторам
+        const currentUser = this.getUser();
+        if (!currentUser || (!currentUser.isAdmin && !currentUser.isSupportAdmin)) {
+            return {};
+        }
+        
         if (this.useFirebase) {
             if (Object.keys(this.allUsersCache).length === 0) {
                 this.allUsersCache = await firebaseAdapter.getAllUsers();
@@ -2099,18 +2050,12 @@ class GameData {
             const respondBtn = ticketDiv.querySelector('.respond-btn');
             if (respondBtn) {
                 respondBtn.addEventListener('click', () => {
-                    console.log('🔵 Клик на "Ответить"');
-                    console.log('   userId:', ticket.userId);
-                    console.log('   ticketIndex:', ticket.ticketIndex);
-                    console.log('   message:', ticket.message);
                     this.openSupportResponse(ticket.userId, ticket.ticketIndex, ticket.message, ticket.username);
                 });
             }
             
             container.appendChild(ticketDiv);
         });
-        
-        console.log(`✅ Загружено ${allTickets.length} обращений в поддержку`);
     }
     
     openSupportResponse(userId, ticketIndex, message, username) {
@@ -2483,16 +2428,11 @@ class GameData {
             let allUsers = null;
             
             if (this.useFirebase) {
-                console.log('☁️ Загрузка пользователей из Firebase...');
                 const snapshot = await firebase.database().ref('users').once('value');
                 allUsers = snapshot.val() || {};
             } else {
-                console.log('💾 Загрузка пользователей из localStorage...');
                 allUsers = JSON.parse(localStorage.getItem('dotaCardsUsers') || '{}');
             }
-            
-            console.log('📊 Всего пользователей:', Object.keys(allUsers).length);
-            console.log('📋 Первые 3 пользователя:', Object.keys(allUsers).slice(0, 3));
             
             // Преобразуем в массив
             let usersArray = Object.entries(allUsers).map(([id, userData]) => ({
@@ -2503,8 +2443,6 @@ class GameData {
             
             // Фильтрация
             const currentUser = this.getUser();
-            console.log('👤 Текущий пользователь для фильтрации:', currentUser.userid);
-            console.log('👥 Друзья:', currentUser.friends);
             
             // Если выбран топ кланов
             if (filter === 'clans') {
@@ -2525,20 +2463,15 @@ class GameData {
             }
             
             if (filter === 'my-clan' && currentUser.clanId) {
-                console.log('🏰 Фильтр по клану:', currentUser.clanId);
                 usersArray = usersArray.filter(u => u.clanId === currentUser.clanId);
             } else if (filter === 'friends') {
-                console.log('👥 Фильтр по друзьям');
                 if (currentUser.friends && currentUser.friends.length > 0) {
-                    console.log('📋 Список друзей:', currentUser.friends);
                     usersArray = usersArray.filter(u => {
                         // Проверяем userid пользователя в массиве friends
                         const isFriend = currentUser.friends.includes(u.userid || u.id);
-                        if (isFriend) console.log('✅ Друг найден:', u.nickname || u.username);
                         return isFriend;
                     });
                 } else {
-                    console.log('⚠️ У пользователя нет друзей');
                     usersArray = [];
                 }
             }
@@ -2548,8 +2481,6 @@ class GameData {
             
             // Берем топ-100
             usersArray = usersArray.slice(0, 100);
-            
-            console.log('🏆 Топ игроков после фильтрации:', usersArray.length);
             
             // Рендерим список
             if (usersArray.length === 0) {
@@ -3612,27 +3543,15 @@ class GameData {
     }
 
     async startBotBattle() {
-        console.log('⚔️⚔️⚔️ ЗАПУСК БОЯ С БОТОМ ⚔️⚔️⚔️');
-        console.log('   currentUser:', this.currentUser);
-        console.log('   currentUserData:', !!this.currentUserData);
-        
         try {
         const user = this.getUser();
         
         if (!user) {
-            console.error('❌ getUser() вернул null при запуске боя!');
             await this.showAlert('Ошибка: пользователь не найден. Попробуйте перезайти.', '❌', 'Ошибка');
             return;
         }
-        
-        console.log('✅ Пользователь найден:', !!user);
-        console.log('   user.cards:', !!user.cards);
-        console.log('   user.deck:', user.deck);
         const userCards = user.cards || {};
             const deck = user.deck || [];
-            
-            console.log('User deck:', deck);
-            console.log('User cards:', Object.keys(userCards));
             
             // Проверяем наличие полной колоды (ровно 3 карты)
             if (deck.length === 0) {
@@ -3648,15 +3567,11 @@ class GameData {
             // Создаем колоду игрока из выбранных карт
         const playerDeck = [];
             for (const cardName of deck) {
-                console.log('Processing card:', cardName);
-                console.log('Card exists in userCards:', !!userCards[cardName]);
-                console.log('Card exists in this.cards:', !!this.cards[cardName]);
                 
                 if (userCards[cardName] && userCards[cardName].count > 0) {
                     try {
                         const battleCard = this.createBattleCard(cardName, userCards[cardName]);
                         playerDeck.push(battleCard);
-                        console.log('Card added to deck:', cardName);
                     } catch (error) {
                         console.error('Error creating battle card:', cardName, error);
                         await this.showAlert(`Ошибка с картой "${cardName}": ${error.message}
