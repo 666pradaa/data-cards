@@ -380,8 +380,7 @@ class OnlineBattlesSystem {
             });
             
             if (room.status === 'ready' && this.isHost && !this.gameData.battleState) {
-                console.log('🎉 Гость присоединился! Начинаем бой...');
-                this.closeOnlineBattleModal();
+                console.log('🎉 Гость присоединился! Начинаем бой НЕМЕДЛЕННО...');
                 
                 // Отключаем слушатель для избежания повторного запуска
                 if (this.roomListener) {
@@ -389,10 +388,14 @@ class OnlineBattlesSystem {
                     this.roomListener = null;
                 }
                 
-                // Небольшая задержка перед началом
-                setTimeout(() => {
-                    this.startOnlineBattle(roomCode);
-                }, 300);
+                // Закрываем все модалки
+                const onlineModal = document.getElementById('online-battle-modal');
+                if (onlineModal) {
+                    onlineModal.style.display = 'none';
+                }
+                
+                // СРАЗУ запускаем бой без задержки
+                this.startOnlineBattle(roomCode);
             }
             
             // Обновляем текущую комнату
