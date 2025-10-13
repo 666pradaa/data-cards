@@ -23,6 +23,13 @@ html, body {
         max-width: 100%;
     }
     
+    /* КРИТИЧНО: Исправляем обрезанные карты в бою */
+    .battle-arena {
+        overflow: visible !important;
+        min-height: 100vh;
+        padding: 1rem 0.5rem;
+    }
+    
     /* Навигация */
     .nav-buttons {
         flex-wrap: wrap;
@@ -75,10 +82,12 @@ html, body {
     .battle-card-new {
         min-width: 140px;
         max-width: 160px;
+        min-height: 200px; /* Предотвращаем квадратную форму */
     }
     
     .battle-card-image {
         height: 120px;
+        min-height: 120px;
     }
     
     .battle-hint {
@@ -475,8 +484,20 @@ html, body {
         grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     }
     
+    /* КРИТИЧНО: Исправляем обрезанные карты на MacBook */
     .battle-arena {
         max-width: 1100px;
+        overflow: visible !important;
+        min-height: calc(100vh - 100px);
+        padding: 1rem;
+    }
+    
+    .player-deck, .bot-deck {
+        overflow: visible !important;
+    }
+    
+    .battle-card-new {
+        overflow: visible !important;
     }
 }
 
@@ -496,6 +517,34 @@ html, body {
 }
 
 /* ========== АДАПТАЦИЯ СПЕЦИФИЧЕСКИХ ЭЛЕМЕНТОВ ========== */
+
+/* Тултипы - предотвращаем выход за границы экрана */
+.tooltip {
+    max-width: 250px !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+}
+
+@media screen and (max-width: 768px) {
+    .tooltip {
+        max-width: 200px !important;
+        font-size: 0.75rem !important;
+        padding: 0.5rem !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+    }
+}
+
+/* Скиллы и руны - показываем описание поверх карты */
+.battle-card-new {
+    position: relative;
+    overflow: visible !important; /* КРИТИЧНО для показа описаний */
+}
+
+.skill-button, .rune-button {
+    position: relative;
+    z-index: 10;
+}
 
 /* Окно с кодом комнаты */
 @media screen and (max-width: 480px) {
