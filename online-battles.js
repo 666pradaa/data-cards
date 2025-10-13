@@ -932,22 +932,26 @@ class OnlineBattlesSystem {
         }
     }
 
-    copyRoomCode() {
+    async copyRoomCode() {
         const code = document.getElementById('room-code-display').textContent;
         
         if (navigator.clipboard) {
-            navigator.clipboard.writeText(code).then(() => {
-                alert('Код скопирован: ' + code);
-            });
+            try {
+                await navigator.clipboard.writeText(code);
+                await this.gameData.showAlert(`Код скопирован: ${code}`, '✅', 'Успех');
+            } catch (error) {
+                console.error('❌ Ошибка копирования:', error);
+                await this.gameData.showAlert('Ошибка копирования в буфер обмена', '❌', 'Ошибка');
+            }
         } else {
-            // Fallback
+            // Fallback для старых браузеров
             const input = document.createElement('input');
             input.value = code;
             document.body.appendChild(input);
             input.select();
             document.execCommand('copy');
             document.body.removeChild(input);
-            alert('Код скопирован: ' + code);
+            await this.gameData.showAlert(`Код скопирован: ${code}`, '✅', 'Успех');
         }
     }
 
