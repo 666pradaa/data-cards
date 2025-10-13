@@ -4322,10 +4322,13 @@ class GameData {
         const skillButtonHtml = this.getSkillButtonHTML(card, isPlayer, isDead);
         
         return `
-            <div class="battle-card-image" style="background-image: url('${card.image}')"></div>
+            <div class="battle-card-image" style="background-image: url('${card.image}')">
+                <div class="card-name-overlay">
+                    <div class="battle-card-name">${card.name}</div>
+                    ${starsHtml}
+                </div>
+            </div>
             <div class="battle-card-info">
-                <div class="battle-card-name">${card.name}</div>
-                ${starsHtml}
                 ${statsHtml}
                 <div class="battle-health-bar">
                     <div class="battle-health-fill" style="width: ${healthPercentage}%"></div>
