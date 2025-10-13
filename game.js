@@ -2109,12 +2109,18 @@ class GameData {
             const respondBtn = ticketDiv.querySelector('.respond-btn');
             if (respondBtn) {
                 respondBtn.addEventListener('click', () => {
+                    console.log('🔵 Клик на "Ответить"');
+                    console.log('   userId:', ticket.userId);
+                    console.log('   ticketIndex:', ticket.ticketIndex);
+                    console.log('   message:', ticket.message);
                     this.openSupportResponse(ticket.userId, ticket.ticketIndex, ticket.message, ticket.username);
                 });
             }
             
             container.appendChild(ticketDiv);
         });
+        
+        console.log(`✅ Загружено ${allTickets.length} обращений в поддержку`);
     }
     
     openSupportResponse(userId, ticketIndex, message, username) {
