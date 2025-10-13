@@ -159,47 +159,57 @@ class OnlineBattlesSystem {
     }
 
     async createRoom() {
-        const user = this.gameData.getUser();
-        console.log('🏠 Создание комнаты хостом:', user.nickname || user.username);
+        console.log('🎮🎮🎮 СОЗДАНИЕ ОНЛАЙН-КОМНАТЫ 🎮🎮🎮');
         
-        // Проверяем колоду
-        if (!user.deck || user.deck.length !== 3) {
-            alert('Сначала соберите колоду из 3 карт!');
+        const user = this.gameData.getUser();
+        const deck = user.deck;
+        
+        console.log('👤 Хост:', user.nickname || user.username);
+        console.log('🃏 Колода хоста:', deck);
+        
+        if (!deck || deck.length !== 3) {
+            await this.gameData.showAlert('Вы должны иметь ровно 3 карты в колоде!', '⚠️', 'Ошибка');
+            console.error('❌ Неверная колода. Длина:', deck?.length);
             return;
         }
         
-        console.log('🃏 Колода хоста:', user.deck);
+        // Генерируем код комнаты
+        const roomCode = Math.random().toString(36).substr(2, 6).toUpperCase();
+        console.log('🔑 Код комнаты сгенерирован:', roomCode);
         
-        const roomCode = this.generateRoomCode();
-        console.log('🔑 Сгенерирован код комнаты:', roomCode);
+        this.isHost = true;
+        this.currentRoom = roomCode;
         
+        // Получаем ID пользователя
         const currentUserId = this.gameData.useFirebase ? 
             (firebase.auth().currentUser?.uid || this.gameData.currentUser) :
             this.gameData.currentUser;
         
         console.log('👤 ID хоста:', currentUserId);
         
+        // Создаём данные комнаты
         const roomData = {
             code: roomCode,
             host: currentUserId,
-            hostNick: user.nickname || user.username,
+            hostNickname: user.nickname || user.username,
+            hostDeck: deck, // Сохраняем только названия карт
             guest: null,
-            guestNick: null,
-            status: 'waiting',
-            hostDeck: user.deck,
+            guestNickname: null,
             guestDeck: null,
+            status: 'waiting',
             turn: 0,
             round: 1,
             isHostTurn: true,
             createdAt: Date.now()
         };
         
-        console.log('📦 Данные комнаты:', roomData);
+        console.log('📦 Данные комнаты для Firebase:', roomData);
         
         try {
             if (this.gameData.useFirebase) {
+                console.log('☁️ Отправка комнаты в Firebase...');
                 await firebase.database().ref(`rooms/${roomCode}`).set(roomData);
-                console.log('✅ Комната создана в Firebase');
+                console.log('✅✅✅ Комната успешно создана в Firebase!');
             } else {
                 // localStorage для тестирования
                 const rooms = JSON.parse(localStorage.getItem('onlineRooms') || '{}');
@@ -208,7 +218,7 @@ class OnlineBattlesSystem {
                 console.log('✅ Комната создана в localStorage');
             }
             
-            this.currentRoom = roomData;
+            this.currentRoom = roomCode;
             this.isHost = true;
             
             // Показываем код комнаты
