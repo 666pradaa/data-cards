@@ -194,9 +194,11 @@ class OnlineBattlesSystem {
             code: roomCode,
             host: currentUserId,
             hostNickname: user.nickname || user.username,
+            hostAvatar: user.avatar || this.gameData.avatars[0], // Аватарка хоста
             hostDeck: deck, // Сохраняем только названия карт
             guest: null,
             guestNickname: null,
+            guestAvatar: null, // Аватарка гостя
             guestDeck: null,
             status: 'waiting',
             turn: 0,
@@ -513,6 +515,7 @@ class OnlineBattlesSystem {
                 isPlayerTurn: this.isHost, // хост ходит первым
                 playerName: this.isHost ? (roomData.hostNickname || roomData.hostNick) : (roomData.guestNickname || roomData.guestNick),
                 botName: this.isHost ? (roomData.guestNickname || roomData.guestNick) : (roomData.hostNickname || roomData.hostNick),
+                opponentAvatar: this.isHost ? roomData.guestAvatar : roomData.hostAvatar, // Аватарка противника
                 inProgress: true,
                 isOnline: true,
                 roomCode: roomCode,
@@ -1060,17 +1063,34 @@ class OnlineBattlesSystem {
     }
 
     backToMenuOnline() {
+        console.log('📋 Возврат в меню из онлайн боя');
+        
         const resultOverlay = document.querySelector('.battle-result-overlay');
         if (resultOverlay && document.body.contains(resultOverlay)) {
             document.body.removeChild(resultOverlay);
+            console.log('✅ Оверлей результата удален');
         }
         
-        document.getElementById('battle-screen').classList.remove('active');
-        document.getElementById('main-menu').classList.add('active');
+        const battleScreen = document.getElementById('battle-screen');
+        const mainMenu = document.getElementById('main-menu');
+        
+        if (battleScreen) {
+            battleScreen.classList.remove('active');
+            battleScreen.style.display = 'none';
+            console.log('✅ Экран боя скрыт');
+        }
+        
+        if (mainMenu) {
+            mainMenu.classList.add('active');
+            mainMenu.style.display = 'block';
+            console.log('✅ Главное меню показано');
+        }
         
         this.gameData.battleState = null;
         this.gameData.clearBattleState();
         this.gameData.updateUserInfo();
+        
+        console.log('✅ Возврат в меню завершен');
     }
     
     showRoomCodeWindow(roomCode) {
