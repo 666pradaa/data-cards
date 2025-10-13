@@ -2879,7 +2879,7 @@ body.light-theme .stat-item {
 
 .skill-btn {
     position: absolute;
-    top: 8px;
+    bottom: 8px;
     right: 8px;
     width: 36px;
     height: 36px;

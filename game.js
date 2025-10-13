@@ -5328,6 +5328,11 @@ class GameData {
                 const hasEffect = this.battleState.runeDurations[cardName] && this.battleState.runeDurations[cardName] > 0;
                 if (!hasEffect) {
                     console.log('👻 Невидимость истекла:', cardName);
+                    
+                    // Показываем сообщение
+                    this.showBattleHint(`👻 Невидимость с ${cardName} спала!`);
+                    setTimeout(() => this.hideBattleHint(), 1500);
+                    
                     // Убираем все визуальные эффекты
                     const cardEl = document.querySelector(`.battle-card-new[data-card-name="${cardName}"]`);
                     if (cardEl) {
@@ -5347,6 +5352,11 @@ class GameData {
                 const hasEffect = this.battleState.runeDurations[cardName] && this.battleState.runeDurations[cardName] > 0;
                 if (!hasEffect) {
                     console.log('🛡️ Щит истек:', cardName);
+                    
+                    // Показываем сообщение
+                    this.showBattleHint(`🛡️ Щит с ${cardName} пропал!`);
+                    setTimeout(() => this.hideBattleHint(), 1500);
+                    
                     // Убираем все визуальные эффекты
                     const cardEl = document.querySelector(`.battle-card-new[data-card-name="${cardName}"]`);
                     if (cardEl) {
@@ -5392,6 +5402,18 @@ class GameData {
     // ===== КОНЕЦ СИСТЕМЫ РУН =====
     
     // ⚡ ===== СИСТЕМА СКИЛЛОВ =====
+    
+    // Устанавливаем кулдаун на ВСЕ скиллы колоды
+    setAllSkillsCooldown(playerDeck) {
+        console.log('⏱️ Устанавливаем кулдаун на все скиллы колоды (2 раунда)');
+        playerDeck.forEach(card => {
+            if (card.skill) {
+                card.skillCooldown = 2;
+                console.log(`⏱️ Кулдаун установлен для ${card.name}`);
+            }
+        });
+        this.renderBattle(); // Обновляем отображение
+    }
     
     useSkill(card) {
         if (!card.skill || !this.isPlayerTurn || card.skillCooldown > 0) return;
@@ -5488,8 +5510,8 @@ class GameData {
         // Воспроизводим звук
         this.soundSystem.playSound('shadow_fiend_requiem', 1.2);
         
-        // Устанавливаем кулдаун
-        card.skillCooldown = 2;
+        // Устанавливаем кулдаун на ВСЕ скиллы колоды
+        this.setAllSkillsCooldown(this.battleState.playerDeck);
         
         // Помечаем что ходили этой картой
         this.battleState.lastPlayerCard = { name: card.name };
@@ -5549,7 +5571,8 @@ class GameData {
         // Воспроизводим звук (если загружен)
         // this.soundSystem.playSound('pudge_dismember', 1.2);
         
-        casterCard.skillCooldown = 2;
+        // Устанавливаем кулдаун на ВСЕ скиллы колоды
+        this.setAllSkillsCooldown(this.battleState.playerDeck);
         this.battleState.lastPlayerCard = { name: casterCard.name };
         
         // Анимация Dismember
@@ -5590,7 +5613,8 @@ class GameData {
         // Воспроизводим звук
         this.soundSystem.playSound('invoker_sunstrike', 1.2);
         
-        casterCard.skillCooldown = 2;
+        // Устанавливаем кулдаун на ВСЕ скиллы колоды
+        this.setAllSkillsCooldown(this.battleState.playerDeck);
         this.battleState.lastPlayerCard = { name: casterCard.name };
         
         // Анимация Sun Strike
@@ -5632,7 +5656,8 @@ class GameData {
         // Воспроизводим звук (если загружен)
         // this.soundSystem.playSound('crystal_maiden_frostbite', 1.2);
         
-        casterCard.skillCooldown = 2;
+        // Устанавливаем кулдаун на ВСЕ скиллы колоды
+        this.setAllSkillsCooldown(this.battleState.playerDeck);
         this.battleState.lastPlayerCard = { name: casterCard.name };
         
         // Анимация Frostbite
@@ -5666,7 +5691,8 @@ class GameData {
         // Воспроизводим звук
         this.soundSystem.playSound('terrorblade_sunder', 1.2);
         
-        casterCard.skillCooldown = 2;
+        // Устанавливаем кулдаун на ВСЕ скиллы колоды
+        this.setAllSkillsCooldown(this.battleState.playerDeck);
         this.battleState.lastPlayerCard = { name: casterCard.name };
         
         // Анимация Sunder
@@ -5706,7 +5732,8 @@ class GameData {
         // Воспроизводим звук (если загружен)
         // this.soundSystem.playSound('spirit_breaker_charge', 1.2);
         
-        card.skillCooldown = 2;
+        // Устанавливаем кулдаун на ВСЕ скиллы колоды
+        this.setAllSkillsCooldown(this.battleState.playerDeck);
         
         // Даем +20 скорости на раунд
         card.tempSpeed = 20;
