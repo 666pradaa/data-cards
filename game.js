@@ -1713,7 +1713,6 @@ class GameData {
         
         // Специальный код для админ поддержки (не сохраняется в usedCodes)
         if (code === 'POD777') {
-            console.log('🎫 Активирован код админ поддержки POD777');
             const updates = {
                 isSupportAdmin: true
             };
@@ -1737,7 +1736,7 @@ class GameData {
             updates.gold = (user.gold || 0) + 50;
             updates.gems = (user.gems || 0) + 5;
             await this.showAlert('Получено:\n50 золота 🪙\n5 гемов 💎', '🎁', 'Промокод активирован');
-        } else if (code === 'ADMINPANEL666') {
+        } else if (code === 'AHMED228') {
             updates.isAdmin = true;
             this.createAdminButton();
             await this.showAlert('Админ доступ получен!', '⚙️', 'Успех');
@@ -1752,6 +1751,12 @@ class GameData {
     }
 
     createAdminButton() {
+        // Защита от вызова через консоль
+        const currentUser = this.getUser();
+        if (!currentUser || !currentUser.isAdmin) {
+            return;
+        }
+        
         // Удаляем старую кнопку если есть
         const oldBtn = document.getElementById('admin-btn');
         if (oldBtn) oldBtn.remove();
@@ -1768,6 +1773,12 @@ class GameData {
     }
     
     createSupportAdminButton() {
+        // Защита от вызова через консоль
+        const currentUser = this.getUser();
+        if (!currentUser || !currentUser.isSupportAdmin) {
+            return;
+        }
+        
         // Удаляем старую кнопку если есть
         const oldBtn = document.getElementById('support-admin-btn');
         if (oldBtn) oldBtn.remove();
@@ -1782,37 +1793,25 @@ class GameData {
         
         const userInfo = document.querySelector('.user-info');
         userInfo.insertBefore(supportAdminBtn, document.getElementById('logout-btn'));
-        
-        console.log('✅ Кнопка админ поддержки создана');
     }
 
     async showAdminPanel() {
-        console.log('⚙️⚙️⚙️ ОТКРЫВАЕМ АДМИН ПАНЕЛЬ ⚙️⚙️⚙️');
-        
         // Проверка прав администратора по промокоду
         const user = this.getUser();
         
-        console.log('   user найден:', !!user);
-        console.log('   user.isAdmin:', user?.isAdmin);
-        
         if (!user) {
-            console.error('❌ Пользователь не найден!');
             await this.showAlert('Ошибка: пользователь не найден', '❌', 'Ошибка');
             return;
         }
         
         if (!user.isAdmin) {
-            console.log('⚠️ У пользователя нет прав админа');
-            await this.showAlert('Доступ запрещен!\n\nАдмин-панель доступна только после активации специального промокода.\n\n💡 Подсказка: промокод начинается с "ADMIN"', '🔒', 'Нет доступа');
+            await this.showAlert('Доступ запрещен!\n\nАдмин-панель доступна только после активации специального промокода.', '🔒', 'Нет доступа');
             return;
         }
-        
-        console.log('✅ Права админа подтверждены');
         
         const panel = document.getElementById('admin-panel');
         
         if (!panel) {
-            console.error('❌ admin-panel не найдена!');
             return;
         }
         
@@ -1987,22 +1986,15 @@ class GameData {
     }
     
     async showSupportAdminPanel() {
-        console.log('💬💬💬 ОТКРЫВАЕМ АДМИН ПАНЕЛЬ ПОДДЕРЖКИ 💬💬💬');
         const user = this.getUser();
         
-        console.log('   user найден:', !!user);
-        console.log('   user.isSupportAdmin:', user?.isSupportAdmin);
-        
         if (!user.isSupportAdmin) {
-            await this.showAlert('Доступ запрещен!\n\nАдмин поддержка доступна только после активации промокода POD777', '🔒', 'Нет доступа');
+            await this.showAlert('Доступ запрещен!\n\nАдмин поддержка доступна только после активации специального промокода.', '🔒', 'Нет доступа');
             return;
         }
         
         const supportAdminPanel = document.getElementById('support-admin-panel');
         const mainMenu = document.getElementById('main-menu');
-        
-        console.log('   supportAdminPanel найдена:', !!supportAdminPanel);
-        console.log('   mainMenu найдено:', !!mainMenu);
         
         if (supportAdminPanel && mainMenu) {
             mainMenu.classList.remove('active');
@@ -2013,17 +2005,11 @@ class GameData {
             supportAdminPanel.style.opacity = '1';
             supportAdminPanel.classList.add('active');
             
-            console.log('✅ Панель администратора поддержки открыта');
-            
             this.loadSupportTickets();
-        } else {
-            console.error('❌ Элементы не найдены!');
         }
     }
     
     closeSupportAdminPanel() {
-        console.log('❌ Закрываем панель администратора поддержки');
-        
         const supportAdminPanel = document.getElementById('support-admin-panel');
         const mainMenu = document.getElementById('main-menu');
         
@@ -2038,11 +2024,15 @@ class GameData {
             mainMenu.classList.add('active');
             mainMenu.style.display = 'block';
         }
-        
-        console.log('✅ Панель администратора поддержки закрыта, возврат в меню');
     }
     
     async loadSupportTickets() {
+        // Защита от вызова через консоль
+        const currentUser = this.getUser();
+        if (!currentUser || !currentUser.isSupportAdmin) {
+            return;
+        }
+        
         const container = document.getElementById('support-tickets-container');
         if (!container) return;
         
@@ -2144,6 +2134,12 @@ class GameData {
     }
     
     async sendSupportAdminMessage() {
+        // Защита от вызова через консоль
+        const currentUser = this.getUser();
+        if (!currentUser || !currentUser.isSupportAdmin) {
+            return;
+        }
+        
         const chatArea = document.getElementById('support-chat-area');
         const input = document.getElementById('support-admin-message-input');
         const response = input.value.trim();
@@ -2184,16 +2180,19 @@ class GameData {
         
         await this.showAlert('Ответ отправлен!', '✅', 'Успех');
         this.loadSupportTickets();
-        
-        console.log('📧 Ответ на обращение отправлен');
     }
 
     async loadUsersList(searchQuery = '') {
+        // Защита от вызова через консоль
+        const currentUser = this.getUser();
+        if (!currentUser || !currentUser.isAdmin) {
+            return;
+        }
+        
         const container = document.getElementById('users-container');
         container.innerHTML = '<div style="text-align: center; padding: 2rem;">Загрузка...</div>';
 
         // Обновляем аватар и ник админа
-        const currentUser = this.getUser();
         if (currentUser) {
             document.getElementById('admin-avatar').src = currentUser.avatar || this.avatars[0];
             const displayText = `${currentUser.nickname || currentUser.username} • ${currentUser.userid || 'ID не задан'}`;
@@ -2245,10 +2244,22 @@ class GameData {
     }
 
     async searchUsers(query) {
+        // Защита от вызова через консоль
+        const currentUser = this.getUser();
+        if (!currentUser || !currentUser.isAdmin) {
+            return;
+        }
+        
         await this.loadUsersList(query);
     }
 
     async updateUserBalance(userId, button) {
+        // Защита от вызова через консоль
+        const currentUser = this.getUser();
+        if (!currentUser || !currentUser.isAdmin) {
+            return;
+        }
+        
         const inputs = button.parentElement.querySelectorAll('.admin-input');
         const gold = parseInt(inputs[0].value) || 0;
         const gems = parseInt(inputs[1].value) || 0;
@@ -2267,6 +2278,12 @@ class GameData {
 
 
     async resetUserProgress(userId) {
+        // Защита от вызова через консоль
+        const currentUser = this.getUser();
+        if (!currentUser || !currentUser.isAdmin) {
+            return;
+        }
+        
         const user = await this.getUserById(userId);
         const username = user.username || user.nickname || userId.substr(0, 8);
         
