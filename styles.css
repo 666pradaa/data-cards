@@ -2881,12 +2881,12 @@ body.light-theme .stat-item {
     position: absolute;
     top: 8px;
     right: 8px;
-    width: 45px;
-    height: 45px;
-    padding: 3px;
-    background: rgba(0, 0, 0, 0.9);
-    border: 2px solid rgba(255, 215, 0, 0.6);
-    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    background: rgba(0, 0, 0, 0.85);
+    border: 2px solid rgba(255, 215, 0, 0.5);
+    border-radius: 6px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -2897,16 +2897,14 @@ body.light-theme .stat-item {
         0 2px 8px rgba(0, 0, 0, 0.5), 
         0 0 15px rgba(255, 215, 0, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.1);
-    overflow: hidden;
 }
 
 .skill-btn img {
-    width: 38px;
-    height: 38px;
+    width: 28px;
+    height: 28px;
     object-fit: cover;
     border-radius: 4px;
     filter: brightness(1.1) saturate(1.2);
-    display: block;
 }
 
 .skill-cooldown {
