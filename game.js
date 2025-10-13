@@ -5785,17 +5785,16 @@ class GameData {
     createRequiemAnimation(caster, oppositeCard) {
         console.log('💀💀💀 АНИМАЦИЯ REQUIEM НАЧАТА 💀💀💀');
         console.log('Caster:', caster.name);
-        console.log('Opposite card:', oppositeCard.name);
         
-        // Получаем координаты противоположной карты
-        const oppositeCardEl = document.querySelector(`#enemy-cards .battle-card-new[data-card-name="${oppositeCard.name}"]`);
-        if (!oppositeCardEl) {
-            console.error('❌ Карта напротив не найдена:', oppositeCard.name);
+        // Получаем координаты Shadow Fiend (caster), а не противоположной карты!
+        const casterCardEl = document.querySelector(`#player-cards .battle-card-new[data-card-name="${caster.name}"]`);
+        if (!casterCardEl) {
+            console.error('❌ Карта Shadow Fiend не найдена:', caster.name);
             return;
         }
         
-        // Получаем координаты центра карты относительно ОКНА (не арены)
-        const rect = oppositeCardEl.getBoundingClientRect();
+        // Получаем координаты центра Shadow Fiend относительно ОКНА
+        const rect = casterCardEl.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
         
@@ -5891,9 +5890,16 @@ class GameData {
         console.log('☀️ Анимация Sun Strike');
         
         const targetEl = document.querySelector(`.battle-card-new[data-card-name="${target.name}"]`);
-        if (!targetEl) return;
+        if (!targetEl) {
+            console.error('❌ Карта-цель не найдена для Sun Strike:', target.name);
+            return;
+        }
         
-        const arena = document.querySelector('.battle-arena');
+        const arena = document.querySelector('.battle-arena-v2') || document.querySelector('.battle-arena');
+        if (!arena) {
+            console.error('❌ Arena не найдена');
+            return;
+        }
         
         // Луч света сверху
         const beam = document.createElement('div');
@@ -5903,6 +5909,7 @@ class GameData {
         
         beam.style.left = (rect.left - arenaRect.left + rect.width / 2) + 'px';
         beam.style.top = '0';
+        beam.style.position = 'absolute';
         
         arena.appendChild(beam);
         

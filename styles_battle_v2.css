@@ -17,6 +17,16 @@
         radial-gradient(ellipse at bottom, rgba(139, 92, 246, 0.1), transparent 50%);
 }
 
+/* Для совместимости старого кода с новой ареной */
+.battle-arena {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
 /* Анимированная сетка */
 .battle-arena-v2::before {
     content: '';
