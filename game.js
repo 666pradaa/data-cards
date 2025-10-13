@@ -448,8 +448,31 @@ class GameData {
     async initUI() {
         console.log('🔧 initUI() вызван - настраиваем интерфейс');
         this.applyTheme();
+        this.checkEmojiSupport();
         await this.setupEventListeners();
         await this.checkAuth();
+    }
+    
+    checkEmojiSupport() {
+        // Проверяем поддержку эмодзи
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        
+        ctx.fillText('🪙', 0, 0);
+        const emojiData = ctx.getImageData(0, 0, 1, 1).data;
+        const emojiSupported = emojiData[0] !== 0 || emojiData[1] !== 0 || emojiData[2] !== 0;
+        
+        if (!emojiSupported) {
+            console.log('⚠️ Эмодзи не поддерживаются, используем запасной вариант');
+            // Показываем запасные текстовые иконки
+            document.querySelectorAll('.currency-fallback').forEach(fallback => {
+                fallback.style.display = 'inline';
+            });
+            document.querySelectorAll('.currency-icon [aria-hidden="true"]').forEach(emoji => {
+                emoji.style.display = 'none';
+            });
+        }
     }
 
     applyTheme() {
@@ -1099,10 +1122,9 @@ class GameData {
         if (user && !user.tutorialCompleted) {
             console.log('🎓 Показываем обучение для нового игрока');
             setTimeout(() => this.startTutorial(), 500);
-        }
-        
-        // Показываем подсказку о конкурсе для ВСЕХ пользователей (даже старых)
-        if (user) {
+        } else {
+            // Показываем подсказку о конкурсе для старых пользователей (которые уже прошли обучение)
+            // Новым пользователям она покажется после обучения
             setTimeout(() => {
                 this.showCompetitionHint();
             }, 1000);
@@ -3664,10 +3686,10 @@ class GameData {
         console.log('Available upgrades:', Object.keys(this.upgrades));
         
         const user = this.getUser();
-        const wins = user.wins || 0;
-        const isFirstBattle = wins === 0;
+        const battlesPlayed = user.battlesPlayed || 0;
+        const isFirstBattle = battlesPlayed === 0;
         
-        console.log('Побед у игрока:', wins);
+        console.log('Боёв сыграно:', battlesPlayed);
         console.log('Первый бой (100% победа):', isFirstBattle);
         
         // Подсчитываем среднее количество улучшений у игрока

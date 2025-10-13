@@ -442,6 +442,36 @@ body.light-theme .stat-item {
 
 .currency-icon {
     font-size: 1.2rem;
+    display: inline-block;
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Android Emoji", sans-serif;
+    /* Запасной вариант если эмодзи не поддерживается */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-width: 1.2rem;
+    text-align: center;
+    position: relative;
+}
+
+/* По умолчанию скрываем запасной текст */
+.currency-fallback {
+    display: none;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+/* Показываем запасной текст только если эмодзи не поддерживается */
+.currency-icon [aria-hidden="true"]:empty + .currency-fallback,
+.currency-icon [aria-hidden="true"]:not(:empty):first-child:not(:last-child) {
+    display: none;
+}
+
+/* Цвета для запасных иконок */
+.currency .currency-icon:first-of-type .currency-fallback {
+    color: #ffd700; /* Золотой для G (gold) */
+}
+
+.currency .currency-icon:last-of-type .currency-fallback {
+    color: #00d4ff; /* Голубой для D (diamonds) */
 }
 
 /* Навигация с улучшенной анимацией */
@@ -6481,6 +6511,16 @@ textarea.form-input {
     right: 2rem;
     z-index: 10002;
     pointer-events: all;
+    background: rgba(220, 38, 38, 0.9);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.skip-tutorial-btn:hover {
+    background: rgba(220, 38, 38, 1);
+    transform: scale(1.05);
 }
 
 .tutorial-box {
