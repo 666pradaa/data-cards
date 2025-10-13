@@ -4377,7 +4377,8 @@ body.light-theme .stat-item {
 .result-icon {
     font-size: 5rem;
     margin-bottom: 1rem;
-    animation: iconBounce 1s ease infinite;
+    animation: iconBounce 1s ease 1;
+    animation-fill-mode: forwards;
 }
 
 @keyframes iconBounce {
