@@ -173,8 +173,8 @@ class OnlineBattlesSystem {
             return;
         }
         
-        // Генерируем код комнаты
-        const roomCode = Math.random().toString(36).substr(2, 6).toUpperCase();
+        // Генерируем 4-значный код комнаты
+        const roomCode = Math.floor(1000 + Math.random() * 9000).toString();
         console.log('🔑 Код комнаты сгенерирован:', roomCode);
         
         this.isHost = true;
@@ -1049,21 +1049,30 @@ class OnlineBattlesSystem {
 window.onlineBattlesSystem = null;
 
 // Инициализация
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initOnlineBattlesSystem);
-} else {
-    initOnlineBattlesSystem();
-}
-
 function initOnlineBattlesSystem() {
     console.log('👥 Инициализация системы онлайн-боёв...');
+    console.log('   window.gameData:', !!window.gameData);
+    
     const interval = setInterval(() => {
         if (window.gameData) {
             console.log('✅ gameData найден, создаём OnlineBattlesSystem');
             window.onlineBattlesSystem = new OnlineBattlesSystem(window.gameData);
+            console.log('✅ onlineBattlesSystem создан:', !!window.onlineBattlesSystem);
             window.onlineBattlesSystem.init();
+            console.log('✅ onlineBattlesSystem.init() завершен');
             clearInterval(interval);
+        } else {
+            console.log('⏳ Ждем gameData...');
         }
     }, 100);
+}
+
+// Запускаем инициализацию
+if (document.readyState === 'loading') {
+    console.log('📄 DOM загружается, ждем DOMContentLoaded...');
+    document.addEventListener('DOMContentLoaded', initOnlineBattlesSystem);
+} else {
+    console.log('📄 DOM уже загружен, запускаем инициализацию сразу');
+    initOnlineBattlesSystem();
 }
 
