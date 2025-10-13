@@ -2909,7 +2909,7 @@ body.light-theme .stat-item {
     height: 24px;
     object-fit: cover;
     border-radius: 3px;
-    filter: grayscale(100%) contrast(1.2) brightness(1.1);
+    filter: brightness(1.1) saturate(1.1);
 }
 
 .skill-cooldown {
@@ -3857,21 +3857,20 @@ body.light-theme .stat-item {
 }
 
 .battle-card-new {
-    width: 260px;
-    height: 150px;
-    background: linear-gradient(145deg, #1a1a1a 0%, #0d0d0d 100%);
-    border-radius: 8px;
+    width: 240px;
+    height: 160px;
+    background: rgba(50, 50, 50, 0.1);
+    border-radius: 12px;
+    padding: 0.7rem;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: visible;
     position: relative;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 2px solid #2a2a2a;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 2px solid rgba(50, 50, 50, 0.2);
     box-shadow: 
-        0 4px 16px rgba(0, 0, 0, 0.9),
-        0 2px 8px rgba(0, 0, 0, 0.7),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08),
-        inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+        0 4px 15px rgba(0, 0, 0, 0.3),
+        0 2px 8px rgba(0, 0, 0, 0.2);
     z-index: 1;
 }
 
@@ -3976,71 +3975,59 @@ body.light-theme .stat-item {
 }
 
 .battle-card-new:not(.dead):hover {
-    transform: translateY(-3px) scale(1.05);
+    transform: translateY(-8px) scale(1.05);
     box-shadow: 
-        0 8px 30px rgba(0, 0, 0, 0.95),
-        0 0 20px rgba(255, 255, 255, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        0 12px 30px rgba(0, 0, 0, 0.4),
+        0 6px 15px rgba(0, 0, 0, 0.3);
 }
 
 .battle-card-image {
     width: 100%;
-    height: 70px;
+    height: 65px;
     background-size: cover;
     background-position: center;
     position: relative;
-    filter: grayscale(100%) contrast(1.15) brightness(0.95);
+    filter: brightness(1.1) saturate(1.2);
     overflow: hidden;
-    border-radius: 8px 8px 0 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.battle-card-image::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, 
-        rgba(0, 0, 0, 0.2) 0%, 
-        rgba(0, 0, 0, 0.7) 100%);
-    pointer-events: none;
-}
-
-.card-name-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 0.25rem 0.5rem;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(4px);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    margin-bottom: 0.4rem;
 }
 
 .battle-card-info {
     flex: 1;
-    padding: 0.5rem 0.6rem;
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, transparent 100%);
-    position: relative;
 }
 
 .battle-card-name {
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     font-weight: 700;
     margin-bottom: 0;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    letter-spacing: 0.5px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    line-height: 1;
-    color: #e8e8e8;
+    line-height: 1.2;
+}
+
+/* Цвета имен по редкости (как в меню) */
+.battle-card-name.rarity-common {
+    color: #999;
+}
+
+.battle-card-name.rarity-rare {
+    color: #4a9eff;
+}
+
+.battle-card-name.rarity-epic {
+    color: #9370db;
+}
+
+.battle-card-name.rarity-legendary {
+    color: #ff9900;
 }
 
 .battle-card-stars {
@@ -4056,11 +4043,10 @@ body.light-theme .stat-item {
 }
 
 .battle-card-stars .star.filled {
-    color: #fff;
+    color: #ffd700;
     text-shadow: 
-        0 0 6px rgba(255, 255, 255, 0.5),
+        0 0 8px rgba(255, 215, 0, 0.6),
         1px 1px 2px rgba(0, 0, 0, 0.8);
-    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.4));
 }
 
 .battle-card-stars .star.empty {
@@ -4091,7 +4077,6 @@ body.light-theme .stat-item {
 .stat-icon {
     font-size: 0.8rem;
     margin-right: 1px;
-    filter: grayscale(100%);
 }
 
 .battle-health-bar {

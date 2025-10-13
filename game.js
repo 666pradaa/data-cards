@@ -3744,30 +3744,30 @@ class GameData {
                     console.log('⚔️ ОБЫЧНЫЙ БОЙ - баланс 50/50');
                     
                     // В 50% случаев бот сильнее, в 50% - слабее/равен
-                    const isStrongerBot = Math.random() < 0.5;
+                    const rand = Math.random();
                     let upgradesCount;
                     
-                    if (isStrongerBot) {
-                        // Бот сильнее - множитель 1.3-1.6x
-                        const strengthMultiplier = 1.3 + Math.random() * 0.3;
+                    if (rand < 0.5) {
+                        // Бот сильнее - множитель 1.15-1.35x
+                        const strengthMultiplier = 1.15 + Math.random() * 0.2;
                         console.log('🔴 Бот СИЛЬНЕЕ (x' + strengthMultiplier.toFixed(2) + ')');
                         
                         botCard.damage = Math.floor(botCard.damage * strengthMultiplier);
                         botCard.health = Math.floor(botCard.health * strengthMultiplier);
                         botCard.maxHealth = Math.floor(botCard.maxHealth * strengthMultiplier);
-                        botCard.defense = Math.min(75, Math.floor(botCard.defense * (1.2 + Math.random() * 0.3)));
+                        botCard.defense = Math.min(70, Math.floor(botCard.defense * (1.1 + Math.random() * 0.2)));
                         
-                        // Бот получает больше улучшений
+                        // Бот получает столько же улучшений +1
                         upgradesCount = avgPlayerUpgrades + 1;
                     } else {
-                        // Бот равен/слабее - множитель 0.9-1.2x
-                        const strengthMultiplier = 0.9 + Math.random() * 0.3;
+                        // Бот равен/слабее - множитель 0.85-1.05x
+                        const strengthMultiplier = 0.85 + Math.random() * 0.2;
                         console.log('🟢 Бот РАВЕН/СЛАБЕЕ (x' + strengthMultiplier.toFixed(2) + ')');
                         
                         botCard.damage = Math.floor(botCard.damage * strengthMultiplier);
                         botCard.health = Math.floor(botCard.health * strengthMultiplier);
                         botCard.maxHealth = Math.floor(botCard.maxHealth * strengthMultiplier);
-                        botCard.defense = Math.min(65, Math.floor(botCard.defense * (0.9 + Math.random() * 0.3)));
+                        botCard.defense = Math.min(60, Math.floor(botCard.defense * (0.85 + Math.random() * 0.2)));
                         
                         // Бот получает столько же или меньше улучшений
                         upgradesCount = Math.max(0, avgPlayerUpgrades - 1);
@@ -4321,14 +4321,14 @@ class GameData {
         // Кнопка скилла
         const skillButtonHtml = this.getSkillButtonHTML(card, isPlayer, isDead);
         
+        // Определяем класс редкости для цвета имени
+        const rarityClass = `rarity-${card.rarity}`;
+        
         return `
-            <div class="battle-card-image" style="background-image: url('${card.image}')">
-                <div class="card-name-overlay">
-                    <div class="battle-card-name">${card.name}</div>
-                    ${starsHtml}
-                </div>
-            </div>
+            <div class="battle-card-image" style="background-image: url('${card.image}')"></div>
             <div class="battle-card-info">
+                <div class="battle-card-name ${rarityClass}">${card.name}</div>
+                ${starsHtml}
                 ${statsHtml}
                 <div class="battle-health-bar">
                     <div class="battle-health-fill" style="width: ${healthPercentage}%"></div>
