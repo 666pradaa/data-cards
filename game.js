@@ -3696,9 +3696,9 @@ class GameData {
         
         const botDeck = [];
         
-        // ⚖️ НОВАЯ ЛОГИКА: После первого боя бот получает ТОЧНО ТЕ ЖЕ карты, что и игрок
+        // ⚖️ НОВАЯ ЛОГИКА: После первого боя бот получает РАЗНЫЕ карты похожего уровня
         if (!isFirstBattle) {
-            console.log('⚔️ ОБЫЧНЫЙ БОЙ - используем карты игрока для баланса 50/50');
+            console.log('⚔️ ОБЫЧНЫЙ БОЙ - создаем РАЗНУЮ колоду похожего уровня');
             
             // Определяем силу бота (50/50 шанс)
             const rand = Math.random();
@@ -3716,34 +3716,58 @@ class GameData {
                 console.log('🟢 Бот ЧУТЬ СЛАБЕЕ (x' + strengthMultiplier.toFixed(2) + ')');
             }
             
-            // Создаем колоду бота на основе колоды игрока
-            playerDeck.forEach(playerCard => {
-                const card = this.cards[playerCard.name];
+            // Собираем все доступные карты
+            const allCards = Object.keys(this.cards);
+            const usedCards = new Set();
+            
+            // Добавляем карты игрока в использованные, чтобы бот НЕ взял те же карты
+            playerDeck.forEach(card => usedCards.add(card.name));
+            
+            // Подсчитываем средний уровень силы колоды игрока
+            let totalPlayerPower = 0;
+            playerDeck.forEach(card => {
+                const power = card.damage + card.health + card.defense + card.speed;
+                totalPlayerPower += power;
+            });
+            const avgPlayerPower = totalPlayerPower / playerDeck.length;
+            console.log(`💪 Средняя мощь карт игрока: ${avgPlayerPower.toFixed(1)}`);
+            
+            // Создаем колоду бота из РАЗНЫХ карт похожего уровня
+            const availableCards = allCards.filter(cardName => !usedCards.has(cardName));
+            
+            for (let i = 0; i < 3 && availableCards.length > 0; i++) {
+                // Выбираем случайную доступную карту
+                const randomIndex = Math.floor(Math.random() * availableCards.length);
+                const randomCardName = availableCards[randomIndex];
+                availableCards.splice(randomIndex, 1); // Удаляем из доступных
                 
+                const card = this.cards[randomCardName];
                 if (!card) {
-                    console.error('Bot card not found:', playerCard.name);
-                    return;
+                    console.error('Bot card not found:', randomCardName);
+                    i--; // Пробуем еще раз
+                    continue;
                 }
                 
-                // Создаем копию карты игрока с модифицированными характеристиками
+                // Создаем карту бота с характеристиками похожего уровня
+                const playerCardForLevel = playerDeck[i] || playerDeck[0];
                 const botCard = {
                     name: card.name,
-                    damage: Math.floor(playerCard.damage * strengthMultiplier),
-                    health: Math.floor(playerCard.health * strengthMultiplier),
-                    maxHealth: Math.floor(playerCard.maxHealth * strengthMultiplier),
-                    defense: Math.min(80, Math.floor(playerCard.defense * strengthMultiplier)),
-                    speed: playerCard.speed,
+                    damage: Math.floor(playerCardForLevel.damage * strengthMultiplier),
+                    health: Math.floor(playerCardForLevel.health * strengthMultiplier),
+                    maxHealth: Math.floor(playerCardForLevel.maxHealth * strengthMultiplier),
+                    defense: Math.min(80, Math.floor(playerCardForLevel.defense * strengthMultiplier)),
+                    speed: playerCardForLevel.speed,
                     image: card.image,
                     rarity: card.rarity,
-                    upgrades: playerCard.upgrades ? [...playerCard.upgrades] : [],
+                    upgrades: playerCardForLevel.upgrades ? [...playerCardForLevel.upgrades] : [],
                     isDead: false,
                     skill: card.skill || null,
                     skillCooldown: 0
                 };
                 
-                console.log(`Bot card ${botCard.name}: DMG ${botCard.damage}, HP ${botCard.health}, DEF ${botCard.defense}%, SPD ${botCard.speed}`);
+                console.log(`🤖 Bot card ${botCard.name}: DMG ${botCard.damage}, HP ${botCard.health}, DEF ${botCard.defense}%, SPD ${botCard.speed}`);
                 botDeck.push(botCard);
-            });
+            }
         } else {
             // Первый бой - используем старую логику (слабый бот)
             console.log('🎓 ПЕРВЫЙ БОЙ - бот очень слабый (100% победа игрока)');
@@ -4335,15 +4359,12 @@ class GameData {
         return `
             <button class="skill-btn ${skillOnCooldown ? 'on-cooldown' : ''}" 
                     data-card="${card.name}" 
-                    ${skillOnCooldown ? 'disabled' : ''}>
+                    ${skillOnCooldown ? 'disabled' : ''}
+                    title="${card.skill.name}: ${card.skill.description}">
                 <img src="${card.skill.icon}" alt="${card.skill.name}"
-                     onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.nextElementSibling.style.display='block';">
+                     onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='block';">
                 ${cooldownText ? '<span class="skill-cooldown">' + cooldownText + '</span>' : ''}
                 <span class="skill-icon-fallback" style="display: none;">⚡</span>
-                <div class="skill-tooltip">
-                    <strong>${card.skill.name}</strong><br>
-                    ${card.skill.description}
-                </div>
             </button>
         `;
     }
