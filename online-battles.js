@@ -244,6 +244,9 @@ class OnlineBattlesSystem {
             // Начинаем слушать изменения (ожидание в фоне)
             this.listenToRoom(roomCode);
             
+            // Показываем красивое окно с кодом комнаты и кнопкой копирования
+            this.showRoomCodeWindow(roomCode);
+            
         } catch (error) {
             console.error('❌ Ошибка создания комнаты:', error);
             await this.gameData.showAlert('Ошибка создания комнаты: ' + error.message, '❌', 'Ошибка');
@@ -1044,6 +1047,132 @@ class OnlineBattlesSystem {
         this.gameData.battleState = null;
         this.gameData.clearBattleState();
         this.gameData.updateUserInfo();
+    }
+    
+    showRoomCodeWindow(roomCode) {
+        console.log('📋 Показываем окно с кодом комнаты:', roomCode);
+        
+        // Создаем красивое модальное окно с кодом
+        const overlay = document.createElement('div');
+        overlay.className = 'custom-modal-overlay';
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        `;
+        
+        const modal = document.createElement('div');
+        modal.style.cssText = `
+            background: linear-gradient(145deg, #1a1a1a 0%, #2d2d2d 100%);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        `;
+        
+        modal.innerHTML = `
+            <div style="font-size: 3rem; margin-bottom: 1rem;">🎮</div>
+            <h2 style="margin: 0 0 1rem 0; color: #fff; font-size: 1.8rem;">Комната создана!</h2>
+            <p style="margin: 0 0 1.5rem 0; color: rgba(255,255,255,0.7); font-size: 1rem;">
+                Передайте этот код второму игроку:
+            </p>
+            <div style="
+                background: rgba(255, 255, 255, 0.05);
+                border: 2px solid rgba(255, 255, 255, 0.2);
+                border-radius: 15px;
+                padding: 1.5rem;
+                margin: 1.5rem 0;
+                font-size: 3rem;
+                font-weight: 900;
+                color: #ffd700;
+                letter-spacing: 0.3rem;
+                text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+            ">${roomCode}</div>
+            <p style="margin: 1rem 0 1.5rem 0; color: rgba(255,255,255,0.5); font-size: 0.9rem;">
+                ⏳ Ожидание второго игрока...<br>
+                <span style="font-size: 0.8rem;">Бой запустится автоматически когда игрок присоединится</span>
+            </p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button id="copy-room-code-modal" style="
+                    background: linear-gradient(145deg, #4a4a4a 0%, #2d2d2d 100%);
+                    color: #fff;
+                    border: 2px solid rgba(255, 255, 255, 0.2);
+                    padding: 0.8rem 2rem;
+                    border-radius: 10px;
+                    font-size: 1rem;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-weight: 600;
+                " onmouseover="this.style.background='linear-gradient(145deg, #5a5a5a 0%, #3d3d3d 100%)'; this.style.borderColor='rgba(255,255,255,0.4)';" 
+                   onmouseout="this.style.background='linear-gradient(145deg, #4a4a4a 0%, #2d2d2d 100%)'; this.style.borderColor='rgba(255,255,255,0.2)';">
+                    📋 Скопировать код
+                </button>
+                <button id="close-room-code-modal" style="
+                    background: linear-gradient(145deg, #2d2d2d 0%, #1a1a1a 100%);
+                    color: #fff;
+                    border: 2px solid rgba(255, 255, 255, 0.1);
+                    padding: 0.8rem 2rem;
+                    border-radius: 10px;
+                    font-size: 1rem;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    font-weight: 600;
+                " onmouseover="this.style.background='linear-gradient(145deg, #3d3d3d 0%, #2a2a2a 100%)'; this.style.borderColor='rgba(255,255,255,0.3)';" 
+                   onmouseout="this.style.background='linear-gradient(145deg, #2d2d2d 0%, #1a1a1a 100%)'; this.style.borderColor='rgba(255,255,255,0.1)';">
+                    Закрыть
+                </button>
+            </div>
+        `;
+        
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+        
+        // Анимация появления
+        setTimeout(() => {
+            overlay.style.opacity = '1';
+            modal.style.transform = 'scale(1)';
+        }, 10);
+        
+        // Обработчики кнопок
+        document.getElementById('copy-room-code-modal').onclick = async () => {
+            try {
+                await navigator.clipboard.writeText(roomCode);
+                await this.gameData.showAlert(`Код ${roomCode} скопирован!`, '✅', 'Успех');
+            } catch (error) {
+                console.error('Ошибка копирования:', error);
+            }
+        };
+        
+        document.getElementById('close-room-code-modal').onclick = () => {
+            overlay.style.opacity = '0';
+            modal.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                if (document.body.contains(overlay)) {
+                    document.body.removeChild(overlay);
+                }
+            }, 300);
+        };
+        
+        // Закрытие по клику на фон
+        overlay.onclick = (e) => {
+            if (e.target === overlay) {
+                document.getElementById('close-room-code-modal').click();
+            }
+        };
     }
 }
 
