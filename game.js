@@ -279,70 +279,70 @@ class GameData {
     initData() {
         // Сбалансированные карты (общая сила ~100-120 для обычных, +20-30 за редкость)
         this.cards = {
-            // Обычные карты (сила ~100-120)
+            // Обычные карты (сила ~110-130)
             'Shadow Shaman': {
                 name: 'Shadow Shaman',
                 rarity: 'common',
-                damage: 30,
-                health: 80,
-                defense: 15,
+                damage: 32,
+                health: 85,
+                defense: 18,
                 speed: 18,
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/shadow_shaman.png'
             },
             'Chen': {
                 name: 'Chen',
                 rarity: 'common',
-                damage: 25,
-                health: 90,
-                defense: 20,
-                speed: 15,
+                damage: 28,
+                health: 95,
+                defense: 22,
+                speed: 16,
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/chen.png'
             },
             'Lycan': {
                 name: 'Lycan',
                 rarity: 'common',
-                damage: 35,
-                health: 70,
-                defense: 10,
-                speed: 25,
+                damage: 38,
+                health: 75,
+                defense: 12,
+                speed: 26,
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/lycan.png'
             },
-            // Редкие карты (сила ~130-150)
+            // Редкие карты (сила ~140-160)
             'Lion': {
                 name: 'Lion',
                 rarity: 'rare',
-                damage: 40,
-                health: 85,
-                defense: 18,
-                speed: 22,
+                damage: 42,
+                health: 90,
+                defense: 20,
+                speed: 23,
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/lion.png'
             },
             'Sven': {
                 name: 'Sven',
                 rarity: 'rare',
-                damage: 45,
-                health: 100,
-                defense: 15,
-                speed: 18,
+                damage: 48,
+                health: 105,
+                defense: 18,
+                speed: 19,
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/sven.png'
             },
             'Queen Of Pain': {
                 name: 'Queen Of Pain',
                 rarity: 'rare',
-                damage: 42,
-                health: 80,
-                defense: 12,
-                speed: 30,
+                damage: 45,
+                health: 82,
+                defense: 14,
+                speed: 31,
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/queenofpain.png'
             },
-            // Эпические карты (сила ~160-180)
+            // Эпические карты (сила ~170-190) со скиллами
             'Terrorblade': {
                 name: 'Terrorblade',
                 rarity: 'epic',
-                damage: 55,
-                health: 110,
-                defense: 20,
-                speed: 20,
+                damage: 58,
+                health: 115,
+                defense: 22,
+                speed: 21,
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/terrorblade.png',
                 skill: {
                     name: 'Sunder',
@@ -354,10 +354,10 @@ class GameData {
             'Crystal Maiden': {
                 name: 'Crystal Maiden',
                 rarity: 'epic',
-                damage: 50,
-                health: 100,
-                defense: 25,
-                speed: 18,
+                damage: 52,
+                health: 105,
+                defense: 26,
+                speed: 19,
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/crystal_maiden.png',
                 skill: {
                     name: 'Frostbite',
@@ -369,10 +369,10 @@ class GameData {
             'Spirit Breaker': {
                 name: 'Spirit Breaker',
                 rarity: 'epic',
-                damage: 60,
-                health: 120,
-                defense: 15,
-                speed: 16,
+                damage: 62,
+                health: 125,
+                defense: 17,
+                speed: 17,
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/spirit_breaker.png',
                 skill: {
                     name: 'Charge of Darkness',
@@ -381,14 +381,14 @@ class GameData {
                     cooldown: 2
                 }
             },
-            // Легендарные карты (сила ~190-220)
+            // Легендарные карты (сила ~200-230) с мощными скиллами
             'Shadow Fiend': {
                 name: 'Shadow Fiend',
                 rarity: 'legendary',
-                damage: 75,
-                health: 130,
-                defense: 22,
-                speed: 26,
+                damage: 78,
+                health: 135,
+                defense: 24,
+                speed: 27,
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/nevermore.png',
                 skill: {
                     name: 'Реквием душ',
@@ -400,10 +400,10 @@ class GameData {
             'Pudge': {
                 name: 'Pudge',
                 rarity: 'legendary',
-                damage: 65,
-                health: 160,
-                defense: 30,
-                speed: 12,
+                damage: 68,
+                health: 165,
+                defense: 32,
+                speed: 13,
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/pudge.png',
                 skill: {
                     name: 'Dismember',
@@ -415,10 +415,10 @@ class GameData {
             'Invoker': {
                 name: 'Invoker',
                 rarity: 'legendary',
-                damage: 70,
-                health: 120,
-                defense: 18,
-                speed: 32,
+                damage: 72,
+                health: 125,
+                defense: 20,
+                speed: 33,
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/invoker.png',
                 skill: {
                     name: 'Sun Strike',
@@ -5249,10 +5249,11 @@ class GameData {
         this.battleState.runeUsedThisTurn = true;
         this.renderPlayerRune();
         
-        // Через 1.5 секунды убираем подсказку и даем выбрать карту для атаки
+        // Через 1.5 секунды убираем подсказку и продолжаем ход
         setTimeout(() => {
             this.hideBattleHint();
-            // Продолжаем ход - игрок может атаковать
+            // Продолжаем ход - показываем выбор карты для атаки
+            this.showCardSelection();
         }, 1500);
     }
     
