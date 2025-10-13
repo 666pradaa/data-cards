@@ -3694,122 +3694,97 @@ class GameData {
         const avgPlayerUpgrades = Math.floor(totalPlayerUpgrades / playerDeck.length);
         console.log(`📊 Среднее улучшений у игрока: ${avgPlayerUpgrades} (всего: ${totalPlayerUpgrades})`);
         
-        const allCards = Object.keys(this.cards);
         const botDeck = [];
-        const usedCards = new Set();
         
-        // Добавляем карты игрока в использованные, чтобы бот их не взял
-        playerDeck.forEach(card => usedCards.add(card.name));
-        
-        // Выбираем 3 уникальные карты для бота
-        while (botDeck.length < 3 && usedCards.size < allCards.length) {
-            const randomCard = allCards[Math.floor(Math.random() * allCards.length)];
+        // ⚖️ НОВАЯ ЛОГИКА: После первого боя бот получает ТОЧНО ТЕ ЖЕ карты, что и игрок
+        if (!isFirstBattle) {
+            console.log('⚔️ ОБЫЧНЫЙ БОЙ - используем карты игрока для баланса 50/50');
             
-            if (!usedCards.has(randomCard)) {
-                usedCards.add(randomCard);
-            const card = this.cards[randomCard];
+            // Определяем силу бота (50/50 шанс)
+            const rand = Math.random();
+            const isBotStronger = rand < 0.5;
             
-                // Проверяем что карта существует
+            // Для 50/50 баланса используем множитель близко к 1.0
+            let strengthMultiplier;
+            if (isBotStronger) {
+                // Бот чуть сильнее: 1.05-1.15x
+                strengthMultiplier = 1.05 + Math.random() * 0.1;
+                console.log('🔴 Бот ЧУТЬ СИЛЬНЕЕ (x' + strengthMultiplier.toFixed(2) + ')');
+            } else {
+                // Бот чуть слабее: 0.90-1.00x
+                strengthMultiplier = 0.90 + Math.random() * 0.1;
+                console.log('🟢 Бот ЧУТЬ СЛАБЕЕ (x' + strengthMultiplier.toFixed(2) + ')');
+            }
+            
+            // Создаем колоду бота на основе колоды игрока
+            playerDeck.forEach(playerCard => {
+                const card = this.cards[playerCard.name];
+                
                 if (!card) {
-                    console.error('Bot card not found:', randomCard);
-                    continue; // Пропускаем эту карту
+                    console.error('Bot card not found:', playerCard.name);
+                    return;
                 }
-            
-                // Создаем карту бота
+                
+                // Создаем копию карты игрока с модифицированными характеристиками
                 const botCard = {
-                name: card.name,
-                    damage: card.damage,
-                    health: card.health,
-                    maxHealth: card.health,
-                    defense: card.defense,
-                    speed: card.speed,
-                image: card.image,
+                    name: card.name,
+                    damage: Math.floor(playerCard.damage * strengthMultiplier),
+                    health: Math.floor(playerCard.health * strengthMultiplier),
+                    maxHealth: Math.floor(playerCard.maxHealth * strengthMultiplier),
+                    defense: Math.min(80, Math.floor(playerCard.defense * strengthMultiplier)),
+                    speed: playerCard.speed,
+                    image: card.image,
                     rarity: card.rarity,
-                    upgrades: [],
+                    upgrades: playerCard.upgrades ? [...playerCard.upgrades] : [],
                     isDead: false,
-                    skill: card.skill || null, // ⚡ Скилл карты
-                    skillCooldown: 0 // Кулдаун скилла
+                    skill: card.skill || null,
+                    skillCooldown: 0
                 };
                 
-                // Если первый бой - делаем бота ОЧЕНЬ слабым (100% победа игрока)
-                if (isFirstBattle) {
-                    console.log('🎓 ПЕРВЫЙ БОЙ - бот очень слабый (100% победа игрока)');
-                    botCard.damage = Math.floor(botCard.damage * 0.2);
-                    botCard.health = Math.floor(botCard.health * 0.2);
-                    botCard.maxHealth = Math.floor(botCard.maxHealth * 0.2);
-                    botCard.defense = Math.floor(botCard.defense * 0.3);
-                    botCard.speed = Math.floor(botCard.speed * 0.5);
-                } else {
-                    // После первого боя балансируем для 50/50 шанса победы
-                    console.log('⚔️ ОБЫЧНЫЙ БОЙ - баланс 50/50');
-                    
-                    // В 50% случаев бот сильнее, в 50% - слабее/равен
-                    const rand = Math.random();
-                    let upgradesCount;
-                    
-                    if (rand < 0.5) {
-                        // Бот сильнее - множитель 1.15-1.35x
-                        const strengthMultiplier = 1.15 + Math.random() * 0.2;
-                        console.log('🔴 Бот СИЛЬНЕЕ (x' + strengthMultiplier.toFixed(2) + ')');
-                        
-                        botCard.damage = Math.floor(botCard.damage * strengthMultiplier);
-                        botCard.health = Math.floor(botCard.health * strengthMultiplier);
-                        botCard.maxHealth = Math.floor(botCard.maxHealth * strengthMultiplier);
-                        botCard.defense = Math.min(70, Math.floor(botCard.defense * (1.1 + Math.random() * 0.2)));
-                        
-                        // Бот получает столько же улучшений +1
-                        upgradesCount = avgPlayerUpgrades + 1;
-                    } else {
-                        // Бот равен/слабее - множитель 0.85-1.05x
-                        const strengthMultiplier = 0.85 + Math.random() * 0.2;
-                        console.log('🟢 Бот РАВЕН/СЛАБЕЕ (x' + strengthMultiplier.toFixed(2) + ')');
-                        
-                        botCard.damage = Math.floor(botCard.damage * strengthMultiplier);
-                        botCard.health = Math.floor(botCard.health * strengthMultiplier);
-                        botCard.maxHealth = Math.floor(botCard.maxHealth * strengthMultiplier);
-                        botCard.defense = Math.min(60, Math.floor(botCard.defense * (0.85 + Math.random() * 0.2)));
-                        
-                        // Бот получает столько же или меньше улучшений
-                        upgradesCount = Math.max(0, avgPlayerUpgrades - 1);
-                    }
-                    
-                    // Добавляем улучшения боту
-                    const availableUpgrades = Object.keys(this.upgrades);
-                    
-                    console.log(`⚖️ Добавляем боту ${upgradesCount} улучшений (как у игрока)`);
-                    
-                    // Проверяем что есть доступные улучшения
-                    if (availableUpgrades.length === 0) {
-                        console.warn('No upgrades available for bot');
-                    }
-                    
-                    for (let i = 0; i < upgradesCount && availableUpgrades.length > 0; i++) {
-                        const randomUpgrade = availableUpgrades[Math.floor(Math.random() * availableUpgrades.length)];
-                        
-                        // Применяем бонусы улучшения
-                        const upgrade = this.upgrades[randomUpgrade];
-                        
-                        // Проверяем что улучшение существует
-                        if (!upgrade || !upgrade.bonus) {
-                            console.error('Invalid upgrade:', randomUpgrade);
-                            continue;
-                        }
-                        
-                        botCard.upgrades.push(randomUpgrade);
-                        
-                        if (upgrade.bonus.damage) botCard.damage += upgrade.bonus.damage;
-                        if (upgrade.bonus.health) {
-                            botCard.health += upgrade.bonus.health;
-                            botCard.maxHealth += upgrade.bonus.health;
-                        }
-                        if (upgrade.bonus.defense) botCard.defense = Math.min(80, botCard.defense + upgrade.bonus.defense);
-                        if (upgrade.bonus.speed) botCard.speed += upgrade.bonus.speed;
-                    }
-                    
-                    console.log(`Bot card ${botCard.name}: DMG ${botCard.damage}, HP ${botCard.health}, DEF ${botCard.defense}%, SPD ${botCard.speed}`);
-                }
-                
+                console.log(`Bot card ${botCard.name}: DMG ${botCard.damage}, HP ${botCard.health}, DEF ${botCard.defense}%, SPD ${botCard.speed}`);
                 botDeck.push(botCard);
+            });
+        } else {
+            // Первый бой - используем старую логику (слабый бот)
+            console.log('🎓 ПЕРВЫЙ БОЙ - бот очень слабый (100% победа игрока)');
+            
+            const allCards = Object.keys(this.cards);
+            const usedCards = new Set();
+            
+            // Добавляем карты игрока в использованные, чтобы бот их не взял
+            playerDeck.forEach(card => usedCards.add(card.name));
+            
+            // Выбираем 3 уникальные карты для бота
+            while (botDeck.length < 3 && usedCards.size < allCards.length) {
+                const randomCard = allCards[Math.floor(Math.random() * allCards.length)];
+                
+                if (!usedCards.has(randomCard)) {
+                    usedCards.add(randomCard);
+                    const card = this.cards[randomCard];
+                
+                    if (!card) {
+                        console.error('Bot card not found:', randomCard);
+                        continue;
+                    }
+                
+                    // Создаем слабую карту бота для первого боя
+                    const botCard = {
+                        name: card.name,
+                        damage: Math.floor(card.damage * 0.2),
+                        health: Math.floor(card.health * 0.2),
+                        maxHealth: Math.floor(card.health * 0.2),
+                        defense: Math.floor(card.defense * 0.3),
+                        speed: Math.floor(card.speed * 0.5),
+                        image: card.image,
+                        rarity: card.rarity,
+                        upgrades: [],
+                        isDead: false,
+                        skill: card.skill || null,
+                        skillCooldown: 0
+                    };
+                    
+                    botDeck.push(botCard);
+                }
             }
         }
         
