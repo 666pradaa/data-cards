@@ -1,0 +1,719 @@
+/**
+ * 📱 АДАПТИВНЫЙ ДИЗАЙН
+ * Поддержка всех устройств: телефоны, планшеты, компьютеры, MacBook
+ */
+
+/* ========== БАЗОВЫЕ НАСТРОЙКИ ========== */
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    overflow-x: hidden;
+    max-width: 100vw;
+}
+
+/* ========== ТЕЛЕФОНЫ (до 768px) ========== */
+
+@media screen and (max-width: 768px) {
+    /* Контейнеры */
+    .main-container {
+        padding: 1rem;
+        max-width: 100%;
+    }
+    
+    /* Навигация */
+    .nav-buttons {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .nav-btn {
+        font-size: 0.85rem;
+        padding: 0.6rem 1rem;
+        min-width: calc(50% - 0.25rem);
+    }
+    
+    /* Профиль */
+    .user-info {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .profile-avatar {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .user-stats {
+        width: 100%;
+    }
+    
+    .stats-row {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    /* Карты */
+    .cards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 1rem;
+    }
+    
+    .card {
+        width: 100%;
+        min-height: 220px;
+    }
+    
+    .card-image {
+        height: 120px;
+    }
+    
+    /* Боевые карты */
+    .battle-card-new {
+        min-width: 140px;
+        max-width: 160px;
+    }
+    
+    .battle-card-image {
+        height: 120px;
+    }
+    
+    .battle-hint {
+        font-size: 0.85rem;
+        padding: 0.6rem 1rem;
+        max-width: 90%;
+    }
+    
+    /* Кнопки */
+    .btn {
+        font-size: 0.9rem;
+        padding: 0.7rem 1.2rem;
+    }
+    
+    .btn.small {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    /* Модальные окна */
+    .modal-content {
+        width: 95%;
+        max-width: 95%;
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+    
+    /* Таблица лидеров */
+    .leaderboard-item {
+        padding: 0.8rem;
+        flex-wrap: wrap;
+    }
+    
+    .leaderboard-avatar {
+        width: 40px;
+        height: 40px;
+    }
+    
+    /* Колода */
+    .deck-container {
+        padding: 1rem;
+    }
+    
+    .deck-cards {
+        gap: 0.8rem;
+    }
+    
+    /* Фильтры */
+    .cards-filter, .leaderboard-filters {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .filter-btn {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+    }
+    
+    /* Кланы */
+    .clan-info {
+        padding: 1rem;
+    }
+    
+    .clan-avatar-constructor {
+        flex-direction: column;
+    }
+    
+    .part-section {
+        width: 100%;
+    }
+    
+    /* Окно с кодом комнаты */
+    .custom-modal-overlay div[style*="max-width: 500px"] {
+        max-width: 90% !important;
+        padding: 1.5rem !important;
+    }
+    
+    .custom-modal-overlay div[style*="font-size: 3rem"] {
+        font-size: 2rem !important;
+        letter-spacing: 0.2rem !important;
+    }
+    
+    .custom-modal-overlay button {
+        padding: 0.7rem 1.2rem !important;
+        font-size: 0.9rem !important;
+    }
+    
+    /* Экран боя */
+    .battle-arena {
+        gap: 1rem;
+    }
+    
+    .battle-top-bar {
+        padding: 0.8rem;
+        flex-wrap: wrap;
+    }
+    
+    .battle-vs {
+        font-size: 1.5rem;
+    }
+    
+    .battle-player-avatar, .battle-bot-avatar {
+        width: 40px;
+        height: 40px;
+    }
+    
+    /* Результаты боя */
+    .battle-result {
+        padding: 2rem 1rem;
+        width: 95%;
+    }
+    
+    .result-title {
+        font-size: 2rem;
+    }
+    
+    .result-icon {
+        font-size: 4rem;
+    }
+}
+
+/* ========== ПЛАНШЕТЫ (768px - 1024px) ========== */
+
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    .main-container {
+        padding: 1.5rem;
+        max-width: 95%;
+    }
+    
+    .cards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 1.2rem;
+    }
+    
+    .battle-card-new {
+        min-width: 160px;
+        max-width: 180px;
+    }
+    
+    .modal-content {
+        width: 80%;
+        max-width: 600px;
+    }
+    
+    .nav-btn {
+        font-size: 0.95rem;
+        padding: 0.7rem 1.5rem;
+    }
+}
+
+/* ========== НОУТБУКИ И ДЕСКТОПЫ (1025px - 1440px) ========== */
+
+@media screen and (min-width: 1025px) and (max-width: 1440px) {
+    .main-container {
+        max-width: 1200px;
+        padding: 2rem;
+    }
+    
+    .cards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    .battle-card-new {
+        min-width: 180px;
+        max-width: 200px;
+    }
+}
+
+/* ========== БОЛЬШИЕ ЭКРАНЫ (1441px и выше) ========== */
+
+@media screen and (min-width: 1441px) {
+    .main-container {
+        max-width: 1400px;
+        padding: 2.5rem;
+    }
+    
+    .cards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 2rem;
+    }
+    
+    .battle-card-new {
+        min-width: 200px;
+        max-width: 220px;
+    }
+    
+    .modal-content {
+        max-width: 700px;
+    }
+}
+
+/* ========== ЭКСТРА МАЛЕНЬКИЕ ТЕЛЕФОНЫ (до 375px) ========== */
+
+@media screen and (max-width: 375px) {
+    .main-container {
+        padding: 0.5rem;
+    }
+    
+    .cards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 0.8rem;
+    }
+    
+    .card {
+        min-height: 200px;
+    }
+    
+    .card-image {
+        height: 100px;
+    }
+    
+    .battle-card-new {
+        min-width: 120px;
+        max-width: 140px;
+    }
+    
+    .battle-card-image {
+        height: 100px;
+    }
+    
+    .nav-btn {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.8rem;
+        min-width: 100%;
+    }
+    
+    .btn {
+        font-size: 0.8rem;
+        padding: 0.6rem 1rem;
+    }
+    
+    .modal-content {
+        padding: 1rem;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    h2 {
+        font-size: 1.4rem;
+    }
+}
+
+/* ========== ЛАНДШАФТНАЯ ОРИЕНТАЦИЯ ТЕЛЕФОНОВ ========== */
+
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    .main-container {
+        padding: 0.5rem;
+    }
+    
+    .user-info {
+        flex-direction: row;
+        gap: 1rem;
+    }
+    
+    .profile-avatar {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .nav-buttons {
+        gap: 0.3rem;
+    }
+    
+    .nav-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+    }
+    
+    .modal-content {
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    .battle-arena {
+        gap: 0.5rem;
+    }
+    
+    .battle-card-new {
+        min-width: 120px;
+        max-width: 140px;
+    }
+}
+
+/* ========== ВЫСОКИЕ ЭКРАНЫ (вертикальные мониторы) ========== */
+
+@media screen and (min-height: 1200px) {
+    .main-container {
+        max-width: 1200px;
+    }
+    
+    .cards-grid {
+        gap: 2rem;
+    }
+}
+
+/* ========== ПЛАНШЕТЫ В ВЕРТИКАЛЬНОЙ ОРИЕНТАЦИИ ========== */
+
+@media screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    .cards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+    
+    .battle-arena {
+        flex-direction: column;
+    }
+    
+    .player-deck, .bot-deck {
+        width: 100%;
+        flex-direction: row;
+    }
+}
+
+/* ========== УЛУЧШЕНИЕ ЧИТАЕМОСТИ НА МАЛЕНЬКИХ ЭКРАНАХ ========== */
+
+@media screen and (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
+    
+    .stat-item {
+        font-size: 0.75rem;
+    }
+    
+    .card-stats {
+        font-size: 0.7rem;
+    }
+    
+    .battle-stats {
+        font-size: 0.65rem;
+    }
+    
+    .health-bar {
+        height: 6px;
+    }
+    
+    .skill-button, .rune-button {
+        width: 35px;
+        height: 35px;
+        font-size: 1.2rem;
+    }
+}
+
+/* ========== АДАПТАЦИЯ КНОПОК ПОД TOUCH УСТРОЙСТВА ========== */
+
+@media (hover: none) and (pointer: coarse) {
+    /* Увеличиваем кнопки для удобства тапов */
+    .btn {
+        min-height: 44px;
+        padding: 0.8rem 1.5rem;
+    }
+    
+    .btn.small {
+        min-height: 36px;
+        padding: 0.5rem 1rem;
+    }
+    
+    .nav-btn {
+        min-height: 44px;
+    }
+    
+    .filter-btn {
+        min-height: 40px;
+        padding: 0.6rem 1.2rem;
+    }
+    
+    /* Увеличиваем интерактивные элементы */
+    .battle-card-new {
+        cursor: pointer;
+        -webkit-tap-highlight-color: rgba(255, 215, 0, 0.2);
+    }
+    
+    .card {
+        cursor: pointer;
+        -webkit-tap-highlight-color: rgba(255, 215, 0, 0.2);
+    }
+    
+    /* Убираем hover эффекты на touch устройствах */
+    .btn:hover, .card:hover, .nav-btn:hover {
+        transform: none;
+    }
+}
+
+/* ========== MACBOOK / МАЛЕНЬКИЕ НОУТБУКИ (1280px - 1440px) ========== */
+
+@media screen and (min-width: 1280px) and (max-width: 1440px) {
+    .main-container {
+        max-width: 1200px;
+    }
+    
+    .cards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+    
+    .battle-arena {
+        max-width: 1100px;
+    }
+}
+
+/* ========== RETINA ДИСПЛЕИ (высокая плотность пикселей) ========== */
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    /* Улучшаем четкость текста */
+    body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    
+    /* Более тонкие borders для четкости */
+    .card, .battle-card-new, .btn {
+        border-width: 1px;
+    }
+}
+
+/* ========== АДАПТАЦИЯ СПЕЦИФИЧЕСКИХ ЭЛЕМЕНТОВ ========== */
+
+/* Окно с кодом комнаты */
+@media screen and (max-width: 480px) {
+    .custom-modal-overlay {
+        padding: 1rem;
+    }
+}
+
+/* Панели поддержки */
+@media screen and (max-width: 768px) {
+    #support-panel, #support-admin-panel {
+        width: 100%;
+        border-radius: 0;
+    }
+    
+    .support-content {
+        padding: 1rem;
+    }
+}
+
+/* Админ панель */
+@media screen and (max-width: 768px) {
+    #admin-panel {
+        width: 100%;
+        padding: 1rem;
+        border-radius: 0;
+    }
+    
+    .admin-content {
+        padding: 1rem;
+    }
+    
+    .user-item {
+        flex-direction: column;
+        gap: 0.8rem;
+    }
+}
+
+/* Экран боя - вертикальная ориентация */
+@media screen and (max-width: 768px) and (orientation: portrait) {
+    .battle-arena {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .player-deck, .bot-deck {
+        width: 100%;
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .battle-top-bar {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .battle-players-vs {
+        flex-direction: row;
+        gap: 1rem;
+    }
+}
+
+/* Плавающая кнопка поддержки */
+@media screen and (max-width: 768px) {
+    #support-btn-floating {
+        bottom: 15px;
+        right: 15px;
+        padding: 0.8rem 1rem;
+        font-size: 1rem;
+    }
+}
+
+/* Кейсы */
+@media screen and (max-width: 768px) {
+    .cases-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .case-card {
+        width: 100%;
+    }
+}
+
+/* Друзья */
+@media screen and (max-width: 768px) {
+    .friends-tabs {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .friend-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.8rem;
+    }
+}
+
+/* Конкурс баннер */
+@media screen and (max-width: 768px) {
+    .weekly-competition-banner {
+        padding: 1rem !important;
+        font-size: 0.9rem !important;
+    }
+    
+    .weekly-competition-banner h3 {
+        font-size: 1.1rem !important;
+    }
+}
+
+/* Модальные окна alert/confirm */
+@media screen and (max-width: 480px) {
+    .custom-alert-modal, .custom-confirm-modal {
+        width: 90% !important;
+        max-width: 90% !important;
+        padding: 1.5rem !important;
+    }
+    
+    .custom-alert-modal h2, .custom-confirm-modal h2 {
+        font-size: 1.3rem !important;
+    }
+    
+    .custom-alert-modal p, .custom-confirm-modal p {
+        font-size: 0.9rem !important;
+    }
+}
+
+/* ========== УЛУЧШЕНИЕ ПРОИЗВОДИТЕЛЬНОСТИ НА МОБИЛЬНЫХ ========== */
+
+@media screen and (max-width: 768px) {
+    /* Отключаем сложные анимации */
+    *, *::before, *::after {
+        animation-duration: 0.2s !important;
+        transition-duration: 0.2s !important;
+    }
+    
+    /* Упрощаем тени */
+    .card, .battle-card-new, .btn {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    /* Отключаем сложные backdrop-filter на слабых устройствах */
+    @supports not (-webkit-backdrop-filter: blur(10px)) {
+        .card, .battle-card-new {
+            backdrop-filter: none;
+        }
+    }
+}
+
+/* ========== ГОРИЗОНТАЛЬНЫЙ СКРОЛЛ ПРЕДОТВРАЩЕНИЕ ========== */
+
+@media screen and (max-width: 768px) {
+    .screen {
+        overflow-x: hidden;
+        max-width: 100vw;
+    }
+    
+    .tab-content {
+        overflow-x: hidden;
+        max-width: 100%;
+    }
+    
+    .cards-grid, .deck-cards, .leaderboard-list {
+        overflow-x: hidden;
+        max-width: 100%;
+    }
+}
+
+/* ========== УЛУЧШЕНИЕ TOUCH ВЗАИМОДЕЙСТВИЯ ========== */
+
+@media (hover: none) {
+    /* Убираем outline при фокусе на touch */
+    button:focus, input:focus, select:focus {
+        outline: 2px solid rgba(255, 215, 0, 0.5);
+    }
+    
+    /* Увеличиваем активную область кнопок */
+    .btn::before, .nav-btn::before, .filter-btn::before {
+        content: '';
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+    }
+}
+
+/* ========== АДАПТАЦИЯ ДЛЯ IPHONE (SAFE AREA) ========== */
+
+@supports (padding: max(0px)) {
+    body {
+        padding-left: max(0px, env(safe-area-inset-left));
+        padding-right: max(0px, env(safe-area-inset-right));
+        padding-bottom: max(0px, env(safe-area-inset-bottom));
+    }
+    
+    #support-btn-floating {
+        bottom: max(20px, calc(20px + env(safe-area-inset-bottom)));
+        right: max(20px, calc(20px + env(safe-area-inset-right)));
+    }
+}
+
+/* ========== ТЕМНАЯ ТЕМА ДЛЯ СИСТЕМНЫХ НАСТРОЕК ========== */
+
+@media (prefers-color-scheme: dark) {
+    /* Дизайн уже темный, ничего менять не нужно */
+}
+
+/* ========== СВЕТЛАЯ ТЕМА - АДАПТАЦИЯ ========== */
+
+body.light-theme {
+    /* Светлая тема уже определена в основном CSS */
+}
+
+@media screen and (max-width: 768px) {
+    body.light-theme {
+        /* Дополнительные настройки для светлой темы на мобильных */
+    }
+}
+
