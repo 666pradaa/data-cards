@@ -942,26 +942,38 @@ class OnlineBattlesSystem {
         if (!this.currentRoom) return;
         
         try {
-            const roomCode = this.currentRoom.code;
+            const roomCode = this.currentRoom.code || this.currentRoom;
             
-            if (this.gameData.useFirebase) {
-                await firebase.database().ref(`rooms/${roomCode}`).remove();
-            } else {
-                const rooms = JSON.parse(localStorage.getItem('onlineRooms') || '{}');
-                delete rooms[roomCode];
-                localStorage.setItem('onlineRooms', JSON.stringify(rooms));
+            console.log('🚫 Отмена комнаты:', roomCode);
+            
+            if (roomCode) {
+                // Удаляем комнату из Firebase
+                if (this.gameData.useFirebase) {
+                    await firebase.database().ref(`rooms/${roomCode}`).remove();
+                    console.log('✅ Комната удалена из Firebase');
+                    
+                    // Отключаем listener правильным способом
+                    firebase.database().ref(`rooms/${roomCode}`).off();
+                    console.log('✅ Firebase listener отключен');
+                } else {
+                    // localStorage
+                    const rooms = JSON.parse(localStorage.getItem('onlineRooms') || '{}');
+                    delete rooms[roomCode];
+                    localStorage.setItem('onlineRooms', JSON.stringify(rooms));
+                    console.log('✅ Комната удалена из localStorage');
+                }
             }
             
-            if (this.roomListener) {
-                this.roomListener.off();
-                this.roomListener = null;
-            }
-            
+            this.roomListener = null;
             this.currentRoom = null;
+            this.isHost = false;
+            
             this.closeOnlineBattleModal();
             
+            console.log('✅ Комната успешно отменена');
+            
         } catch (error) {
-            console.error('Ошибка отмены комнаты:', error);
+            console.error('❌ Ошибка отмены комнаты:', error);
         }
     }
 
