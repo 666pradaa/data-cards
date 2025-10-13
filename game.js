@@ -4424,6 +4424,9 @@ class GameData {
         this.isPlayerTurn = true;
         this.selectedEnemyCard = null;
         
+        // 🧹 Очищаем истекшие эффекты рун
+        this.clearRuneEffects();
+        
         // Сбрасываем флаг использования руны
         this.battleState.runeUsedThisTurn = false;
         
@@ -4591,50 +4594,6 @@ class GameData {
                 };
             } else {
                 console.error('❌ Элемент цели не найден для:', enemyCard.name);
-            }
-        });
-    }
-
-    // СТАРАЯ ФУНКЦИЯ - больше не используется, удалить можно
-    selectNextPlayerCard_OLD() {
-        if (this.battleEnded) return;
-        
-        // Если все атаки игрока выполнены - переходим к ходу бота
-        if (this.currentPlayerAttacker >= this.playerAttacks.length) {
-            this.startBotTurn();
-            return;
-        }
-        
-        // Получаем текущую атакующую карту
-        const currentAttacker = this.playerAttacks[this.currentPlayerAttacker];
-        
-        // Проверяем что карта ещё жива
-        if (currentAttacker.isDead || currentAttacker.health <= 0) {
-            this.currentPlayerAttacker++;
-            this.selectNextPlayerCard();
-            return;
-        }
-        
-        // Убираем предыдущие подсветки
-        document.querySelectorAll('.battle-card-new').forEach(c => {
-            c.classList.remove('selected', 'target-available', 'hint-glow');
-        });
-        
-        // Подсвечиваем текущую атакующую карту
-        const attackerElement = document.querySelector(`.player-battle-side .battle-card-new[data-card-name="${currentAttacker.name}"]`);
-        if (attackerElement) {
-            attackerElement.classList.add('hint-glow');
-        }
-        
-        // Показываем подсказку
-        this.showBattleHint(`${currentAttacker.name} атакует! Выберите цель.`);
-        
-        // Подсвечиваем доступные цели
-        const aliveEnemyCards = this.battleState.botDeck.filter(card => !card.isDead && card.health > 0);
-        aliveEnemyCards.forEach(enemyCard => {
-            const enemyElement = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${enemyCard.name}"]`);
-            if (enemyElement) {
-                enemyElement.classList.add('target-available');
             }
         });
     }
@@ -5328,54 +5287,71 @@ class GameData {
             this.battleState.runeDurations = {};
         }
         
-        // Убираем невидимость (только истекшие, не уменьшаем счетчик)
+        // Убираем невидимость (только истекшие)
         if (this.battleState.invisibleCards) {
             this.battleState.invisibleCards = this.battleState.invisibleCards.filter(cardName => {
                 const hasEffect = this.battleState.runeDurations[cardName] && this.battleState.runeDurations[cardName] > 0;
                 if (!hasEffect) {
                     console.log('👻 Невидимость истекла:', cardName);
+                    // Убираем все визуальные эффекты
+                    const cardEl = document.querySelector(`.battle-card-new[data-card-name="${cardName}"]`);
+                    if (cardEl) {
+                        cardEl.classList.remove('invisible-card', 'has-rune-effect', 'invisibility');
+                        cardEl.style.opacity = '';
+                        const indicator = cardEl.querySelector('.rune-indicator');
+                        if (indicator) indicator.remove();
+                    }
                 }
                 return hasEffect;
             });
         }
-        document.querySelectorAll('.invisible-card').forEach(el => {
-            const cardName = el.dataset.cardName;
-            if (!this.battleState.runeDurations[cardName] || this.battleState.runeDurations[cardName] <= 0) {
-                el.classList.remove('invisible-card');
-                el.style.opacity = '';
-            }
-        });
         
-        // Убираем щиты (только истекшие, не уменьшаем счетчик)
+        // Убираем щиты (только истекшие)
         if (this.battleState.shieldedCards) {
             this.battleState.shieldedCards = this.battleState.shieldedCards.filter(cardName => {
                 const hasEffect = this.battleState.runeDurations[cardName] && this.battleState.runeDurations[cardName] > 0;
                 if (!hasEffect) {
                     console.log('🛡️ Щит истек:', cardName);
+                    // Убираем все визуальные эффекты
+                    const cardEl = document.querySelector(`.battle-card-new[data-card-name="${cardName}"]`);
+                    if (cardEl) {
+                        cardEl.classList.remove('shielded-card', 'has-rune-effect', 'shield');
+                        const indicator = cardEl.querySelector('.rune-indicator');
+                        if (indicator) indicator.remove();
+                    }
+                    // Убираем бонус защиты
+                    const card = [...this.battleState.playerDeck, ...this.battleState.botDeck].find(c => c.name === cardName);
+                    if (card && card.tempDefense) {
+                        card.tempDefense = 0;
+                    }
                 }
                 return hasEffect;
             });
         }
-        document.querySelectorAll('.shielded-card').forEach(el => {
-            const cardName = el.dataset.cardName;
-            if (!this.battleState.runeDurations[cardName] || this.battleState.runeDurations[cardName] <= 0) {
-                el.classList.remove('shielded-card');
-            }
-        });
         
-        // Оставляем щиты только для активных
-        if (this.battleState.shieldedCards) {
-            this.battleState.shieldedCards.forEach(cardName => {
-                const card = [...this.battleState.playerDeck, ...this.battleState.botDeck].find(c => c.name === cardName);
-                if (card && card.tempDefense) {
-                    card.tempDefense = 0;
+        // Очищаем замороженные карты (длительность 1 раунд)
+        if (this.battleState.frozenCards && this.battleState.frozenCards.length > 0) {
+            console.log('❄️ Очищаем заморозку');
+            this.battleState.frozenCards.forEach(cardName => {
+                const cardEl = document.querySelector(`.battle-card-new[data-card-name="${cardName}"]`);
+                if (cardEl) {
+                    cardEl.classList.remove('frozen-status');
                 }
             });
-            this.battleState.shieldedCards = [];
+            this.battleState.frozenCards = [];
         }
-        document.querySelectorAll('.shielded-card').forEach(el => {
-            el.classList.remove('shielded-card');
-        });
+        
+        // Очищаем испуганные карты (длительность 1 раунд)
+        if (this.battleState.fearedCards && this.battleState.fearedCards.length > 0) {
+            console.log('😱 Очищаем страх');
+            this.battleState.fearedCards.forEach(cardName => {
+                const cardEl = document.querySelector(`.battle-card-new[data-card-name="${cardName}"]`);
+                if (cardEl) {
+                    cardEl.classList.remove('feared-status');
+                }
+            });
+            this.battleState.fearedCards = [];
+        }
     }
     
     // ===== КОНЕЦ СИСТЕМЫ РУН =====
