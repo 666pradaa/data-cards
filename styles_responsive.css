@@ -499,9 +499,35 @@ html, body {
         flex-direction: column;
     }
     
+    .battle-field-new {
+        flex-direction: column;
+    }
+    
     .player-deck, .bot-deck {
         width: 100%;
         flex-direction: row;
+    }
+    
+    .tutorial-box {
+        max-width: 450px;
+    }
+}
+
+/* ========== ПЛАНШЕТЫ В ЛАНДШАФТНОЙ ОРИЕНТАЦИИ ========== */
+
+@media screen and (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+    .battle-field-new {
+        flex-direction: row;
+        gap: 2rem;
+    }
+    
+    .battle-arena {
+        padding: 1rem 0.5rem;
+    }
+    
+    .tutorial-box {
+        max-width: 500px;
+        bottom: 1rem;
     }
 }
 
@@ -755,6 +781,39 @@ html, body {
     
     .weekly-competition-banner h3 {
         font-size: 1.1rem !important;
+    }
+}
+
+/* Обучающее окно */
+@media screen and (max-width: 768px) {
+    .tutorial-overlay {
+        padding: 0;
+    }
+    
+    .tutorial-box {
+        bottom: 1rem;
+        right: 1rem;
+        left: 1rem;
+        max-width: calc(100% - 2rem);
+        padding: 1.5rem;
+    }
+    
+    .sf-character {
+        width: 150px;
+        height: auto;
+    }
+    
+    .speech-bubble {
+        font-size: 0.9rem;
+    }
+    
+    .tutorial-controls {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .tutorial-controls button {
+        width: 100%;
     }
 }
 
