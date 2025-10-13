@@ -2939,7 +2939,8 @@ body.light-theme .stat-item {
     background: rgba(0, 0, 0, 0.95);
 }
 
-.skill-tooltip {
+.skill-btn::after {
+    content: attr(data-skill-name) "\A" attr(data-skill-desc);
     position: absolute;
     bottom: calc(100% + 10px);
     left: 50%;
@@ -2952,7 +2953,7 @@ body.light-theme .stat-item {
     border: 2px solid rgba(255, 215, 0, 0.5);
     border-radius: 8px;
     font-size: 0.85rem;
-    white-space: nowrap;
+    white-space: pre-line;
     opacity: 0;
     pointer-events: none;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -2964,46 +2965,13 @@ body.light-theme .stat-item {
     backdrop-filter: blur(10px);
     font-weight: 500;
     text-align: center;
-    line-height: 1.4;
-    backdrop-filter: blur(8px);
+    line-height: 1.6;
+    max-width: 250px;
 }
 
-.skill-tooltip::before {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    border: 6px solid transparent;
-    border-top-color: rgba(20, 20, 20, 0.98);
-    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.4));
-}
-
-.skill-tooltip::after {
-    content: '';
-    position: absolute;
-    inset: 2px;
-    background: linear-gradient(135deg, rgba(50, 50, 50, 0.03) 0%, transparent 50%);
-    border-radius: 8px;
-    pointer-events: none;
-}
-
-.skill-btn:hover:not(:disabled) .skill-tooltip {
+.skill-btn:hover:not(:disabled)::after {
     opacity: 1;
     transform: translateX(-50%) translateY(0) scale(1);
-}
-
-.skill-tooltip strong {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: #ffd700;
-    font-weight: 700;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-    border-bottom: 1px solid rgba(255, 215, 0, 0.3);
-    padding-bottom: 0.4rem;
 }
 
 .skill-icon-fallback {
@@ -4171,37 +4139,38 @@ body.light-theme .stat-item {
 }
 
 .battle-card-name {
-    font-weight: 700;
+    font-weight: 800;
     font-size: 0.85rem;
-    margin-bottom: 0.2rem;
+    margin-bottom: 0.3rem;
     text-align: center;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.5px;
     text-transform: uppercase;
-    -webkit-text-stroke: 1.5px #000;
-    text-stroke: 1.5px #000;
-    paint-order: stroke fill;
-    filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 1px rgba(255, 255, 255, 0.3));
+    color: #000000;
+    background: linear-gradient(135deg, #e5e5e5 0%, #ffffff 50%, #e5e5e5 100%);
+    padding: 0.35rem 0.6rem;
+    border-radius: 6px;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+    box-shadow: 
+        0 2px 6px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    border: 1.5px solid rgba(0, 0, 0, 0.15);
 }
 
-/* Цвета имен по редкости (как в меню) */
+/* Акцентные цвета для редкости (тонкий градиент) */
 .battle-card-name.rarity-common {
-    color: #bbb;
-    -webkit-text-stroke: 1.5px #000;
+    background: linear-gradient(135deg, #d0d0d0 0%, #e8e8e8 50%, #d0d0d0 100%);
 }
 
 .battle-card-name.rarity-rare {
-    color: #6ab4ff;
-    -webkit-text-stroke: 1.5px #000;
+    background: linear-gradient(135deg, #c8e0ff 0%, #e8f2ff 50%, #c8e0ff 100%);
 }
 
 .battle-card-name.rarity-epic {
-    color: #b090ff;
-    -webkit-text-stroke: 1.5px #000;
+    background: linear-gradient(135deg, #e0d8ff 0%, #f0e8ff 50%, #e0d8ff 100%);
 }
 
 .battle-card-name.rarity-legendary {
-    color: #ffaa33;
-    -webkit-text-stroke: 1.5px #000;
+    background: linear-gradient(135deg, #ffe8cc 0%, #fff5e6 50%, #ffe8cc 100%);
 }
 
 .battle-card-stars {

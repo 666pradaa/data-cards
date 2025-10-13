@@ -4362,16 +4362,13 @@ class GameData {
             <button class="skill-btn ${skillOnCooldown ? 'on-cooldown' : ''}" 
                     data-card="${card.name}" 
                     ${skillOnCooldown ? 'disabled' : ''}
-                    title="${card.skill.name}: ${card.skill.description}">
+                    data-skill-name="${card.skill.name}"
+                    data-skill-desc="${card.skill.description}"
+                    data-skill-cooldown="${skillOnCooldown ? card.skillCooldown : 0}">
                 <img src="${card.skill.icon}" alt="${card.skill.name}"
                      onerror="console.error('❌ Ошибка загрузки иконки:', this.src); this.onerror=null; this.style.display='none'; this.nextElementSibling.nextElementSibling.style.display='block';">
                 ${cooldownText ? '<span class="skill-cooldown">' + cooldownText + '</span>' : ''}
                 <span class="skill-icon-fallback" style="display: none; font-size: 1.5rem;">⚡</span>
-                <div class="skill-tooltip">
-                    <strong>${card.skill.name}</strong>
-                    ${card.skill.description}
-                    ${skillOnCooldown ? '<br><span style="color: #ff6666;">Кулдаун: ' + card.skillCooldown + ' раунд(а)</span>' : ''}
-                </div>
             </button>
         `;
     }
