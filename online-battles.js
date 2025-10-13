@@ -415,13 +415,13 @@ class OnlineBattlesSystem {
             console.log('📦 Данные комнаты:', roomData);
             
             if (!roomData) {
-                alert('Ошибка: комната не найдена');
+                await this.gameData.showAlert('Ошибка: комната не найдена', '❌', 'Ошибка');
                 console.error('❌ roomData is null');
                 return;
             }
             
             if (!roomData.hostDeck || !roomData.guestDeck) {
-                alert('Ошибка: не все колоды загружены');
+                await this.gameData.showAlert('Ошибка: не все колоды загружены. Ожидайте противника.', '⏳', 'Ожидание');
                 console.error('❌ Отсутствуют колоды:', {
                     hostDeck: roomData.hostDeck,
                     guestDeck: roomData.guestDeck
@@ -433,6 +433,7 @@ class OnlineBattlesSystem {
             console.log('🃏 Колода гостя:', roomData.guestDeck);
             
             // Создаём полные колоды с данными карт
+            console.log('⚙️ Создание боевых колод...');
             const playerDeck = this.isHost ? 
                 await this.createBattleDeck(roomData.hostDeck, roomData.host) :
                 await this.createBattleDeck(roomData.guestDeck, roomData.guest);
@@ -444,9 +445,31 @@ class OnlineBattlesSystem {
             console.log('✅ Колода игрока создана:', playerDeck.length, 'карт');
             console.log('✅ Колода противника создана:', opponentDeck.length, 'карт');
             
-            // Переходим на экран боя
-            document.getElementById('main-menu').classList.remove('active');
-            document.getElementById('battle-screen').classList.add('active');
+            // КРИТИЧНО: Переключаем экраны
+            console.log('🔄 Переключение экранов на battle-screen...');
+            
+            const mainMenu = document.getElementById('main-menu');
+            const onlineModal = document.getElementById('online-battle-modal');
+            const battleScreen = document.getElementById('battle-screen');
+            
+            if (mainMenu) {
+                mainMenu.classList.remove('active');
+                mainMenu.style.display = 'none';
+                console.log('✅ main-menu скрыт');
+            }
+            
+            if (onlineModal) {
+                onlineModal.style.display = 'none';
+                console.log('✅ online-modal закрыт');
+            }
+            
+            if (battleScreen) {
+                battleScreen.classList.add('active');
+                battleScreen.style.display = 'flex';
+                console.log('✅ battle-screen показан');
+            } else {
+                console.error('❌ battle-screen НЕ НАЙДЕН!');
+            }
             
             // Создаём состояние боя
             this.gameData.battleState = {
@@ -494,7 +517,7 @@ class OnlineBattlesSystem {
             
         } catch (error) {
             console.error('❌ Ошибка запуска онлайн-боя:', error);
-            alert('Ошибка запуска боя: ' + error.message);
+            await this.gameData.showAlert('Ошибка запуска боя: ' + error.message, '❌', 'Ошибка');
         }
     }
 
