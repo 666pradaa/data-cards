@@ -794,6 +794,13 @@ class ClansSystem {
                 return;
             }
             
+            // Проверяем лимит участников клана (максимум 3)
+            const currentMembers = clan.members || [];
+            if (currentMembers.length >= 3) {
+                alert('❌ В этом клане максимум 3 участника! Клан полон.');
+                return;
+            }
+            
             // Проверяем нет ли уже запроса
             const existingRequests = clan.joinRequests || [];
             if (existingRequests.some(req => req.userId === this.gameData.currentUser)) {
@@ -892,8 +899,16 @@ class ClansSystem {
                 return;
             }
             
+            // Проверяем лимит участников клана (максимум 3)
+            const currentMembers = this.currentClan.members || [];
+            if (currentMembers.length >= 3) {
+                alert('❌ В клане максимум 3 участника! Клан полон.');
+                await this.rejectJoinRequest(requestIndex);
+                return;
+            }
+            
             // Добавляем в клан
-            const updatedMembers = [...(this.currentClan.members || []), request.userId];
+            const updatedMembers = [...currentMembers, request.userId];
             const remainingRequests = requests.filter((_, i) => i !== requestIndex);
             
             if (this.gameData.useFirebase) {

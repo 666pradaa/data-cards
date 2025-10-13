@@ -3746,19 +3746,40 @@ class GameData {
                     botCard.defense = Math.floor(botCard.defense * 0.3);
                     botCard.speed = Math.floor(botCard.speed * 0.5);
                 } else {
-                    // После первого боя бот усиливается для ~50% шанса победы
-                    console.log('⚔️ ОБЫЧНЫЙ БОЙ - бот сильный (~50% шанс победы)');
+                    // После первого боя балансируем для 50/50 шанса победы
+                    console.log('⚔️ ОБЫЧНЫЙ БОЙ - баланс 50/50');
                     
-                    // Множитель силы для баланса
-                    const strengthMultiplier = 1.0 + Math.random() * 0.3; // 1.0-1.3x
+                    // В 50% случаев бот сильнее, в 50% - слабее/равен
+                    const isStrongerBot = Math.random() < 0.5;
+                    let upgradesCount;
                     
-                    botCard.damage = Math.floor(botCard.damage * strengthMultiplier);
-                    botCard.health = Math.floor(botCard.health * strengthMultiplier);
-                    botCard.maxHealth = Math.floor(botCard.maxHealth * strengthMultiplier);
-                    botCard.defense = Math.min(70, Math.floor(botCard.defense * (1 + Math.random() * 0.3))); // до 70% защиты
+                    if (isStrongerBot) {
+                        // Бот сильнее - множитель 1.3-1.6x
+                        const strengthMultiplier = 1.3 + Math.random() * 0.3;
+                        console.log('🔴 Бот СИЛЬНЕЕ (x' + strengthMultiplier.toFixed(2) + ')');
+                        
+                        botCard.damage = Math.floor(botCard.damage * strengthMultiplier);
+                        botCard.health = Math.floor(botCard.health * strengthMultiplier);
+                        botCard.maxHealth = Math.floor(botCard.maxHealth * strengthMultiplier);
+                        botCard.defense = Math.min(75, Math.floor(botCard.defense * (1.2 + Math.random() * 0.3)));
+                        
+                        // Бот получает больше улучшений
+                        upgradesCount = avgPlayerUpgrades + 1;
+                    } else {
+                        // Бот равен/слабее - множитель 0.9-1.2x
+                        const strengthMultiplier = 0.9 + Math.random() * 0.3;
+                        console.log('🟢 Бот РАВЕН/СЛАБЕЕ (x' + strengthMultiplier.toFixed(2) + ')');
+                        
+                        botCard.damage = Math.floor(botCard.damage * strengthMultiplier);
+                        botCard.health = Math.floor(botCard.health * strengthMultiplier);
+                        botCard.maxHealth = Math.floor(botCard.maxHealth * strengthMultiplier);
+                        botCard.defense = Math.min(65, Math.floor(botCard.defense * (0.9 + Math.random() * 0.3)));
+                        
+                        // Бот получает столько же или меньше улучшений
+                        upgradesCount = Math.max(0, avgPlayerUpgrades - 1);
+                    }
                     
-                    // Добавляем улучшения боту (столько же сколько у игрока в среднем)
-                    const upgradesCount = avgPlayerUpgrades;
+                    // Добавляем улучшения боту
                     const availableUpgrades = Object.keys(this.upgrades);
                     
                     console.log(`⚖️ Добавляем боту ${upgradesCount} улучшений (как у игрока)`);

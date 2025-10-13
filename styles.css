@@ -3760,12 +3760,86 @@ body.light-theme .stat-item {
     overflow: hidden;
     position: relative;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 3px solid;
+    border: 3px solid #555;
     box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.8),
         inset 0 2px 4px rgba(50, 50, 50, 0.1),
         inset 0 -2px 4px rgba(0, 0, 0, 0.5);
     z-index: 1;
+}
+
+/* Обводка редкости для боевых карт */
+.battle-card-new.rarity-border-common {
+    border-color: #808080;
+    box-shadow: 
+        0 8px 32px rgba(128, 128, 128, 0.3),
+        inset 0 2px 4px rgba(50, 50, 50, 0.1),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.battle-card-new.rarity-border-rare {
+    border-color: #4a9eff;
+    box-shadow: 
+        0 8px 32px rgba(74, 158, 255, 0.4),
+        0 0 20px rgba(74, 158, 255, 0.3),
+        inset 0 2px 4px rgba(74, 158, 255, 0.2),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.battle-card-new.rarity-border-epic {
+    border-color: #9370db;
+    box-shadow: 
+        0 8px 32px rgba(147, 112, 219, 0.5),
+        0 0 25px rgba(147, 112, 219, 0.4),
+        inset 0 2px 4px rgba(147, 112, 219, 0.3),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+    animation: epicGlow 2s ease-in-out infinite;
+}
+
+.battle-card-new.rarity-border-legendary {
+    border-color: #ff9900;
+    box-shadow: 
+        0 8px 32px rgba(255, 153, 0, 0.6),
+        0 0 30px rgba(255, 153, 0, 0.5),
+        inset 0 2px 4px rgba(255, 153, 0, 0.3),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+    animation: legendaryGlow 2s ease-in-out infinite;
+}
+
+/* Анимация свечения для эпиков */
+@keyframes epicGlow {
+    0%, 100% {
+        box-shadow: 
+            0 8px 32px rgba(147, 112, 219, 0.5),
+            0 0 25px rgba(147, 112, 219, 0.4),
+            inset 0 2px 4px rgba(147, 112, 219, 0.3),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+    }
+    50% {
+        box-shadow: 
+            0 8px 32px rgba(147, 112, 219, 0.7),
+            0 0 35px rgba(147, 112, 219, 0.6),
+            inset 0 2px 4px rgba(147, 112, 219, 0.4),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+    }
+}
+
+/* Анимация свечения для легендарок */
+@keyframes legendaryGlow {
+    0%, 100% {
+        box-shadow: 
+            0 8px 32px rgba(255, 153, 0, 0.6),
+            0 0 30px rgba(255, 153, 0, 0.5),
+            inset 0 2px 4px rgba(255, 153, 0, 0.3),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+    }
+    50% {
+        box-shadow: 
+            0 8px 32px rgba(255, 153, 0, 0.8),
+            0 0 40px rgba(255, 153, 0, 0.7),
+            inset 0 2px 4px rgba(255, 153, 0, 0.4),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+    }
 }
 
 .battle-card-new:hover {
