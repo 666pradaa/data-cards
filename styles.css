@@ -2629,14 +2629,13 @@ body.light-theme .stat-item {
     min-height: auto;
     display: flex;
     flex-direction: column;
-    background: 
-        linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
+    background: linear-gradient(180deg, #0d0d0d 0%, #101010 100%);
     position: relative;
     overflow: visible !important;
-    padding: 1rem;
+    padding: 0.8rem;
 }
 
-/* Геометрический паттерн фона */
+/* Минималистичный ЧБ паттерн фона */
 .battle-arena::before {
     content: '';
     position: absolute;
@@ -2645,14 +2644,12 @@ body.light-theme .stat-item {
     right: 0;
     bottom: 0;
     background: 
-        radial-gradient(circle at 25% 25%, rgba(50, 50, 50, 0.08) 0%, transparent 30%),
-        radial-gradient(circle at 75% 75%, rgba(50, 50, 50, 0.08) 0%, transparent 30%),
         repeating-linear-gradient(
             0deg,
             transparent,
-            transparent 40px,
-            rgba(50, 50, 50, 0.02) 40px,
-            rgba(50, 50, 50, 0.02) 41px
+            transparent 60px,
+            rgba(255, 255, 255, 0.01) 60px,
+            rgba(255, 255, 255, 0.01) 61px
         ),
         repeating-linear-gradient(
             90deg,
@@ -2889,12 +2886,12 @@ body.light-theme .stat-item {
     position: absolute;
     top: 4px;
     right: 4px;
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     padding: 2px;
-    background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
-    border: 2px solid #ffd700;
-    border-radius: 8px;
+    background: rgba(10, 10, 10, 0.9);
+    border: 1.5px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -2902,17 +2899,17 @@ body.light-theme .stat-item {
     transition: all 0.3s ease;
     z-index: 10;
     box-shadow: 
-        0 2px 8px rgba(255, 215, 0, 0.5), 
-        0 0 12px rgba(255, 215, 0, 0.3),
-        inset 0 1px 1px rgba(255, 255, 255, 0.1);
-    animation: skillGlow 2s ease-in-out infinite;
+        0 2px 6px rgba(0, 0, 0, 0.7), 
+        0 0 10px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .skill-btn img {
-    width: 26px;
-    height: 26px;
+    width: 24px;
+    height: 24px;
     object-fit: cover;
-    border-radius: 4px;
+    border-radius: 3px;
+    filter: grayscale(100%) contrast(1.2) brightness(1.1);
 }
 
 .skill-cooldown {
@@ -2928,16 +2925,19 @@ body.light-theme .stat-item {
     border: 1px solid #ffd700;
 }
 
-@keyframes skillGlow {
+/* Убрана анимация для минимализма */
+/* @keyframes skillGlow {
     0%, 100% { box-shadow: 0 3px 10px rgba(50, 50, 50, 0.6), inset 0 1px 2px rgba(50, 50, 50, 0.3); }
     50% { box-shadow: 0 5px 20px rgba(50, 50, 50, 1), inset 0 1px 2px rgba(50, 50, 50, 0.5); }
 }
 
 .skill-btn:hover:not(:disabled) {
-    transform: scale(1.15);
-    box-shadow: 0 0 25px rgba(50, 50, 50, 1);
-    border-color: #ffd700;
-    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    transform: scale(1.1);
+    box-shadow: 
+        0 0 15px rgba(255, 255, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    background: rgba(20, 20, 20, 0.95);
 }
 
 .skill-tooltip {
@@ -3008,12 +3008,11 @@ body.light-theme .stat-item {
 }
 
 .skill-btn.on-cooldown {
-    opacity: 0.4;
+    opacity: 0.3;
     cursor: not-allowed;
-    border-color: #ffffff;
-    background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
-    animation: none;
-    box-shadow: none;
+    border-color: rgba(255, 255, 255, 0.15);
+    background: rgba(5, 5, 5, 0.9);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .skill-target {
@@ -3648,20 +3647,19 @@ body.light-theme .stat-item {
 }
 
 .battle-round {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #fff;
-    background: linear-gradient(135deg, rgba(40, 40, 40, 0.9), rgba(20, 20, 20, 0.9));
-    padding: 0.8rem 2rem;
-    border-radius: 25px;
-    border: 2px solid rgba(50, 50, 50, 0.2);
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(15px);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #e0e0e0;
+    background: rgba(15, 15, 15, 0.9);
+    padding: 0.6rem 1.5rem;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
     box-shadow: 
-        0 4px 20px rgba(0, 0, 0, 0.5),
-        inset 0 1px 0 rgba(50, 50, 50, 0.1);
-    position: relative;
-    overflow: hidden;
+        0 2px 8px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 .battle-round::before {
@@ -3763,20 +3761,17 @@ body.light-theme .stat-item {
 
 .side-label {
     text-align: center;
-    font-size: 1.2rem;
-    font-weight: 900;
-    letter-spacing: 2px;
-    color: #fff;
-    text-shadow: 
-        0 2px 10px rgba(0, 0, 0, 0.8),
-        0 0 20px rgba(50, 50, 50, 0.5);
-    background: linear-gradient(135deg, rgba(50, 50, 50, 0.95), rgba(30, 30, 30, 0.95));
-    padding: 1rem 2.5rem;
-    border-radius: 20px;
-    border: 3px solid rgba(50, 50, 50, 0.3);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    color: #d0d0d0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    background: rgba(15, 15, 15, 0.8);
+    padding: 0.5rem 1.2rem;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 
-        0 4px 15px rgba(0, 0, 0, 0.5),
-        0 0 30px rgba(50, 50, 50, 0.2),
+        0 2px 8px rgba(0, 0, 0, 0.6),
         inset 0 1px 0 rgba(50, 50, 50, 0.1);
     position: relative;
     overflow: hidden;
@@ -3833,15 +3828,15 @@ body.light-theme .stat-item {
 }
 
 .battle-center-line {
-    width: 2px;
+    width: 1px;
     background: linear-gradient(180deg, 
         transparent 0%,
-        rgba(50, 50, 50, 0.2) 20%,
-        rgba(50, 50, 50, 0.6) 50%,
-        rgba(50, 50, 50, 0.2) 80%,
+        rgba(255, 255, 255, 0.15) 20%,
+        rgba(255, 255, 255, 0.25) 50%,
+        rgba(255, 255, 255, 0.15) 80%,
         transparent 100%);
     box-shadow: 
-        0 0 10px rgba(50, 50, 50, 0.3),
+        0 0 6px rgba(255, 255, 255, 0.15),
         0 0 20px rgba(50, 50, 50, 0.1);
     animation: lineGlow 2s infinite;
 }
@@ -3862,96 +3857,91 @@ body.light-theme .stat-item {
 }
 
 .battle-card-new {
-    width: 280px;
-    height: 160px;
-    background: linear-gradient(135deg, 
-        rgba(20, 20, 25, 0.95) 0%, 
-        rgba(15, 18, 22, 0.98) 100%);
-    border-radius: 12px;
+    width: 260px;
+    height: 150px;
+    background: linear-gradient(145deg, #1a1a1a 0%, #0d0d0d 100%);
+    border-radius: 8px;
     display: flex;
     flex-direction: column;
-    overflow: visible;
+    overflow: hidden;
     position: relative;
-    transition: all 0.3s ease;
-    border: 3px solid #555;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid #2a2a2a;
     box-shadow: 
-        0 6px 20px rgba(0, 0, 0, 0.8),
-        0 3px 10px rgba(0, 0, 0, 0.6),
-        inset 0 1px 2px rgba(255, 255, 255, 0.05);
+        0 4px 16px rgba(0, 0, 0, 0.9),
+        0 2px 8px rgba(0, 0, 0, 0.7),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.5);
     z-index: 1;
 }
 
-/* Обводка редкости для боевых карт */
+/* ЧБ Обводка редкости для боевых карт */
 .battle-card-new.rarity-border-common {
-    border-color: #808080;
+    border-color: #3a3a3a;
     box-shadow: 
-        0 8px 32px rgba(128, 128, 128, 0.3),
-        inset 0 2px 4px rgba(50, 50, 50, 0.1),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+        0 4px 16px rgba(0, 0, 0, 0.9),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.5);
 }
 
 .battle-card-new.rarity-border-rare {
-    border-color: #4a9eff;
+    border-color: #4a4a4a;
     box-shadow: 
-        0 8px 32px rgba(74, 158, 255, 0.4),
-        0 0 20px rgba(74, 158, 255, 0.3),
-        inset 0 2px 4px rgba(74, 158, 255, 0.2),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+        0 4px 16px rgba(0, 0, 0, 0.9),
+        0 0 12px rgba(255, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.5);
 }
 
 .battle-card-new.rarity-border-epic {
-    border-color: #9370db;
+    border-color: #5a5a5a;
     box-shadow: 
-        0 8px 32px rgba(147, 112, 219, 0.5),
-        0 0 25px rgba(147, 112, 219, 0.4),
-        inset 0 2px 4px rgba(147, 112, 219, 0.3),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.5);
-    animation: epicGlow 2s ease-in-out infinite;
+        0 4px 16px rgba(0, 0, 0, 0.9),
+        0 0 16px rgba(255, 255, 255, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+    animation: epicGlowBW 2s ease-in-out infinite;
 }
 
 .battle-card-new.rarity-border-legendary {
-    border-color: #ff9900;
+    border-color: #707070;
     box-shadow: 
-        0 8px 32px rgba(255, 153, 0, 0.6),
-        0 0 30px rgba(255, 153, 0, 0.5),
-        inset 0 2px 4px rgba(255, 153, 0, 0.3),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.5);
-    animation: legendaryGlow 2s ease-in-out infinite;
+        0 4px 16px rgba(0, 0, 0, 0.9),
+        0 0 20px rgba(255, 255, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.5);
+    animation: legendaryGlowBW 2s ease-in-out infinite;
 }
 
-/* Анимация свечения для эпиков */
-@keyframes epicGlow {
+/* ЧБ Анимация свечения для эпиков */
+@keyframes epicGlowBW {
     0%, 100% {
         box-shadow: 
-            0 8px 32px rgba(147, 112, 219, 0.5),
-            0 0 25px rgba(147, 112, 219, 0.4),
-            inset 0 2px 4px rgba(147, 112, 219, 0.3),
-            inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+            0 4px 16px rgba(0, 0, 0, 0.9),
+            0 0 16px rgba(255, 255, 255, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15);
     }
     50% {
         box-shadow: 
-            0 8px 32px rgba(147, 112, 219, 0.7),
-            0 0 35px rgba(147, 112, 219, 0.6),
-            inset 0 2px 4px rgba(147, 112, 219, 0.4),
-            inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+            0 4px 16px rgba(0, 0, 0, 0.9),
+            0 0 20px rgba(255, 255, 255, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
 }
 
-/* Анимация свечения для легендарок */
-@keyframes legendaryGlow {
+/* ЧБ Анимация свечения для легендарок */
+@keyframes legendaryGlowBW {
     0%, 100% {
         box-shadow: 
-            0 8px 32px rgba(255, 153, 0, 0.6),
-            0 0 30px rgba(255, 153, 0, 0.5),
-            inset 0 2px 4px rgba(255, 153, 0, 0.3),
-            inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+            0 4px 16px rgba(0, 0, 0, 0.9),
+            0 0 20px rgba(255, 255, 255, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2);
     }
     50% {
         box-shadow: 
-            0 8px 32px rgba(255, 153, 0, 0.8),
-            0 0 40px rgba(255, 153, 0, 0.7),
-            inset 0 2px 4px rgba(255, 153, 0, 0.4),
-            inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+            0 4px 16px rgba(0, 0, 0, 0.9),
+            0 0 28px rgba(255, 255, 255, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.25);
     }
 }
 
@@ -3966,33 +3956,52 @@ body.light-theme .stat-item {
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(50, 50, 50, 0.2), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+    z-index: 2;
+}
+
+/* Акцент на верхнем углу */
+.battle-card-new::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 30px;
+    height: 30px;
+    background: linear-gradient(135deg, transparent 50%, rgba(255, 255, 255, 0.03) 50%);
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 0 8px 0 0;
+    z-index: 1;
 }
 
 .battle-card-new:not(.dead):hover {
-    transform: translateY(-5px) scale(1.08);
+    transform: translateY(-3px) scale(1.05);
     box-shadow: 
-        0 15px 50px rgba(50, 50, 50, 0.3),
-        0 8px 32px rgba(0, 0, 0, 0.8),
-        inset 0 2px 8px rgba(50, 50, 50, 0.2);
+        0 8px 30px rgba(0, 0, 0, 0.95),
+        0 0 20px rgba(255, 255, 255, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .battle-card-image {
     width: 100%;
-    height: 75px;
+    height: 70px;
     background-size: cover;
-    background-position: center top;
+    background-position: center;
     position: relative;
-    filter: brightness(1.05) saturate(1.1);
+    filter: grayscale(100%) contrast(1.15) brightness(0.95);
     overflow: hidden;
-    border-radius: 12px 12px 0 0;
+    border-radius: 8px 8px 0 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .battle-card-image::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
+    background: linear-gradient(180deg, 
+        rgba(0, 0, 0, 0.2) 0%, 
+        rgba(0, 0, 0, 0.7) 100%);
     pointer-events: none;
 }
 
@@ -4001,37 +4010,37 @@ body.light-theme .stat-item {
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 0.3rem 0.5rem;
-    background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.9) 20%, rgba(0, 0, 0, 0.95) 100%);
+    padding: 0.25rem 0.5rem;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(4px);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .battle-card-info {
     flex: 1;
-    padding: 0.6rem 0.8rem;
+    padding: 0.5rem 0.6rem;
     display: flex;
     flex-direction: column;
-    gap: 0.3rem;
-    background: transparent;
+    gap: 0.35rem;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, transparent 100%);
     position: relative;
 }
 
 .battle-card-name {
-    font-size: 0.85rem;
-    font-weight: 800;
+    font-size: 0.8rem;
+    font-weight: 700;
     margin-bottom: 0;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
-    text-shadow: 
-        1px 1px 3px rgba(0, 0, 0, 0.9),
-        0 0 8px rgba(0, 0, 0, 0.6);
+    letter-spacing: 1px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     line-height: 1;
-    color: #ffffff;
+    color: #e8e8e8;
 }
 
 .battle-card-stars {
@@ -4042,70 +4051,73 @@ body.light-theme .stat-item {
 }
 
 .battle-card-stars .star {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     line-height: 1;
 }
 
 .battle-card-stars .star.filled {
-    color: #ffd700;
+    color: #fff;
     text-shadow: 
-        0 0 8px rgba(255, 215, 0, 0.6),
+        0 0 6px rgba(255, 255, 255, 0.5),
         1px 1px 2px rgba(0, 0, 0, 0.8);
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.4));
 }
 
 .battle-card-stars .star.empty {
-    color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.15);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
 }
 
 .battle-card-stats {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 0.3rem;
+    gap: 0.25rem;
     margin: 0;
 }
 
 .stat-mini {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 600;
-    padding: 0.2rem 0.3rem;
-    background: rgba(0, 0, 0, 0.4);
-    border-radius: 4px;
+    padding: 0.25rem 0.2rem;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
     text-align: center;
     white-space: nowrap;
-    line-height: 1.2;
+    line-height: 1.1;
+    color: #e0e0e0;
 }
 
 .stat-icon {
-    font-size: 0.85rem;
-    margin-right: 2px;
+    font-size: 0.8rem;
+    margin-right: 1px;
+    filter: grayscale(100%);
 }
 
 .battle-health-bar {
     position: relative;
     width: 100%;
-    height: 20px;
-    background: rgba(20, 20, 20, 0.8);
-    border-radius: 10px;
+    height: 18px;
+    background: #0a0a0a;
+    border-radius: 3px;
     overflow: hidden;
-    border: 1.5px solid rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     box-shadow: 
-        inset 0 1px 3px rgba(0, 0, 0, 0.6),
-        0 1px 3px rgba(0, 0, 0, 0.3);
+        inset 0 2px 4px rgba(0, 0, 0, 0.8),
+        0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .battle-health-fill {
     height: 100%;
     background: linear-gradient(90deg, 
-        #e0e0e0 0%, 
-        #f5f5f5 50%, 
-        #ffffff 100%
+        #d0d0d0 0%, 
+        #ffffff 50%, 
+        #d0d0d0 100%
     );
     transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    border-radius: 8px;
     box-shadow: 
-        0 0 15px rgba(50, 50, 50, 0.6),
-        inset 0 2px 4px rgba(50, 50, 50, 0.8),
-        inset 0 -2px 4px rgba(50, 50, 50, 0.6);
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.2);
     position: relative;
 }
 
@@ -4113,8 +4125,10 @@ body.light-theme .stat-item {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(50, 50, 50, 0.6) 0%, transparent 50%, rgba(50, 50, 50, 0.4) 100%);
-    border-radius: 8px;
+    background: linear-gradient(180deg, 
+        rgba(255, 255, 255, 0.15) 0%, 
+        transparent 40%, 
+        rgba(0, 0, 0, 0.1) 100%);
     pointer-events: none;
 }
 
@@ -4123,20 +4137,20 @@ body.light-theme .stat-item {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 0.75rem;
-    font-weight: 800;
-    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #000;
     text-shadow: 
-        0 0 4px rgba(0, 0, 0, 0.9),
-        1px 1px 2px rgba(0, 0, 0, 0.8),
-        -1px -1px 0 rgba(0, 0, 0, 0.5);
-    letter-spacing: 0.3px;
+        0 0 3px rgba(255, 255, 255, 0.5),
+        0 1px 0 rgba(255, 255, 255, 0.3);
+    letter-spacing: 0.5px;
     z-index: 2;
 }
 
 .battle-card-new.dead {
-    opacity: 0.5;
-    filter: grayscale(100%);
+    opacity: 0.4;
+    filter: grayscale(100%) brightness(0.6);
+    border-color: rgba(255, 255, 255, 0.05);
 }
 
 .battle-dead-overlay {
@@ -4338,9 +4352,9 @@ body.light-theme .stat-item {
     }
 }
 
-/* Подсветка текущей атакующей карты игрока */
+/* ЧБ Подсветка текущей атакующей карты игрока */
 .battle-card-new.hint-glow {
-    border-color: #00ff00 !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
     box-shadow: 
         0 0 30px rgba(0, 0, 0, 0.6),
         0 4px 20px rgba(0, 0, 0, 0.5),
@@ -4390,14 +4404,13 @@ body.light-theme .stat-item {
 
 /* Выбранная карта игрока */
 .battle-card-new.selected {
-    border-color: #ffff00 !important;
+    border-color: rgba(255, 255, 255, 0.6) !important;
     box-shadow: 
-        0 0 40px rgba(50, 50, 50, 0.8),
-        0 8px 30px rgba(0, 0, 0, 0.6),
-        inset 0 0 30px rgba(50, 50, 50, 0.3);
-    transform: scale(1.08);
+        0 0 20px rgba(255, 255, 255, 0.2),
+        0 6px 24px rgba(0, 0, 0, 0.9),
+        inset 0 0 15px rgba(255, 255, 255, 0.05);
+    transform: scale(1.05);
     z-index: 100;
-    animation: selectedPulse 1s ease infinite;
 }
 
 @keyframes selectedPulse {
@@ -4419,23 +4432,30 @@ body.light-theme .stat-item {
 
 /* Подсветка доступных целей */
 .battle-card-new.target-available {
-    border-color: #ff0000 !important;
+    border-color: rgba(255, 255, 255, 0.4) !important;
     box-shadow: 
-        0 0 30px rgba(50, 50, 50, 0.6),
-        0 4px 20px rgba(0, 0, 0, 0.5),
-        inset 0 0 20px rgba(50, 50, 50, 0.2);
-    animation: targetAvailablePulse 1.5s ease infinite;
+        0 0 16px rgba(255, 255, 255, 0.15),
+        0 4px 20px rgba(0, 0, 0, 0.8),
+        inset 0 0 10px rgba(255, 255, 255, 0.03);
+    animation: targetAvailablePulseBW 1.5s ease infinite;
     cursor: crosshair !important;
 }
 
 .battle-card-new.target-available::after {
-    content: '🎯';
+    content: '';
     position: absolute;
-    top: -30px;
-    right: 10px;
-    font-size: 2rem;
-    animation: targetBounce 1s ease infinite;
-    filter: drop-shadow(0 0 10px rgba(50, 50, 50, 0.8));
+    top: -8px;
+    right: -8px;
+    bottom: -8px;
+    left: -8px;
+    border: 1px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    animation: targetDashRotate 4s linear infinite;
+}
+
+@keyframes targetDashRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 @keyframes targetBounce {
@@ -4447,18 +4467,18 @@ body.light-theme .stat-item {
     }
 }
 
-@keyframes targetAvailablePulse {
+@keyframes targetAvailablePulseBW {
     0%, 100% {
         box-shadow: 
-            0 0 30px rgba(50, 50, 50, 0.6),
-            0 4px 20px rgba(0, 0, 0, 0.5),
-            inset 0 0 20px rgba(50, 50, 50, 0.2);
+            0 0 16px rgba(255, 255, 255, 0.15),
+            0 4px 20px rgba(0, 0, 0, 0.8),
+            inset 0 0 10px rgba(255, 255, 255, 0.03);
     }
     50% {
         box-shadow: 
-            0 0 50px rgba(50, 50, 50, 0.9),
-            0 4px 20px rgba(0, 0, 0, 0.5),
-            inset 0 0 30px rgba(50, 50, 50, 0.4);
+            0 0 22px rgba(255, 255, 255, 0.2),
+            0 4px 20px rgba(0, 0, 0, 0.8),
+            inset 0 0 12px rgba(255, 255, 255, 0.05);
     }
 }
 
