@@ -6127,7 +6127,14 @@ class GameData {
         if (!hintElement) {
             hintElement = document.createElement('div');
             hintElement.className = 'battle-hint';
-            document.querySelector('.battle-arena').appendChild(hintElement);
+            // В новой структуре используется .battle-arena-v2
+            const arena = document.querySelector('.battle-arena-v2') || document.querySelector('.battle-arena');
+            if (arena) {
+                arena.appendChild(hintElement);
+            } else {
+                console.error('❌ Боевая арена не найдена!');
+                return;
+            }
         }
         
         hintElement.textContent = text;
