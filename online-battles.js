@@ -1044,7 +1044,7 @@ class OnlineBattlesSystem {
                     <div class="result-message">Вы проиграли онлайн-бой!</div>
                     <div class="online-note">⚠️ В онлайн-боях нет наград</div>
                     <div class="result-buttons">
-                        <button class="btn primary" onclick="onlineBattlesSystem.backToMenuOnline()">📋 В меню</button>
+                        <button class="btn primary" onclick="if(window.onlineBattlesSystem) window.onlineBattlesSystem.backToMenuOnline()">📋 В меню</button>
                     </div>
                 </div>
             `;
