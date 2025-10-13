@@ -311,7 +311,8 @@ class OnlineBattlesSystem {
             // Присоединяемся как guest
             const updates = {
                 guest: currentUserId,
-                guestNick: user.nickname || user.username,
+                guestNickname: user.nickname || user.username,
+                guestAvatar: user.avatar || this.gameData.avatars[0], // Аватарка гостя
                 guestDeck: user.deck,
                 status: 'ready'
             };
