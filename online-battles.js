@@ -221,13 +221,31 @@ class OnlineBattlesSystem {
             this.currentRoom = roomCode;
             this.isHost = true;
             
-            // Показываем код комнаты
-            document.getElementById('create-room-btn').style.display = 'none';
-            document.getElementById('room-created').style.display = 'block';
-            document.getElementById('room-code-display').textContent = roomCode;
+            // Сразу закрываем модалку и возвращаем в меню
+            const onlineModal = document.getElementById('online-battle-modal');
+            const mainMenu = document.getElementById('main-menu');
             
-            console.log('🎉 Комната успешно создана! Код:', roomCode);
-            console.log('⏳ Ожидание гостя...');
+            if (onlineModal) {
+                onlineModal.style.display = 'none';
+                console.log('✅ Модалка закрыта');
+            }
+            
+            if (mainMenu) {
+                mainMenu.style.display = 'flex';
+                mainMenu.classList.add('active');
+                console.log('✅ Возврат в главное меню');
+            }
+            
+            console.log('🎉 Комната создана! Код:', roomCode);
+            
+            // Показываем красивое уведомление с кодом
+            await this.gameData.showAlert(
+                `Комната создана!\n\nКод: ${roomCode}\n\nОжидание противника...`,
+                '🎮',
+                'Онлайн бой'
+            );
+            
+            console.log('⏳ Ожидание гостя в фоне...');
             
             // Начинаем слушать изменения
             this.listenToRoom(roomCode);
@@ -314,14 +332,17 @@ class OnlineBattlesSystem {
             this.currentRoom = { ...roomData, ...updates };
             this.isHost = false;
             
-            console.log('🎮 Закрываем модальное окно и начинаем бой');
+            console.log('🚀 МОМЕНТАЛЬНЫЙ ЗАПУСК БОЯ!');
             
-            this.closeOnlineBattleModal();
+            // Закрываем модалку
+            const onlineModal = document.getElementById('online-battle-modal');
+            if (onlineModal) {
+                onlineModal.style.display = 'none';
+                console.log('✅ Модалка закрыта');
+            }
             
-            // Небольшая задержка перед началом
-            setTimeout(() => {
-                this.startOnlineBattle(roomCode);
-            }, 300);
+            // СРАЗУ запускаем бой без задержек
+            this.startOnlineBattle(roomCode);
             
         } catch (error) {
             console.error('❌ Ошибка входа в комнату:', error);
