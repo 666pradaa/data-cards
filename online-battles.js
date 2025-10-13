@@ -332,7 +332,8 @@ class OnlineBattlesSystem {
             this.currentRoom = { ...roomData, ...updates };
             this.isHost = false;
             
-            console.log('🚀 МОМЕНТАЛЬНЫЙ ЗАПУСК БОЯ!');
+            console.log('✅ Гость присоединился! Ждем синхронизации...');
+            console.log('🎧 Начинаем слушать изменения комнаты для запуска боя');
             
             // Закрываем модалку
             const onlineModal = document.getElementById('online-battle-modal');
@@ -341,8 +342,8 @@ class OnlineBattlesSystem {
                 console.log('✅ Модалка закрыта');
             }
             
-            // СРАЗУ запускаем бой без задержек
-            this.startOnlineBattle(roomCode);
+            // Начинаем слушать комнату - бой запустится автоматически когда status === 'ready'
+            this.listenToRoom(roomCode);
             
         } catch (error) {
             console.error('❌ Ошибка входа в комнату:', error);
@@ -400,8 +401,10 @@ class OnlineBattlesSystem {
                 hasBattleState: !!this.gameData.battleState
             });
             
-            if (room.status === 'ready' && this.isHost && !this.gameData.battleState) {
-                console.log('🎉 Гость присоединился! Начинаем бой НЕМЕДЛЕННО...');
+            // ОБА игрока должны запустить бой когда статус 'ready'
+            if (room.status === 'ready' && !this.gameData.battleState) {
+                console.log('🎉 Оба игрока готовы! Начинаем бой...');
+                console.log('   Роль:', this.isHost ? 'ХОСТ' : 'ГОСТЬ');
                 
                 // Отключаем слушатель для избежания повторного запуска
                 if (this.roomListener) {
