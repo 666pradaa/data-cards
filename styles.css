@@ -3036,8 +3036,8 @@ body.light-theme .stat-item {
 /* Shadow Fiend - Requiem */
 .requiem-soul {
     position: fixed;
-    width: 40px;
-    height: 40px;
+    width: 50px;
+    height: 50px;
     pointer-events: none;
     opacity: 0;
     z-index: 99999 !important;
@@ -3049,31 +3049,38 @@ body.light-theme .stat-item {
     width: 100%;
     height: 100%;
     background: radial-gradient(circle, 
-        rgba(220, 20, 20, 1) 0%,
-        rgba(180, 0, 0, 0.9) 30%,
-        rgba(140, 0, 0, 0.7) 60%,
+        rgba(255, 50, 50, 1) 0%,
+        rgba(220, 20, 20, 0.95) 20%,
+        rgba(180, 0, 0, 0.85) 40%,
+        rgba(140, 0, 0, 0.6) 60%,
         rgba(100, 0, 0, 0) 100%
     );
     border-radius: 50%;
     box-shadow: 
-        0 0 20px rgba(220, 20, 20, 1),
-        0 0 40px rgba(180, 0, 0, 0.8),
-        inset 0 0 15px rgba(140, 0, 0, 0.6);
+        0 0 30px rgba(255, 50, 50, 1),
+        0 0 50px rgba(220, 20, 20, 0.9),
+        0 0 70px rgba(180, 0, 0, 0.7),
+        inset 0 0 20px rgba(255, 80, 80, 0.8);
     animation: soulPulse 0.3s ease-in-out infinite alternate;
 }
 
 .soul-trail {
     position: absolute;
-    width: 100%;
-    height: 100%;
+    width: 120%;
+    height: 120%;
+    left: -10%;
+    top: -10%;
     background: radial-gradient(ellipse, 
-        rgba(220, 20, 20, 0.6) 0%,
-        rgba(180, 0, 0, 0.4) 50%,
-        rgba(140, 0, 0, 0) 100%
+        rgba(255, 50, 50, 0.7) 0%,
+        rgba(220, 20, 20, 0.5) 30%,
+        rgba(180, 0, 0, 0.3) 50%,
+        transparent 100%
     );
     border-radius: 50%;
-    transform: scale(1.5);
-    opacity: 0.5;
+    transform: scale(1.2);
+    opacity: 0.8;
+    filter: blur(6px);
+    animation: trailPulse 0.5s ease-in-out infinite;
 }
 
 .requiem-soul.flying {
@@ -3110,14 +3117,29 @@ body.light-theme .stat-item {
     0% {
         transform: scale(0.9);
         box-shadow: 
-            0 0 15px rgba(220, 20, 20, 0.9),
-            0 0 30px rgba(180, 0, 0, 0.7);
+            0 0 30px rgba(255, 50, 50, 1),
+            0 0 50px rgba(220, 20, 20, 0.9),
+            0 0 70px rgba(180, 0, 0, 0.7),
+            inset 0 0 20px rgba(255, 80, 80, 0.8);
     }
     100% {
-        transform: scale(1.1);
+        transform: scale(1.15);
         box-shadow: 
-            0 0 25px rgba(220, 20, 20, 1),
-            0 0 50px rgba(180, 0, 0, 0.9);
+            0 0 40px rgba(255, 50, 50, 1),
+            0 0 60px rgba(220, 20, 20, 1),
+            0 0 90px rgba(180, 0, 0, 0.9),
+            inset 0 0 30px rgba(255, 100, 100, 1);
+    }
+}
+
+@keyframes trailPulse {
+    0%, 100% {
+        opacity: 0.6;
+        transform: scale(1.2);
+    }
+    50% {
+        opacity: 0.9;
+        transform: scale(1.35);
     }
 }
 
@@ -3217,6 +3239,137 @@ body.light-theme .stat-item {
     40% { transform: translateX(3px); }
     60% { transform: translateX(-3px); }
     80% { transform: translateX(3px); }
+}
+
+/* Pudge - Dismember */
+.blood-particle {
+    position: absolute;
+    font-size: 1.8rem;
+    animation: bloodSplatter 1.2s ease-out forwards;
+    pointer-events: none;
+    z-index: 20;
+    filter: drop-shadow(0 0 8px rgba(200, 0, 0, 0.8));
+}
+
+@keyframes bloodSplatter {
+    0% {
+        transform: translate(-50%, -50%) scale(0.5) rotate(0deg);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(calc(-50% + var(--tx) * 0.7), calc(-50% + var(--ty) * 0.7)) scale(1.2) rotate(180deg);
+        opacity: 0.9;
+    }
+    100% {
+        transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0.3) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.dismember-shake {
+    animation: dismemberShake 0.5s ease-in-out 3;
+}
+
+@keyframes dismemberShake {
+    0%, 100% { transform: translateX(0) translateY(0); }
+    10% { transform: translateX(-5px) translateY(-3px); }
+    20% { transform: translateX(5px) translateY(3px); }
+    30% { transform: translateX(-5px) translateY(-3px); }
+    40% { transform: translateX(5px) translateY(3px); }
+    50% { transform: translateX(-3px) translateY(-2px); }
+    60% { transform: translateX(3px) translateY(2px); }
+    70% { transform: translateX(-3px) translateY(-2px); }
+    80% { transform: translateX(3px) translateY(2px); }
+    90% { transform: translateX(-1px) translateY(-1px); }
+}
+
+.dismember-glow {
+    animation: dismemberGlow 1.5s ease-out;
+}
+
+@keyframes dismemberGlow {
+    0%, 100% {
+        box-shadow: 0 0 0px rgba(200, 0, 0, 0);
+        filter: brightness(1);
+    }
+    30% {
+        box-shadow: 
+            0 0 30px rgba(255, 0, 0, 0.9),
+            0 0 50px rgba(200, 0, 0, 0.7),
+            inset 0 0 30px rgba(255, 50, 50, 0.5);
+        filter: brightness(1.3) saturate(1.5);
+    }
+    70% {
+        box-shadow: 
+            0 0 20px rgba(255, 0, 0, 0.6),
+            0 0 40px rgba(200, 0, 0, 0.5),
+            inset 0 0 20px rgba(255, 50, 50, 0.3);
+        filter: brightness(1.2) saturate(1.3);
+    }
+}
+
+/* Spirit Breaker - Charge */
+.lightning-particle {
+    position: absolute;
+    font-size: 2rem;
+    animation: lightningStrike 1s ease-out forwards;
+    pointer-events: none;
+    z-index: 20;
+    filter: drop-shadow(0 0 10px rgba(100, 150, 255, 0.9));
+}
+
+@keyframes lightningStrike {
+    0% {
+        transform: translate(-50%, -50%) scale(0.3) rotate(0deg);
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    40% {
+        transform: translate(calc(-50% + var(--tx) * 0.5), calc(-50% + var(--ty) * 0.5)) scale(1.5) rotate(180deg);
+        opacity: 1;
+    }
+    70% {
+        transform: translate(calc(-50% + var(--tx) * 0.8), calc(-50% + var(--ty) * 0.8)) scale(1) rotate(270deg);
+        opacity: 0.6;
+    }
+    100% {
+        transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0.5) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.charging {
+    animation: chargeGlow 2s ease-in-out;
+}
+
+@keyframes chargeGlow {
+    0%, 100% {
+        box-shadow: 0 0 0px rgba(100, 150, 255, 0);
+        filter: brightness(1);
+    }
+    25% {
+        box-shadow: 
+            0 0 30px rgba(100, 150, 255, 1),
+            0 0 50px rgba(50, 100, 255, 0.8),
+            inset 0 0 30px rgba(150, 200, 255, 0.5);
+        filter: brightness(1.4) saturate(1.5);
+    }
+    50% {
+        box-shadow: 
+            0 0 40px rgba(100, 150, 255, 1),
+            0 0 60px rgba(50, 100, 255, 0.9),
+            inset 0 0 40px rgba(150, 200, 255, 0.6);
+        filter: brightness(1.5) saturate(1.6);
+    }
+    75% {
+        box-shadow: 
+            0 0 30px rgba(100, 150, 255, 1),
+            0 0 50px rgba(50, 100, 255, 0.8),
+            inset 0 0 30px rgba(150, 200, 255, 0.5);
+        filter: brightness(1.4) saturate(1.5);
+    }
 }
 
 /* Terrorblade - Sunder */

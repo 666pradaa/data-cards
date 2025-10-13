@@ -4365,6 +4365,11 @@ class GameData {
                      onerror="this.onerror=null; this.style.display='none'; this.nextElementSibling.style.display='block';">
                 ${cooldownText ? '<span class="skill-cooldown">' + cooldownText + '</span>' : ''}
                 <span class="skill-icon-fallback" style="display: none;">⚡</span>
+                <div class="skill-tooltip">
+                    <strong>${card.skill.name}</strong>
+                    ${card.skill.description}
+                    ${skillOnCooldown ? '<br><span style="color: #ff6666;">Кулдаун: ' + card.skillCooldown + ' раунд(а)</span>' : ''}
+                </div>
             </button>
         `;
     }
@@ -4769,8 +4774,8 @@ class GameData {
                 card.health < weakest.health ? card : weakest
             );
             this.battleState.invisibleCards.push(targetCard.name);
-            this.battleState.runeDurations[targetCard.name] = 1; // 1 раунд
-            console.log('👻 Бот сделал карту невидимой на 1 раунд:', targetCard.name);
+            this.battleState.runeDurations[targetCard.name] = 2; // 2 хода
+            console.log('👻 Бот сделал карту невидимой на 2 хода:', targetCard.name);
             
             const cardEl = document.querySelector(`#enemy-cards .battle-card-new[data-card-name="${targetCard.name}"]`);
             if (cardEl) {
@@ -4787,9 +4792,9 @@ class GameData {
                 card.health > strongest.health ? card : strongest
             );
             this.battleState.shieldedCards.push(targetCard.name);
-            this.battleState.runeDurations[targetCard.name] = 1; // 1 раунд
-            targetCard.tempDefense = (targetCard.tempDefense || 0) + 40;
-            console.log('🛡️ Бот дал щит карте на 1 раунд:', targetCard.name);
+            this.battleState.runeDurations[targetCard.name] = 2; // 2 хода
+            targetCard.tempDefense = (targetCard.tempDefense || 0) + 20; // +20% защиты
+            console.log('🛡️ Бот дал щит (+20% защиты) карте на 2 хода:', targetCard.name);
             
             const cardEl = document.querySelector(`#enemy-cards .battle-card-new[data-card-name="${targetCard.name}"]`);
             if (cardEl) {
@@ -4806,9 +4811,15 @@ class GameData {
                 targetCard = damagedCards.reduce((mostDamaged, card) => 
                     (card.maxHealth - card.health) > (mostDamaged.maxHealth - mostDamaged.health) ? card : mostDamaged
                 );
-                const healAmount = Math.floor(targetCard.maxHealth * 0.2);
+                const healAmount = 20; // Фиксированное восстановление 20 HP
                 targetCard.health = Math.min(targetCard.maxHealth, targetCard.health + healAmount);
                 console.log('💧 Бот восстановил HP карте:', targetCard.name, '+', healAmount);
+                
+                // Анимация активации руны воды
+                const cardEl = document.querySelector(`#enemy-cards .battle-card-new[data-card-name="${targetCard.name}"]`);
+                if (cardEl) {
+                    this.showRuneActivationAnimation(cardEl, 'water');
+                }
                 
                 this.renderBattle();
             }
@@ -5158,17 +5169,17 @@ class GameData {
         if (rune.type === 'invisibility') {
             // НЕВИДИМОСТЬ - применяем на СВОЮ карту (враг её не атакует)
             targets = this.battleState.playerDeck.filter(card => !card.isDead && card.health > 0);
-            hint = 'Выберите СВОЮ карту для невидимости (враг не сможет её атаковать)';
+            hint = 'Выберите СВОЮ карту для невидимости (враг не сможет её атаковать 2 хода)';
         } else if (rune.type === 'shield') {
             // ЩИТ - применяем на СВОЮ карту (получит меньше урона)
             targets = this.battleState.playerDeck.filter(card => !card.isDead && card.health > 0);
-            hint = 'Выберите СВОЮ карту для щита (+40% защиты от атак врага)';
+            hint = 'Выберите СВОЮ карту для щита (+20% защиты на 2 хода)';
         } else if (rune.type === 'water') {
             // ВОДА - лечим свою поврежденную карту
             targets = this.battleState.playerDeck.filter(card => 
                 !card.isDead && card.health > 0 && card.health < card.maxHealth
             );
-            hint = 'Выберите СВОЮ карту для лечения';
+            hint = 'Выберите СВОЮ карту для лечения (+20 HP)';
         }
         
         if (targets.length === 0) {
@@ -5222,9 +5233,9 @@ class GameData {
         } else if (rune.type === 'shield') {
             this.battleState.shieldedCards.push(targetCard.name);
             this.battleState.runeDurations[targetCard.name] = 2; // 2 хода
-            targetCard.tempDefense = (targetCard.tempDefense || 0) + 40;
-            this.showBattleHint(`${targetCard.name} получил щит! +40% защиты на 2 хода.`);
-            console.log('🛡️ Карта получила щит на 2 хода:', targetCard.name);
+            targetCard.tempDefense = (targetCard.tempDefense || 0) + 20; // +20% защиты
+            this.showBattleHint(`${targetCard.name} получил щит! +20% защиты на 2 хода.`);
+            console.log('🛡️ Карта получила щит (+20% защиты) на 2 хода:', targetCard.name);
             
             // Анимация активации руны
             const cardEl = document.querySelector(`#player-cards .battle-card-new[data-card-name="${targetCard.name}"]`);
@@ -5236,10 +5247,16 @@ class GameData {
                 this.addRuneIndicator(cardEl, 'shield', '🛡️ ЩИТ');
             }
         } else if (rune.type === 'water') {
-            const healAmount = Math.floor(targetCard.maxHealth * 0.2);
+            const healAmount = 20; // Фиксированное восстановление 20 HP
             targetCard.health = Math.min(targetCard.maxHealth, targetCard.health + healAmount);
             this.showBattleHint(`${targetCard.name} восстановил ${healAmount} HP!`);
             console.log('💧 Карта восстановила HP:', targetCard.name, '+', healAmount);
+            
+            // Анимация активации руны воды
+            const cardEl = document.querySelector(`#player-cards .battle-card-new[data-card-name="${targetCard.name}"]`);
+            if (cardEl) {
+                this.showRuneActivationAnimation(cardEl, 'water');
+            }
             
             // Обновляем отображение
             this.renderBattle();
@@ -5252,8 +5269,22 @@ class GameData {
         // Через 1.5 секунды убираем подсказку и продолжаем ход
         setTimeout(() => {
             this.hideBattleHint();
-            // Продолжаем ход - показываем выбор карты для атаки
-            this.showCardSelection();
+            
+            // Получаем доступные карты для атаки
+            const alivePlayerCards = this.battleState.playerDeck.filter(card => !card.isDead && card.health > 0);
+            const availableCards = alivePlayerCards.filter(card => {
+                const notOnCooldown = !this.battleState.lastPlayerCard || card.name !== this.battleState.lastPlayerCard.name;
+                const notFrozen = !this.battleState.frozenCards.includes(card.name);
+                const notFeared = !this.battleState.fearedCards.includes(card.name);
+                return notOnCooldown && notFrozen && notFeared;
+            });
+            
+            // Продолжаем ход - показываем выбор карты для атаки с правильными параметрами
+            if (availableCards.length > 0) {
+                this.showCardSelection(availableCards);
+            } else {
+                console.error('❌ Нет доступных карт после использования руны');
+            }
         }, 1500);
     }
     
@@ -5794,10 +5825,39 @@ class GameData {
         console.log('🩸 Анимация Dismember');
         
         const targetEl = document.querySelector(`.battle-card-new[data-card-name="${target.name}"]`);
-        if (targetEl) {
-            targetEl.classList.add('dismember-shake');
-            setTimeout(() => targetEl.classList.remove('dismember-shake'), 1500);
+        if (!targetEl) return;
+        
+        // Тряска карты
+        targetEl.classList.add('dismember-shake');
+        setTimeout(() => targetEl.classList.remove('dismember-shake'), 1500);
+        
+        // Создаем кровавые частицы вокруг цели
+        for (let i = 0; i < 15; i++) {
+            const blood = document.createElement('div');
+            blood.className = 'blood-particle';
+            blood.textContent = '🩸';
+            
+            const angle = (i / 15) * Math.PI * 2;
+            const distance = 60 + Math.random() * 40;
+            const tx = Math.cos(angle) * distance;
+            const ty = Math.sin(angle) * distance;
+            
+            blood.style.setProperty('--tx', tx + 'px');
+            blood.style.setProperty('--ty', ty + 'px');
+            blood.style.left = '50%';
+            blood.style.top = '50%';
+            blood.style.animationDelay = (i * 0.05) + 's';
+            
+            targetEl.appendChild(blood);
+            
+            setTimeout(() => {
+                if (targetEl.contains(blood)) targetEl.removeChild(blood);
+            }, 1500);
         }
+        
+        // Красное свечение
+        targetEl.classList.add('dismember-glow');
+        setTimeout(() => targetEl.classList.remove('dismember-glow'), 1500);
     }
     
     createSunStrikeAnimation(target) {
@@ -5901,9 +5961,34 @@ class GameData {
         console.log('⚡ Анимация Charge of Darkness');
         
         const cardEl = document.querySelector(`.battle-card-new[data-card-name="${card.name}"]`);
-        if (cardEl) {
-            cardEl.classList.add('charging');
-            setTimeout(() => cardEl.classList.remove('charging'), 2000);
+        if (!cardEl) return;
+        
+        // Основная анимация зарядки
+        cardEl.classList.add('charging');
+        setTimeout(() => cardEl.classList.remove('charging'), 2000);
+        
+        // Создаем молнии вокруг карты
+        for (let i = 0; i < 12; i++) {
+            const lightning = document.createElement('div');
+            lightning.className = 'lightning-particle';
+            lightning.textContent = '⚡';
+            
+            const angle = (i / 12) * Math.PI * 2;
+            const distance = 50 + Math.random() * 30;
+            const tx = Math.cos(angle) * distance;
+            const ty = Math.sin(angle) * distance;
+            
+            lightning.style.setProperty('--tx', tx + 'px');
+            lightning.style.setProperty('--ty', ty + 'px');
+            lightning.style.left = '50%';
+            lightning.style.top = '50%';
+            lightning.style.animationDelay = (i * 0.08) + 's';
+            
+            cardEl.appendChild(lightning);
+            
+            setTimeout(() => {
+                if (cardEl.contains(lightning)) cardEl.removeChild(lightning);
+            }, 1500);
         }
     }
     
@@ -6227,10 +6312,10 @@ class GameData {
             this.soundSystem.playSound('attack');
         }
         
-        // 🔮 Учитываем руну щита (+40% защиты)
+        // 🔮 Учитываем руну щита (+20% защиты)
         let totalDefense = target.defense;
         if (this.battleState.shieldedCards.includes(target.name)) {
-            totalDefense += 40;
+            totalDefense += 20;
             console.log('🛡️ Цель под щитом! Защита:', totalDefense + '%');
         }
         if (target.tempDefense) {
