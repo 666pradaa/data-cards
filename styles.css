@@ -2623,19 +2623,20 @@ body.light-theme .stat-item {
     object-fit: cover;
 }
 
-/* СУПЕР СОВРЕМЕННЫЙ дизайн боевой арены */
+/* ⚔️ МИНИМАЛИСТИЧНАЯ БОЕВАЯ АРЕНА */
 .battle-arena {
     width: 100%;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    padding: 2rem;
+    padding: 1.5rem;
     position: relative;
     overflow-y: auto;
-    animation: menuFadeIn 0.5s ease;
+    animation: menuFadeIn 0.3s ease;
+    background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%);
 }
 
-/* Минималистичный ЧБ паттерн фона */
+/* Тонкая сетка для глубины */
 .battle-arena::before {
     content: '';
     position: absolute;
@@ -2643,55 +2644,17 @@ body.light-theme .stat-item {
     left: 0;
     right: 0;
     bottom: 0;
-    background: 
-        repeating-linear-gradient(
-            0deg,
-            transparent,
-            transparent 60px,
-            rgba(255, 255, 255, 0.01) 60px,
-            rgba(255, 255, 255, 0.01) 61px
-        ),
-        repeating-linear-gradient(
-            90deg,
-            transparent,
-            transparent 40px,
-            rgba(50, 50, 50, 0.02) 40px,
-            rgba(50, 50, 50, 0.02) 41px
-        ),
-        repeating-linear-gradient(
-            45deg,
-            transparent,
-            transparent 80px,
-            rgba(50, 50, 50, 0.015) 80px,
-            rgba(50, 50, 50, 0.015) 81px
-        );
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 50px 50px;
     pointer-events: none;
-    animation: bgGridMove 20s linear infinite;
+    opacity: 0.5;
 }
 
-@keyframes bgGridMove {
-    0% {
-        background-position: 0 0, 100% 100%, 0 0, 0 0, 0 0;
-    }
-    100% {
-        background-position: 40px 40px, calc(100% + 40px) calc(100% + 40px), 40px 40px, 40px 40px, 80px 80px;
-    }
-}
-
-/* Светящиеся области */
+/* Убираем лишние эффекты */
 .battle-arena::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: 
-        radial-gradient(ellipse 600px 400px at 20% 30%, rgba(50, 50, 50, 0.06) 0%, transparent 70%),
-        radial-gradient(ellipse 600px 400px at 80% 70%, rgba(50, 50, 50, 0.06) 0%, transparent 70%),
-        radial-gradient(circle 300px at 50% 50%, rgba(50, 50, 50, 0.03) 0%, transparent 70%);
-    pointer-events: none;
-    animation: glowPulse 8s ease-in-out infinite;
+    display: none;
 }
 
 @keyframes glowPulse {
@@ -2707,24 +2670,25 @@ body.light-theme .stat-item {
 .rune-container {
     position: absolute;
     z-index: 20;
-    background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
-    border: 2px solid #0a0a0a;
-    border-radius: 15px;
-    padding: 0.8rem;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    background: rgba(15, 15, 15, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.6rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
 }
 
 .player-rune {
     bottom: auto;
     top: 15%;
-    left: 2rem;
-    max-width: 200px;
+    left: 1.5rem;
+    max-width: 180px;
 }
 
 .bot-rune {
     top: 15%;
-    right: 2rem;
-    max-width: 200px;
+    right: 1.5rem;
+    max-width: 180px;
 }
 
 .rune-item {
@@ -2821,17 +2785,22 @@ body.light-theme .stat-item {
 }
 
 .rune-name {
-    font-size: 0.9rem;
-    font-weight: 600;
+    font-size: 0.8rem;
+    font-weight: 700;
     color: #ffd700;
     text-align: center;
-    text-shadow: 0 0 5px rgba(50, 50, 50, 0.5);
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+    letter-spacing: 0.5px;
 }
 
 .rune-use-btn {
     margin-top: 0.5rem;
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    font-weight: 600;
 }
 
 .rune-item.used {
@@ -3579,10 +3548,10 @@ body.light-theme .stat-item {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1rem 0 1.5rem 0;
+    padding: 0.75rem 0;
     position: relative;
     z-index: 10;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 /* Блок с аватарками и VS */
@@ -3590,8 +3559,8 @@ body.light-theme .stat-item {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 3rem;
-    padding: 1rem 2rem 2rem 2rem;
+    gap: 4rem;
+    padding: 1rem 2rem 1.5rem 2rem;
     position: relative;
     z-index: 10;
 }
@@ -3601,50 +3570,44 @@ body.light-theme .stat-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.8rem;
+    gap: 0.6rem;
     position: relative;
 }
 
 .battle-player-avatar img,
 .battle-bot-avatar img {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
-    border: 4px solid rgba(50, 50, 50, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.15);
     box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.5),
-        inset 0 2px 8px rgba(50, 50, 50, 0.1);
+        0 4px 16px rgba(0, 0, 0, 0.4),
+        inset 0 1px 2px rgba(0, 0, 0, 0.3);
     object-fit: cover;
     transition: all 0.3s ease;
+    filter: grayscale(0);
 }
 
 .battle-player-avatar img {
-    border-color: rgba(50, 50, 50, 0.6);
-    box-shadow: 
-        0 8px 32px rgba(50, 50, 50, 0.4),
-        0 0 40px rgba(50, 50, 50, 0.2),
-        inset 0 2px 8px rgba(50, 50, 50, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 .battle-bot-avatar img {
-    border-color: rgba(50, 50, 50, 0.6);
-    box-shadow: 
-        0 8px 32px rgba(50, 50, 50, 0.4),
-        0 0 40px rgba(50, 50, 50, 0.2),
-        inset 0 2px 8px rgba(50, 50, 50, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 .player-name-battle,
 .bot-name-battle {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #fff;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+    font-size: 1rem;
+    font-weight: 600;
+    color: #e5e5e5;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.8);
     text-align: center;
-    max-width: 150px;
+    max-width: 120px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    letter-spacing: 0.5px;
 }
 
 .player-name-battle {
@@ -3656,30 +3619,22 @@ body.light-theme .stat-item {
 }
 
 .battle-round {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #e0e0e0;
-    background: rgba(15, 15, 15, 0.9);
-    padding: 0.6rem 1.5rem;
-    border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-    box-shadow: 
-        0 2px 8px rgba(0, 0, 0, 0.6),
-        inset 0 1px 0 rgba(255, 255, 255, 0.06);
-    letter-spacing: 1px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.5rem 1.2rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-shadow: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    letter-spacing: 2px;
     text-transform: uppercase;
+    backdrop-filter: blur(10px);
 }
 
 .battle-round::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(50, 50, 50, 0.2), transparent);
-    animation: roundShine 3s infinite;
+    display: none;
 }
 
 @keyframes roundShine {
@@ -3692,35 +3647,20 @@ body.light-theme .stat-item {
 }
 
 .battle-vs {
-    font-size: 3.5rem;
-    font-weight: 900;
-    color: #fff;
-    text-shadow: 
-        0 0 30px rgba(50, 50, 50, 0.8),
-        0 0 60px rgba(50, 50, 50, 0.4),
-        3px 3px 15px rgba(0, 0, 0, 1);
-    animation: vsPulse 2s infinite;
-    letter-spacing: 8px;
+    font-size: 2rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.4);
+    text-shadow: none;
+    animation: none;
+    letter-spacing: 6px;
     position: relative;
     flex-shrink: 0;
+    font-family: 'Courier New', monospace;
 }
 
 .battle-vs::before,
 .battle-vs::after {
-    content: '⚔️';
-    position: absolute;
-    font-size: 1.5rem;
-    opacity: 0.6;
-    animation: swordFloat 3s ease-in-out infinite;
-}
-
-.battle-vs::before {
-    left: -60px;
-}
-
-.battle-vs::after {
-    right: -60px;
-    animation-delay: 1.5s;
+    display: none;
 }
 
 @keyframes swordFloat {
@@ -3754,13 +3694,13 @@ body.light-theme .stat-item {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 2rem;
+    padding: 1.5rem;
     gap: 3rem;
-    background: rgba(50, 50, 50, 0.1);
-    border-radius: 15px;
+    background: transparent;
+    border-radius: 0;
     position: relative;
     z-index: 5;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
 }
 
 .battle-side {
@@ -3772,34 +3712,26 @@ body.light-theme .stat-item {
 
 .side-label {
     text-align: center;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 1.5px;
-    color: #d0d0d0;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-    background: rgba(15, 15, 15, 0.8);
-    padding: 0.5rem 1.2rem;
-    border-radius: 3px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 
-        0 2px 8px rgba(0, 0, 0, 0.6),
-        inset 0 1px 0 rgba(50, 50, 50, 0.1);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: rgba(255, 255, 255, 0.5);
+    text-shadow: none;
+    background: transparent;
+    padding: 0.4rem 1rem;
+    border-radius: 0;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: none;
     position: relative;
     overflow: hidden;
     text-transform: uppercase;
-    min-width: 200px;
-    backdrop-filter: blur(10px);
+    min-width: auto;
+    backdrop-filter: none;
 }
 
 .side-label::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(50, 50, 50, 0.15), transparent);
-    animation: labelShine 4s infinite;
+    display: none;
 }
 
 @keyframes labelShine {
@@ -3813,22 +3745,18 @@ body.light-theme .stat-item {
 
 /* Стили для имени игрока */
 .player-battle-side .side-label {
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.2));
-    border-color: rgba(0, 0, 0, 0.4);
-    box-shadow: 
-        0 4px 15px rgba(0, 0, 0, 0.5),
-        0 0 30px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(50, 50, 50, 0.1);
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: none;
+    color: rgba(255, 255, 255, 0.6);
 }
 
 /* Стили для имени бота */
 .enemy-battle-side .side-label {
-    background: linear-gradient(135deg, rgba(50, 50, 50, 0.3), rgba(50, 50, 50, 0.2));
-    border-color: rgba(50, 50, 50, 0.4);
-    box-shadow: 
-        0 4px 15px rgba(0, 0, 0, 0.5),
-        0 0 30px rgba(50, 50, 50, 0.3),
-        inset 0 1px 0 rgba(50, 50, 50, 0.1);
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: none;
+    color: rgba(255, 255, 255, 0.6);
 }
 
 .battle-cards-row {
@@ -3842,14 +3770,12 @@ body.light-theme .stat-item {
     width: 1px;
     background: linear-gradient(180deg, 
         transparent 0%,
-        rgba(255, 255, 255, 0.15) 20%,
-        rgba(255, 255, 255, 0.25) 50%,
-        rgba(255, 255, 255, 0.15) 80%,
+        rgba(255, 255, 255, 0.1) 20%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(255, 255, 255, 0.1) 80%,
         transparent 100%);
-    box-shadow: 
-        0 0 6px rgba(255, 255, 255, 0.15),
-        0 0 20px rgba(50, 50, 50, 0.1);
-    animation: lineGlow 2s infinite;
+    box-shadow: none;
+    animation: none;
 }
 
 @keyframes lineGlow {
@@ -4253,26 +4179,25 @@ body.light-theme .stat-item {
 /* Подсказки в бою */
 .battle-hint {
     position: fixed;
-    top: 80px;
+    top: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background: linear-gradient(135deg, rgba(40, 40, 40, 0.98), rgba(20, 20, 20, 0.98));
-    padding: 1.5rem 3rem;
-    border-radius: 20px;
-    border: 3px solid rgba(50, 50, 50, 0.4);
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #fff;
-    text-shadow: 0 0 20px rgba(50, 50, 50, 0.8);
+    background: rgba(10, 10, 10, 0.95);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #e5e5e5;
+    text-shadow: none;
     z-index: 10000;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s ease;
-    backdrop-filter: blur(10px);
-    box-shadow: 
-        0 0 40px rgba(50, 50, 50, 0.3),
-        0 10px 40px rgba(0, 0, 0, 0.8);
-    animation: hintPulse 2s ease infinite;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    animation: none;
+    letter-spacing: 0.5px;
 }
 
 .battle-hint.active {
