@@ -1679,7 +1679,7 @@ class GameData {
         const user = this.getUser();
         
         // Специальный код для админ поддержки (не сохраняется в usedCodes)
-        if (code === 'POD777') {
+        if (code === 'AP888') {
             const updates = {
                 isSupportAdmin: true
             };
