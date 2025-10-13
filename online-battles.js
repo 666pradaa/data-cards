@@ -3,6 +3,8 @@
  * Полная логика онлайн-боёв по коду комнаты через Firebase
  */
 
+console.log('🟢 online-battles.js ЗАГРУЖЕН');
+
 class OnlineBattlesSystem {
     constructor(gameData) {
         this.gameData = gameData;
@@ -1046,33 +1048,60 @@ class OnlineBattlesSystem {
 }
 
 // Глобальная переменная
+console.log('🟡 Устанавливаем window.onlineBattlesSystem = null');
 window.onlineBattlesSystem = null;
 
 // Инициализация
 function initOnlineBattlesSystem() {
-    console.log('👥 Инициализация системы онлайн-боёв...');
-    console.log('   window.gameData:', !!window.gameData);
+    console.log('👥👥👥 НАЧАЛО ИНИЦИАЛИЗАЦИИ СИСТЕМЫ ОНЛАЙН-БОЁВ 👥👥👥');
+    console.log('   window.gameData существует:', !!window.gameData);
+    console.log('   typeof gameData:', typeof window.gameData);
     
+    let intervalCount = 0;
     const interval = setInterval(() => {
+        intervalCount++;
+        console.log(`⏰ Попытка #${intervalCount} - gameData:`, !!window.gameData);
+        
         if (window.gameData) {
-            console.log('✅ gameData найден, создаём OnlineBattlesSystem');
-            window.onlineBattlesSystem = new OnlineBattlesSystem(window.gameData);
-            console.log('✅ onlineBattlesSystem создан:', !!window.onlineBattlesSystem);
-            window.onlineBattlesSystem.init();
-            console.log('✅ onlineBattlesSystem.init() завершен');
-            clearInterval(interval);
+            console.log('✅✅✅ gameData НАЙДЕН! Создаём OnlineBattlesSystem...');
+            
+            try {
+                window.onlineBattlesSystem = new OnlineBattlesSystem(window.gameData);
+                console.log('✅ onlineBattlesSystem создан:', !!window.onlineBattlesSystem);
+                console.log('   typeof:', typeof window.onlineBattlesSystem);
+                
+                window.onlineBattlesSystem.init();
+                console.log('✅ onlineBattlesSystem.init() завершен');
+                
+                clearInterval(interval);
+                console.log('🎉🎉🎉 ИНИЦИАЛИЗАЦИЯ ЗАВЕРШЕНА УСПЕШНО!');
+            } catch (error) {
+                console.error('❌❌❌ ОШИБКА ПРИ СОЗДАНИИ onlineBattlesSystem:', error);
+                clearInterval(interval);
+            }
         } else {
-            console.log('⏳ Ждем gameData...');
+            console.log('⏳ gameData еще не существует, ждем...');
+        }
+        
+        // Останавливаем после 100 попыток
+        if (intervalCount >= 100) {
+            console.error('❌ Превышен лимит ожидания gameData (10 секунд)');
+            clearInterval(interval);
         }
     }, 100);
 }
 
 // Запускаем инициализацию
+console.log('🟢 Проверка readyState:', document.readyState);
+
 if (document.readyState === 'loading') {
     console.log('📄 DOM загружается, ждем DOMContentLoaded...');
-    document.addEventListener('DOMContentLoaded', initOnlineBattlesSystem);
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('📄 DOMContentLoaded сработал!');
+        initOnlineBattlesSystem();
+    });
 } else {
-    console.log('📄 DOM уже загружен, запускаем инициализацию сразу');
+    console.log('📄 DOM уже загружен, запускаем инициализацию НЕМЕДЛЕННО');
     initOnlineBattlesSystem();
 }
 
