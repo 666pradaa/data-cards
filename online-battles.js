@@ -108,7 +108,7 @@ class OnlineBattlesSystem {
         }
     }
 
-    openOnlineBattleModal() {
+    async openOnlineBattleModal() {
         console.log('🎮 Открытие модального окна онлайн-боя');
         
         // Проверяем есть ли колода
