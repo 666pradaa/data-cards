@@ -867,7 +867,6 @@ class GameData {
         document.getElementById('save-edit-btn').addEventListener('click', () => this.saveEdit());
         document.getElementById('upload-avatar-btn').addEventListener('click', () => document.getElementById('avatar-file-input').click());
         document.getElementById('avatar-file-input').addEventListener('change', (e) => this.handleAvatarUpload(e));
-        document.getElementById('refresh-images-btn').addEventListener('click', () => this.forceRefreshAllImages());
         
         document.querySelectorAll('.edit-btn').forEach(btn => {
             btn.addEventListener('click', (e) => this.openEditModal(e.target.dataset.field));
@@ -4548,14 +4547,18 @@ class GameData {
         }
         
         if (botAvatarBattle) {
-            // Для онлайн-боя используем аватар противника, для оффлайн - случайный
+            // Для онлайн-боя используем аватар противника, для оффлайн - сохраняем выбранный
             let avatarPath;
             if (this.battleState.isOnline && this.battleState.opponentAvatar) {
                 avatarPath = this.battleState.opponentAvatar;
                 console.log('🖼️ Аватар противника (онлайн):', avatarPath);
             } else {
-                const botAvatarIndex = Math.floor(Math.random() * this.avatars.length);
-                avatarPath = this.avatars[botAvatarIndex] || 'https://i.imgur.com/EbsmHMK.jpg';
+                // Если аватар бота еще не выбран, выбираем случайный и сохраняем
+                if (!this.battleState.botAvatar) {
+                    const botAvatarIndex = Math.floor(Math.random() * this.avatars.length);
+                    this.battleState.botAvatar = this.avatars[botAvatarIndex] || 'https://i.imgur.com/EbsmHMK.jpg';
+                }
+                avatarPath = this.battleState.botAvatar;
                 console.log('🖼️ Аватар противника (оффлайн):', avatarPath);
             }
             this.setAvatarWithFallback(botAvatarBattle, avatarPath);
@@ -4943,8 +4946,8 @@ class GameData {
             if (this.battleState.isOnline && this.battleState.opponentAvatar) {
                 avatarPath = this.battleState.opponentAvatar;
             } else {
-                const botAvatarIndex = Math.floor(Math.random() * this.avatars.length);
-                avatarPath = this.avatars[botAvatarIndex] || 'https://i.imgur.com/EbsmHMK.jpg';
+                // Используем сохраненный аватар бота
+                avatarPath = this.battleState.botAvatar || 'https://i.imgur.com/EbsmHMK.jpg';
             }
             this.setAvatarWithFallback(botAvatar, avatarPath);
         }
@@ -7503,6 +7506,9 @@ class GameData {
         const cardEl = document.querySelector(`.battle-card-new[data-card-name="${card.name}"]`);
         if (cardEl) {
             cardEl.style.animation = 'shadowFiendArcaneEffect 1.5s ease-in-out';
+            
+            // Добавляем анимацию реквиема душ
+            this.createRequiemAnimation(card, null);
         }
     }
     
