@@ -7825,3 +7825,135 @@ body.light-theme .nav-btn:hover {
     /* Убрано по просьбе - пустой прямоугольник над информацией */
     display: none !important;
 }
+
+/* ===== АНИМАЦИИ АРКАННЫХ СКИЛЛОВ ===== */
+
+@keyframes shadowFiendArcaneEffect {
+    0% { 
+        transform: scale(1);
+        filter: brightness(1);
+    }
+    25% { 
+        transform: scale(1.1);
+        filter: brightness(1.5) hue-rotate(280deg);
+        box-shadow: 0 0 30px rgba(147, 112, 219, 0.8);
+    }
+    50% { 
+        transform: scale(1.05);
+        filter: brightness(1.3) hue-rotate(280deg);
+        box-shadow: 0 0 40px rgba(147, 112, 219, 1);
+    }
+    75% { 
+        transform: scale(1.08);
+        filter: brightness(1.4) hue-rotate(280deg);
+        box-shadow: 0 0 35px rgba(147, 112, 219, 0.9);
+    }
+    100% { 
+        transform: scale(1);
+        filter: brightness(1);
+    }
+}
+
+@keyframes terrorbladeArcaneEffect {
+    0% { 
+        transform: scale(1);
+        filter: brightness(1);
+    }
+    25% { 
+        transform: scale(1.1);
+        filter: brightness(1.5) hue-rotate(60deg);
+        box-shadow: 0 0 30px rgba(255, 153, 0, 0.8);
+    }
+    50% { 
+        transform: scale(1.05);
+        filter: brightness(1.3) hue-rotate(60deg);
+        box-shadow: 0 0 40px rgba(255, 153, 0, 1);
+    }
+    75% { 
+        transform: scale(1.08);
+        filter: brightness(1.4) hue-rotate(60deg);
+        box-shadow: 0 0 35px rgba(255, 153, 0, 0.9);
+    }
+    100% { 
+        transform: scale(1);
+        filter: brightness(1);
+    }
+}
+
+@keyframes terrorbladeArcaneTarget {
+    0% { 
+        transform: scale(1);
+        filter: brightness(1);
+    }
+    25% { 
+        transform: scale(0.95);
+        filter: brightness(1.3) hue-rotate(60deg);
+        box-shadow: 0 0 25px rgba(255, 153, 0, 0.6);
+    }
+    50% { 
+        transform: scale(0.98);
+        filter: brightness(1.2) hue-rotate(60deg);
+        box-shadow: 0 0 30px rgba(255, 153, 0, 0.8);
+    }
+    75% { 
+        transform: scale(0.96);
+        filter: brightness(1.25) hue-rotate(60deg);
+        box-shadow: 0 0 28px rgba(255, 153, 0, 0.7);
+    }
+    100% { 
+        transform: scale(1);
+        filter: brightness(1);
+    }
+}
+
+@keyframes pudgeArcaneEffect {
+    0% { 
+        transform: scale(1);
+        filter: brightness(1);
+    }
+    25% { 
+        transform: scale(1.1);
+        filter: brightness(1.5) hue-rotate(120deg);
+        box-shadow: 0 0 30px rgba(0, 255, 0, 0.8);
+    }
+    50% { 
+        transform: scale(1.05);
+        filter: brightness(1.3) hue-rotate(120deg);
+        box-shadow: 0 0 40px rgba(0, 255, 0, 1);
+    }
+    75% { 
+        transform: scale(1.08);
+        filter: brightness(1.4) hue-rotate(120deg);
+        box-shadow: 0 0 35px rgba(0, 255, 0, 0.9);
+    }
+    100% { 
+        transform: scale(1);
+        filter: brightness(1);
+    }
+}
+
+@keyframes pudgeArcaneTarget {
+    0% { 
+        transform: scale(1);
+        filter: brightness(1);
+    }
+    25% { 
+        transform: scale(0.95);
+        filter: brightness(1.3) hue-rotate(120deg);
+        box-shadow: 0 0 25px rgba(0, 255, 0, 0.6);
+    }
+    50% { 
+        transform: scale(0.98);
+        filter: brightness(1.2) hue-rotate(120deg);
+        box-shadow: 0 0 30px rgba(0, 255, 0, 0.8);
+    }
+    75% { 
+        transform: scale(0.96);
+        filter: brightness(1.25) hue-rotate(120deg);
+        box-shadow: 0 0 28px rgba(0, 255, 0, 0.7);
+    }
+    100% { 
+        transform: scale(1);
+        filter: brightness(1);
+    }
+}

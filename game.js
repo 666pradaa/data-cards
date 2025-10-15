@@ -4507,8 +4507,8 @@ class GameData {
             return imagePath;
         }
         
-        // Для аркан карт добавляем .png по умолчанию, браузер попробует .webp если не найдет
-        return imagePath + '.png';
+        // Для аркан карт добавляем .webp по умолчанию (файлы в формате webp)
+        return imagePath + '.webp';
     }
     
     getSkillButtonHTML(card, isPlayer, isDead) {
@@ -6679,6 +6679,9 @@ class GameData {
                     oppositeCard.isDead = true;
                     oppositeCard.health = 0;
                 }
+                
+                // Показываем урон
+                this.showDamageNumber(oppositeCard, 75, false, false);
             }
             
             // 30 урона остальным врагам
@@ -6689,15 +6692,22 @@ class GameData {
                         enemy.isDead = true;
                         enemy.health = 0;
                     }
+                    
+                    // Показываем урон
+                    this.showDamageNumber(enemy, 30, false, false);
                 }
             });
             
             // Все враги в страхе (пропуск следующего хода)
             this.battleState.botDeck.forEach(enemy => {
                 if (!enemy.isDead) {
-                    enemy.fear = true;
+                    // Добавляем всех в страх
+                    this.battleState.fearedCards.push(enemy.name);
                 }
             });
+            
+            // Показываем эффект страха
+            this.showFearEffect();
             
             this.renderBattle();
             this.showBattleHint(`Demon Eater! 75 урона карте напротив, 30 остальным. Все в страхе!`);
@@ -6803,6 +6813,40 @@ class GameData {
     }
     
     // ===== КОНЕЦ СИСТЕМЫ СКИЛЛОВ =====
+
+    // ===== АНИМАЦИИ АРКАННЫХ СКИЛЛОВ =====
+    
+    createShadowFiendAnimation(card) {
+        console.log('💀 Создаем анимацию Shadow Fiend Arcane');
+        const cardEl = document.querySelector(`.battle-card-new[data-card-name="${card.name}"]`);
+        if (cardEl) {
+            cardEl.style.animation = 'shadowFiendArcaneEffect 1.5s ease-in-out';
+        }
+    }
+    
+    createTerrorbladeAnimation(casterCard, targetCard) {
+        console.log('🔄 Создаем анимацию Terrorblade Arcane');
+        const casterEl = document.querySelector(`.battle-card-new[data-card-name="${casterCard.name}"]`);
+        const targetEl = document.querySelector(`.battle-card-new[data-card-name="${targetCard.name}"]`);
+        if (casterEl) {
+            casterEl.style.animation = 'terrorbladeArcaneEffect 1.5s ease-in-out';
+        }
+        if (targetEl) {
+            targetEl.style.animation = 'terrorbladeArcaneTarget 1.5s ease-in-out';
+        }
+    }
+    
+    createPudgeAnimation(casterCard, targetCard) {
+        console.log('🍖 Создаем анимацию Pudge Arcane');
+        const casterEl = document.querySelector(`.battle-card-new[data-card-name="${casterCard.name}"]`);
+        const targetEl = document.querySelector(`.battle-card-new[data-card-name="${targetCard.name}"]`);
+        if (casterEl) {
+            casterEl.style.animation = 'pudgeArcaneEffect 1.5s ease-in-out';
+        }
+        if (targetEl) {
+            targetEl.style.animation = 'pudgeArcaneTarget 1.5s ease-in-out';
+        }
+    }
 
     showBattleHint(text) {
         let hintElement = document.querySelector('.battle-hint');
