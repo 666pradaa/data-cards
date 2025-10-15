@@ -3654,14 +3654,25 @@ class GameData {
                 availableCardPool = Object.keys(this.cards).filter(name => 
                     this.cards[name].rarity === 'arcane'
                 );
+                console.log('🎲 Arcane кейс: выбран пул арканных карт:', availableCardPool);
             } else {
                 // 70% шанс мифической карты
                 availableCardPool = Object.keys(this.cards).filter(name => 
                     this.cards[name].rarity === 'mythic'
                 );
+                console.log('🎲 Arcane кейс: выбран пул мифических карт:', availableCardPool);
+            }
+            
+            if (availableCardPool.length === 0) {
+                console.error('❌ Arcane кейс: пул карт пуст!');
+                // Fallback на обычные карты если пул пуст
+                availableCardPool = Object.keys(this.cards).filter(name => 
+                    this.cards[name].rarity === 'legendary'
+                );
             }
             
             selectedCardName = availableCardPool[Math.floor(Math.random() * availableCardPool.length)];
+            console.log('🎯 Arcane кейс: выбрана карта:', selectedCardName);
             
             // Проверяем, является ли это дубликатом
             if (userCards[selectedCardName] && userCards[selectedCardName].count > 0) {

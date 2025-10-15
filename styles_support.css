@@ -49,10 +49,29 @@
 .support-messages {
     flex: 1;
     overflow-y: auto;
-    max-height: 50vh;
+    max-height: 60vh;
     padding: 1rem;
     background: rgba(0, 0, 0, 0.2);
     border-radius: 15px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(50, 50, 50, 0.5) transparent;
+}
+
+.support-messages::-webkit-scrollbar {
+    width: 8px;
+}
+
+.support-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.support-messages::-webkit-scrollbar-thumb {
+    background: rgba(50, 50, 50, 0.5);
+    border-radius: 4px;
+}
+
+.support-messages::-webkit-scrollbar-thumb:hover {
+    background: rgba(50, 50, 50, 0.7);
 }
 
 .support-ticket-item {
@@ -179,9 +198,29 @@
 
 .support-tickets-list {
     overflow-y: auto;
+    max-height: 60vh;
     padding: 1rem;
     background: rgba(0, 0, 0, 0.2);
     border-radius: 15px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(50, 50, 50, 0.5) transparent;
+}
+
+.support-tickets-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.support-tickets-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.support-tickets-list::-webkit-scrollbar-thumb {
+    background: rgba(50, 50, 50, 0.5);
+    border-radius: 4px;
+}
+
+.support-tickets-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(50, 50, 50, 0.7);
 }
 
 .support-tickets-list h3 {
@@ -255,10 +294,30 @@
 .support-chat-messages {
     flex: 1;
     overflow-y: auto;
+    max-height: 60vh;
     padding: 1rem;
     background: rgba(50, 50, 50, 0.03);
     border-radius: 10px;
     min-height: 200px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(50, 50, 50, 0.5) transparent;
+}
+
+.support-chat-messages::-webkit-scrollbar {
+    width: 8px;
+}
+
+.support-chat-messages::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.support-chat-messages::-webkit-scrollbar-thumb {
+    background: rgba(50, 50, 50, 0.5);
+    border-radius: 4px;
+}
+
+.support-chat-messages::-webkit-scrollbar-thumb:hover {
+    background: rgba(50, 50, 50, 0.7);
 }
 
 .original-message {
