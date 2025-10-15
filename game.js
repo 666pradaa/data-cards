@@ -2615,10 +2615,14 @@ class GameData {
                 const rank = index + 1;
                 const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
                 
+                // Логируем аватар для отладки
+                const avatarPath = userData.avatar || this.avatars[0];
+                console.log('🖼️ Аватар для', userData.nickname || userData.username, ':', avatarPath);
+                
                 return `
                     <div class="leaderboard-item ${isCurrentUser ? 'current-user' : ''}">
                         <div class="leader-rank">${medal}</div>
-                        ${this.getImageHTML(userData.avatar || this.avatars[0], 'Avatar', 'leader-avatar')}
+                        ${this.getImageHTML(avatarPath, 'Avatar', 'leader-avatar')}
                         <div class="leader-info">
                             <div class="leader-name">${userData.nickname || userData.username}</div>
                             <div class="leader-stats">
@@ -3617,11 +3621,16 @@ class GameData {
                     // Даем половину стоимости кейса вместо дубликата
                     const caseData = this.cases[caseType];
                     const refund = Math.floor(caseData.cost / 2);
-                    console.log('💰 Возврат за дубликат:', refund, 'гемов');
+                    console.log('💰 Возврат за дубликат:', refund, caseData.currency === 'gold' ? 'золота' : 'гемов');
                     
-                    // Обновляем локальную копию пользователя
-                    user.gems = user.gems + refund;
-                    await this.saveUser({ gems: user.gems });
+                    // Обновляем локальную копию пользователя в зависимости от валюты
+                    if (caseData.currency === 'gold') {
+                        user.gold = user.gold + refund;
+                        await this.saveUser({ gold: user.gold });
+                    } else {
+                        user.gems = user.gems + refund;
+                        await this.saveUser({ gems: user.gems });
+                    }
                 }
                 
                 await this.saveUser({ normalCasesOpened: user.normalCasesOpened + 1 });
@@ -3768,6 +3777,36 @@ class GameData {
         } else {
             console.log('⚠️ Карта не является дубликатом (count = 0)');
         }
+    }
+    
+    // Функция для тестирования изображений
+    testImages() {
+        console.log('🖼️ Тестирование изображений...');
+        
+        // Тестируем разные типы изображений
+        const testPaths = [
+            'images/runes/invisibility',
+            'images/skills/terrorblade_sunder',
+            'images/arcane/shadow_fiend_arcane'
+        ];
+        
+        testPaths.forEach(path => {
+            const webpPath = this.getImageWithFormat(path);
+            const backgroundStyle = this.getBackgroundImageStyle(path);
+            console.log('📁 Путь:', path);
+            console.log('🖼️ WebP путь:', webpPath);
+            console.log('🎨 Background style:', backgroundStyle);
+            console.log('---');
+        });
+        
+        // Тестируем аватары
+        console.log('👤 Тестирование аватаров:');
+        console.log('📋 Доступные аватары:', this.avatars);
+        
+        // Тестируем HTML изображений
+        const testAvatar = this.avatars[0];
+        const avatarHTML = this.getImageHTML(testAvatar, 'Test Avatar', 'test-avatar');
+        console.log('🖼️ HTML аватара:', avatarHTML);
     }
 
     async startBotBattle() {
@@ -4580,9 +4619,9 @@ class GameData {
             return imagePath;
         }
         
-        // Для локальных изображений (аркан карты, скиллы, руны) добавляем .png по умолчанию
-        // Согласно инструкции: сначала .png, потом .webp
-        return imagePath + '.png';
+        // Для локальных изображений (аркан карты, скиллы, руны) добавляем .webp по умолчанию
+        // Поскольку все файлы у вас в формате .webp
+        return imagePath + '.webp';
     }
     
     // Универсальная функция для создания HTML с изображением и fallback
@@ -4618,14 +4657,14 @@ class GameData {
         }
         
         // Для локальных изображений создаем fallback
-        // Сначала пробуем .png (как указано в инструкции), потом .webp
-        const pngPath = imagePath + '.png';
+        // Сначала пробуем .webp (основной формат), потом .png (fallback)
         const webpPath = imagePath + '.webp';
+        const pngPath = imagePath + '.png';
         
         // Проверяем существование файла и возвращаем правильный путь
-        console.log('🖼️ Загружаем изображение: png:', pngPath, 'webp:', webpPath);
+        console.log('🖼️ Загружаем изображение: webp:', webpPath, 'png (fallback):', pngPath);
         
-        return `background-image: url('${pngPath}'), url('${webpPath}')`;
+        return `background-image: url('${webpPath}'), url('${pngPath}')`;
     }
     
     getSkillButtonHTML(card, isPlayer, isDead) {
