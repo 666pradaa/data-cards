@@ -438,7 +438,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/nevermore.png',
                 skill: {
                     name: 'Demon Eater',
-                    icon: 'images/skills/demon_eater.webp',
+                    icon: 'images/skills/shadow_fiend_requiem.webp',
                     description: '75 урона карте напротив, 30 остальным. Все в страхе (пропуск хода)',
                     cooldown: 2
                 }
@@ -453,7 +453,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/terrorblade.png',
                 skill: {
                     name: 'Fractal Horns',
-                    icon: 'images/skills/fractal_horns.webp',
+                    icon: 'images/skills/terrorblade_sunder.webp',
                     description: 'Обменивается HP с целью + 50% от разницы',
                     cooldown: 2
                 }
@@ -468,7 +468,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/pudge.png',
                 skill: {
                     name: 'Feast of Abscession',
-                    icon: 'images/skills/feast_of_abscession.webp',
+                    icon: 'images/skills/pudge_dismember.png',
                     description: 'Снимает 75 HP врага, восстанавливает 50 HP',
                     cooldown: 2
                 }
