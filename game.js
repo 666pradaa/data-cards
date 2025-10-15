@@ -1398,6 +1398,34 @@ class GameData {
                     </div>
                 </div>
             `;
+        } else if (caseType === 'arcane') {
+            title.textContent = 'Arcane кейс - Информация';
+            infoHtml = `
+                <div class="case-info-section">
+                    <h3>Стоимость: 50 💎</h3>
+                    <div class="info-divider"></div>
+                    <h4>Шансы выпадения карт:</h4>
+                    <div class="chance-item">
+                        <span class="rarity-label rarity-arcane">Арканная карта</span>
+                        <span class="chance-value">30%</span>
+                    </div>
+                    <div class="chance-item">
+                        <span class="rarity-label rarity-mythic">Мифическая карта</span>
+                        <span class="chance-value">70%</span>
+                    </div>
+                    <div class="info-divider"></div>
+                    <h4>Арканные карты:</h4>
+                    <div class="upgrade-list-info">
+                        <div>💀 Shadow Fiend Arcane - Demon Eater</div>
+                        <div>🔄 Terrorblade Arcane - Fractal Horns</div>
+                        <div>🍖 Pudge Arcane - Feast of Abscession</div>
+                    </div>
+                    <div class="info-note">
+                        ⭐ Только арканные и мифические карты<br>
+                        💰 Дубликат = возврат половины стоимости (25 гемов)
+                    </div>
+                </div>
+            `;
         } else if (caseType === 'upgrades') {
             title.textContent = 'Кейс улучшений - Информация';
             infoHtml = `
@@ -3340,8 +3368,8 @@ class GameData {
                 return;
             }
 
-            // Даем карты с анимацией (кейсы normal и mega)
-        if (caseType === 'normal' || caseType === 'mega') {
+            // Даем карты с анимацией (кейсы normal, mega и arcane)
+        if (caseType === 'normal' || caseType === 'mega' || caseType === 'arcane') {
                 const cardResult = await this.giveRandomCard(user, caseType);
                 updates.casesOpened = (user.casesOpened || 0) + 1;
                 

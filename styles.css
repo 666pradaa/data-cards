@@ -1731,6 +1731,18 @@ body.light-theme .stat-item {
     border-radius: 8px;
 }
 
+.rarity-label.rarity-arcane {
+    background: linear-gradient(135deg, #00ff00, #00cc00);
+    color: #000;
+    font-weight: 700;
+}
+
+.rarity-label.rarity-mythic {
+    background: linear-gradient(135deg, #ff0000, #cc0000);
+    color: #fff;
+    font-weight: 700;
+}
+
 .chance-value {
     font-size: 1.2rem;
     font-weight: 700;
