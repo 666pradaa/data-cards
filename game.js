@@ -3502,7 +3502,7 @@ class GameData {
                     // Даем половину стоимости кейса вместо дубликата
                     const caseData = this.cases[caseType];
                     const refund = Math.floor(caseData.cost / 2);
-                    await this.saveUser({ gold: user.gold + refund });
+                    await this.saveUser({ gems: user.gems + refund });
                 }
                 
                 await this.saveUser({ normalCasesOpened: user.normalCasesOpened + 1 });
@@ -4295,6 +4295,14 @@ class GameData {
         }
         if (this.battleState.fearedCards && this.battleState.fearedCards.includes(card.name)) {
             classes += ' feared-status';
+        }
+        
+        // Эффекты рун
+        if (this.battleState.invisibleCards && this.battleState.invisibleCards.includes(card.name)) {
+            classes += ' invisible-card has-rune-effect invisibility';
+        }
+        if (this.battleState.shieldedCards && this.battleState.shieldedCards.includes(card.name)) {
+            classes += ' shielded-card has-rune-effect shield';
         }
         
         return classes;
@@ -6235,23 +6243,220 @@ class GameData {
     }
     
     botUseShadowFiendSkill(card) {
-        this.useShadowFiendSkill(card); // Используем ту же логику
+        console.log('💀 Бот Shadow Fiend использует Реквием душ!');
+        
+        // Воспроизводим звук
+        this.soundSystem.playSound('shadow_fiend_requiem', 1.2);
+        
+        // Устанавливаем кулдаун на ВСЕ скиллы колоды бота
+        this.setAllSkillsCooldown(this.battleState.botDeck);
+        
+        // Помечаем что ходили этой картой
+        this.battleState.lastBotCard = { name: card.name };
+        
+        // Находим карту напротив (тот же индекс)
+        const casterIndex = this.battleState.botDeck.findIndex(c => c.name === card.name);
+        const oppositeCard = this.battleState.playerDeck[casterIndex];
+        
+        // Анимация душ (для бота)
+        this.createRequiemAnimation(card, oppositeCard);
+        
+        setTimeout(() => {
+            // Наносим урон всем врагам (игрокам)
+            this.battleState.playerDeck.forEach((enemy, idx) => {
+                if (!enemy.isDead && enemy.health > 0) {
+                    const damage = idx === casterIndex ? 50 : 20;
+                    enemy.health = Math.max(0, enemy.health - damage);
+                    
+                    if (enemy.health <= 0) {
+                        enemy.isDead = true;
+                    }
+                    
+                    // Добавляем всех в страх
+                    this.battleState.fearedCards.push(enemy.name);
+                    
+                    // Показываем урон
+                    this.showDamageNumber(enemy, damage, false, false);
+                }
+            });
+            
+            // Показываем эффект страха
+            this.showFearEffect();
+            
+            this.renderBattle();
+            this.showBattleHint('Все ваши карты в страхе! Пропускают следующий ход.');
+            
+            setTimeout(() => {
+                this.hideBattleHint();
+                if (!this.checkBattleEnd()) {
+                    // Онлайн-бой: передаем ход
+                    if (this.battleState.isOnline && window.onlineBattlesSystem) {
+                        console.log('🌐 Онлайн: Requiem применен ботом, передаем ход');
+                        window.onlineBattlesSystem.endPlayerTurn();
+                    } else {
+                        // Оффлайн: переходим к ходу игрока (он пропустит из-за страха)
+                        this.startPlayerTurn();
+                    }
+                }
+            }, 2000);
+        }, 1500);
     }
     
     botUsePudgeSkill(casterCard, targetCard) {
-        this.usePudgeSkill(casterCard, targetCard);
+        console.log('🩸 Бот Pudge использует Dismember!');
+        
+        // Воспроизводим звук (если загружен)
+        // this.soundSystem.playSound('pudge_dismember', 1.2);
+        
+        // Устанавливаем кулдаун на ВСЕ скиллы колоды бота
+        this.setAllSkillsCooldown(this.battleState.botDeck);
+        this.battleState.lastBotCard = { name: casterCard.name };
+        
+        // Анимация Dismember
+        this.createDismemberAnimation(casterCard, targetCard);
+        
+        setTimeout(() => {
+            // Снимаем 50 HP у цели
+            targetCard.health = Math.max(0, targetCard.health - 50);
+            if (targetCard.health <= 0) {
+                targetCard.isDead = true;
+            }
+            
+            // Восстанавливаем 25 HP Pudge
+            casterCard.health = Math.min(casterCard.maxHealth, casterCard.health + 25);
+            
+            this.showDamageNumber(targetCard, 50, false, false);
+            this.renderBattle();
+            this.showBattleHint(`Бот Pudge пожирает врага! -50 HP цели, +25 HP Pudge`);
+            
+            setTimeout(() => {
+                this.hideBattleHint();
+                if (!this.checkBattleEnd()) {
+                    if (this.battleState.isOnline && window.onlineBattlesSystem) {
+                        console.log('🌐 Онлайн: Dismember применен ботом, передаем ход');
+                        window.onlineBattlesSystem.endPlayerTurn();
+                    } else {
+                        this.startPlayerTurn();
+                    }
+                }
+            }, 2000);
+        }, 1500);
     }
     
     botUseInvokerSkill(casterCard, targetCard) {
-        this.useInvokerSkill(casterCard, targetCard);
+        console.log('☀️ Бот Invoker использует Sun Strike!');
+        
+        // Воспроизводим звук
+        this.soundSystem.playSound('invoker_sunstrike', 1.2);
+        
+        // Устанавливаем кулдаун на ВСЕ скиллы колоды бота
+        this.setAllSkillsCooldown(this.battleState.botDeck);
+        this.battleState.lastBotCard = { name: casterCard.name };
+        
+        // Анимация Sun Strike
+        this.createSunStrikeAnimation(targetCard);
+        
+        setTimeout(() => {
+            // Наносим 100 урона
+            targetCard.health = Math.max(0, targetCard.health - 100);
+            if (targetCard.health <= 0) {
+                targetCard.isDead = true;
+            }
+            
+            // Применяем Cold Snap (заморозка на следующий ход)
+            this.battleState.frozenCards.push(targetCard.name);
+            
+            this.showDamageNumber(targetCard, 100, false, false);
+            this.showColdSnapEffect(targetCard);
+            this.renderBattle();
+            this.showBattleHint(`Бот Sun Strike! 100 урона + Cold Snap (пропуск хода)`);
+            
+            setTimeout(() => {
+                this.hideBattleHint();
+                if (!this.checkBattleEnd()) {
+                    if (this.battleState.isOnline && window.onlineBattlesSystem) {
+                        console.log('🌐 Онлайн: Sun Strike применен ботом, передаем ход');
+                        window.onlineBattlesSystem.endPlayerTurn();
+                    } else {
+                        this.startPlayerTurn();
+                    }
+                }
+            }, 2000);
+        }, 2000);
     }
     
     botUseCrystalMaidenSkill(casterCard, targetCard) {
-        this.useCrystalMaidenSkill(casterCard, targetCard);
+        console.log('❄️ Бот Crystal Maiden использует Frostbite!');
+        
+        // Воспроизводим звук (если загружен)
+        // this.soundSystem.playSound('crystal_maiden_frostbite', 1.2);
+        
+        // Устанавливаем кулдаун на ВСЕ скиллы колоды бота
+        this.setAllSkillsCooldown(this.battleState.botDeck);
+        this.battleState.lastBotCard = { name: casterCard.name };
+        
+        // Анимация Frostbite
+        this.createFrostbiteAnimation(targetCard);
+        
+        setTimeout(() => {
+            // Замораживаем цель
+            this.battleState.frozenCards.push(targetCard.name);
+            
+            this.showColdSnapEffect(targetCard);
+            this.showBattleHint(`Бот заморозил ${targetCard.name}! Пропускает следующий ход.`);
+            
+            setTimeout(() => {
+                this.hideBattleHint();
+                if (!this.checkBattleEnd()) {
+                    if (this.battleState.isOnline && window.onlineBattlesSystem) {
+                        console.log('🌐 Онлайн: Frostbite применен ботом, передаем ход');
+                        window.onlineBattlesSystem.endPlayerTurn();
+                    } else {
+                        this.startPlayerTurn();
+                    }
+                }
+            }, 2000);
+        }, 1500);
     }
     
     botUseTerrorbladeSkill(casterCard, targetCard) {
-        this.useTerrorbladeSkill(casterCard, targetCard);
+        console.log('🔄 Бот Terrorblade использует Sunder!');
+        
+        // Воспроизводим звук
+        this.soundSystem.playSound('terrorblade_sunder', 1.2);
+        
+        // Устанавливаем кулдаун на ВСЕ скиллы колоды бота
+        this.setAllSkillsCooldown(this.battleState.botDeck);
+        this.battleState.lastBotCard = { name: casterCard.name };
+        
+        // Анимация Sunder
+        this.createSunderAnimation(casterCard, targetCard);
+        
+        setTimeout(() => {
+            // Меняем HP
+            const tempHealth = casterCard.health;
+            casterCard.health = targetCard.health;
+            targetCard.health = tempHealth;
+            
+            // Проверяем смерти
+            if (casterCard.health <= 0) casterCard.isDead = true;
+            if (targetCard.health <= 0) targetCard.isDead = true;
+            
+            this.renderBattle();
+            this.showBattleHint(`Бот Sunder! ${casterCard.name} и ${targetCard.name} обменялись HP!`);
+            
+            setTimeout(() => {
+                this.hideBattleHint();
+                if (!this.checkBattleEnd()) {
+                    if (this.battleState.isOnline && window.onlineBattlesSystem) {
+                        console.log('🌐 Онлайн: Sunder применен ботом, передаем ход');
+                        window.onlineBattlesSystem.endPlayerTurn();
+                    } else {
+                        this.startPlayerTurn();
+                    }
+                }
+            }, 2000);
+        }, 1500);
     }
     
     botUseSpiritBreakerSkill(card) {
