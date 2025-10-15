@@ -438,7 +438,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/nevermore.png',
                 skill: {
                     name: 'Demon Eater',
-                    icon: 'images/skills/shadow_fiend_requiem.webp',
+                    icon: 'images/skills/demon_eater.webp',
                     description: '75 урона карте напротив, 30 остальным. Все в страхе (пропуск хода)',
                     cooldown: 2
                 }
@@ -453,7 +453,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/terrorblade.png',
                 skill: {
                     name: 'Fractal Horns',
-                    icon: 'images/skills/terrorblade_sunder.webp',
+                    icon: 'images/skills/fractal_horns.webp',
                     description: 'Обменивается HP с целью + 50% от разницы',
                     cooldown: 2
                 }
@@ -468,7 +468,7 @@ class GameData {
                 image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/pudge.png',
                 skill: {
                     name: 'Feast of Abscession',
-                    icon: 'images/skills/pudge_dismember.png',
+                    icon: 'images/skills/feast_of_abscession.webp',
                     description: 'Снимает 75 HP врага, восстанавливает 50 HP',
                     cooldown: 2
                 }
@@ -5641,12 +5641,19 @@ class GameData {
         targets.forEach(targetCard => {
             const isPlayerCard = this.battleState.playerDeck.find(c => c.name === targetCard.name);
             const side = isPlayerCard ? 'player' : 'enemy';
-            const cardElement = document.querySelector(`.${side}-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
+            const cardElement = document.querySelector(`#${side}-cards .battle-card-new[data-card-name="${targetCard.name}"]`);
+            
+            console.log('🎯 Ищем карту:', targetCard.name, 'в стороне:', side);
+            console.log('🎯 Селектор:', `#${side}-cards .battle-card-new[data-card-name="${targetCard.name}"]`);
+            console.log('🎯 Найден элемент:', !!cardElement);
             
             if (cardElement) {
                 cardElement.classList.add('skill-target');
                 cardElement.style.cursor = 'crosshair';
                 cardElement.onclick = () => this.castSkillOnTarget(casterCard, targetCard);
+                console.log('✅ Карта подсвечена для скилла:', targetCard.name);
+            } else {
+                console.error('❌ Карта не найдена для скилла:', targetCard.name);
             }
         });
     }
