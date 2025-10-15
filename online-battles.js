@@ -361,22 +361,29 @@ class OnlineBattlesSystem {
         if (!this.gameData.useFirebase) {
             // Для localStorage проверяем раз в секунду
             const interval = setInterval(async () => {
-                const rooms = JSON.parse(localStorage.getItem('onlineRooms') || '{}');
-                const room = rooms[roomCode];
-                
-                if (!room) {
-                    console.log('❌ Комната удалена');
-                    clearInterval(interval);
-                    return;
-                }
-                
-                console.log('🔄 Проверка комнаты (localStorage):', room.status);
-                
-                if (room.status === 'ready' && this.isHost) {
-                    console.log('✅ Гость присоединился! Запускаем бой...');
-                    clearInterval(interval);
-                    this.closeOnlineBattleModal();
-                    this.startOnlineBattle(roomCode);
+                try {
+                    const rooms = JSON.parse(localStorage.getItem('onlineRooms') || '{}');
+                    const room = rooms[roomCode];
+                    
+                    if (!room) {
+                        console.log('❌ Комната удалена');
+                        clearInterval(interval);
+                        return;
+                    }
+                    
+                    console.log('🔄 Проверка комнаты (localStorage):', room.status);
+                    
+                    if (room.status === 'ready' && !this.gameData.battleState) {
+                        console.log('✅ Оба игрока готовы! Запускаем бой...');
+                        clearInterval(interval);
+                        
+                        // Добавляем задержку для синхронизации
+                        setTimeout(() => {
+                            this.startOnlineBattle(roomCode);
+                        }, 500);
+                    }
+                } catch (error) {
+                    console.error('❌ Ошибка проверки комнаты (localStorage):', error);
                 }
             }, 1000);
             return;
@@ -409,6 +416,7 @@ class OnlineBattlesSystem {
             if (room.status === 'ready' && !this.gameData.battleState) {
                 console.log('🎉 Оба игрока готовы! Начинаем бой...');
                 console.log('   Роль:', this.isHost ? 'ХОСТ' : 'ГОСТЬ');
+                console.log('   Хост:', room.hostNickname, 'Гость:', room.guestNickname);
                 
                 // Отключаем слушатель для избежания повторного запуска
                 if (this.roomListener) {
@@ -434,8 +442,11 @@ class OnlineBattlesSystem {
                     onlineModal.style.display = 'none';
                 }
                 
-                // СРАЗУ запускаем бой без задержки
-                this.startOnlineBattle(roomCode);
+                // Добавляем небольшую задержку для синхронизации
+                setTimeout(() => {
+                    console.log('🚀 Запускаем онлайн бой с задержкой для синхронизации...');
+                    this.startOnlineBattle(roomCode);
+                }, 500); // 500ms задержка для синхронизации
             }
             
             // Обновляем текущую комнату
@@ -896,18 +907,23 @@ class OnlineBattlesSystem {
             return;
         }
         
+        if (!Array.isArray(deck)) {
+            console.warn('⚠️ deck не массив:', deck);
+            return;
+        }
+        
         console.log('🔄 Синхронизация колоды, deckData:', deckData.map(c => ({name: c?.name, hp: c?.health})));
         
         deck.forEach((card, index) => {
-            if (deckData[index]) {
+            if (deckData[index] && card) {
                 const newHealth = deckData[index].health;
                 const newIsDead = deckData[index].isDead;
                 
                 console.log(`🔄 Обновление ${card.name}: ${card.health} → ${newHealth}, isDead: ${card.isDead} → ${newIsDead}`);
                 
                 // Обновляем только если данные валидны
-                if (newHealth !== undefined && newHealth !== null) {
-                    card.health = newHealth;
+                if (newHealth !== undefined && newHealth !== null && newHealth >= 0) {
+                    card.health = Math.max(0, newHealth);
                 }
                 
                 if (newIsDead !== undefined && newIsDead !== null) {
@@ -919,7 +935,7 @@ class OnlineBattlesSystem {
                 
                 // Синхронизируем кулдауны скиллов
                 if (deckData[index].skillCooldown !== undefined) {
-                    card.skillCooldown = deckData[index].skillCooldown;
+                    card.skillCooldown = Math.max(0, deckData[index].skillCooldown || 0);
                 }
             }
         });

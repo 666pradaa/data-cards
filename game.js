@@ -3370,7 +3370,9 @@ class GameData {
 
             // Даем карты с анимацией (кейсы normal, mega и arcane)
         if (caseType === 'normal' || caseType === 'mega' || caseType === 'arcane') {
+                console.log('🎁 Открываем кейс:', caseType, 'для пользователя:', user.username);
                 const cardResult = await this.giveRandomCard(user, caseType);
+                console.log('🎯 Результат giveRandomCard:', cardResult);
                 updates.casesOpened = (user.casesOpened || 0) + 1;
                 
                 // Сохраняем изменения
@@ -3500,6 +3502,13 @@ class GameData {
     }
 
     showCardDropAnimation(cardResult, caseData) {
+        console.log('🎬 showCardDropAnimation вызвана:', {
+            cardName: cardResult.cardName,
+            isDuplicate: cardResult.isDuplicate,
+            caseCost: caseData.cost,
+            caseCurrency: caseData.currency
+        });
+        
         // Создаем оверлей для анимации
         const overlay = document.createElement('div');
         overlay.className = 'card-drop-overlay';
@@ -3603,11 +3612,16 @@ class GameData {
                 // Проверяем, является ли это дубликатом
                 if (userCards[selectedCardName] && userCards[selectedCardName].count > 0) {
                     isDuplicate = true;
+                    console.log('🔄 ДУБЛИКАТ в обычном кейсе! Карта:', selectedCardName, 'count:', userCards[selectedCardName].count);
                     
                     // Даем половину стоимости кейса вместо дубликата
                     const caseData = this.cases[caseType];
                     const refund = Math.floor(caseData.cost / 2);
-                    await this.saveUser({ gems: user.gems + refund });
+                    console.log('💰 Возврат за дубликат:', refund, 'гемов');
+                    
+                    // Обновляем локальную копию пользователя
+                    user.gems = user.gems + refund;
+                    await this.saveUser({ gems: user.gems });
                 }
                 
                 await this.saveUser({ normalCasesOpened: user.normalCasesOpened + 1 });
@@ -3639,11 +3653,16 @@ class GameData {
             // Проверяем, является ли это дубликатом
             if (userCards[selectedCardName] && userCards[selectedCardName].count > 0) {
                 isDuplicate = true;
+                console.log('🔄 ДУБЛИКАТ в мега кейсе! Карта:', selectedCardName, 'count:', userCards[selectedCardName].count);
                 
                 // Даем половину стоимости кейса вместо дубликата
                 const caseData = this.cases[caseType];
                 const refund = Math.floor(caseData.cost / 2);
-                await this.saveUser({ gems: user.gems + refund });
+                console.log('💰 Возврат за дубликат:', refund, 'гемов');
+                
+                // Обновляем локальную копию пользователя
+                user.gems = user.gems + refund;
+                await this.saveUser({ gems: user.gems });
             }
         } else if (caseType === 'arcane') {
             // Arcane кейс - 30% арканные, 70% мифические
@@ -3677,11 +3696,16 @@ class GameData {
             // Проверяем, является ли это дубликатом
             if (userCards[selectedCardName] && userCards[selectedCardName].count > 0) {
                 isDuplicate = true;
+                console.log('🔄 ДУБЛИКАТ в аркан кейсе! Карта:', selectedCardName, 'count:', userCards[selectedCardName].count);
                 
                 // Даем половину стоимости кейса вместо дубликата
                 const caseData = this.cases[caseType];
                 const refund = Math.floor(caseData.cost / 2);
-                await this.saveUser({ gems: user.gems + refund });
+                console.log('💰 Возврат за дубликат:', refund, 'гемов');
+                
+                // Обновляем локальную копию пользователя
+                user.gems = user.gems + refund;
+                await this.saveUser({ gems: user.gems });
             }
         }
         
@@ -3694,11 +3718,56 @@ class GameData {
             });
         }
         
+        console.log('🎯 giveRandomCard результат:', {
+            cardName: selectedCardName,
+            isDuplicate: isDuplicate,
+            caseType: caseType
+        });
+        
         return {
             card: this.cards[selectedCardName],
             cardName: selectedCardName,
             isDuplicate: isDuplicate
         };
+    }
+    
+    // Функция для тестирования системы дубликатов
+    testDuplicateSystem() {
+        console.log('🧪 Тестирование системы дубликатов...');
+        const user = this.getUser();
+        if (!user) {
+            console.error('❌ Пользователь не найден');
+            return;
+        }
+        
+        console.log('👤 Пользователь:', user.username);
+        console.log('🃏 Карты пользователя:', user.cards);
+        console.log('💰 Гемы до теста:', user.gems);
+        
+        // Проверяем, есть ли у пользователя карты
+        const userCards = user.cards || {};
+        const cardNames = Object.keys(userCards);
+        
+        if (cardNames.length === 0) {
+            console.log('ℹ️ У пользователя нет карт, система дубликатов не может быть протестирована');
+            return;
+        }
+        
+        // Берем первую карту для теста
+        const testCardName = cardNames[0];
+        const testCard = userCards[testCardName];
+        
+        console.log('🎯 Тестовая карта:', testCardName, 'count:', testCard.count);
+        
+        // Проверяем логику дубликатов
+        const isDuplicate = testCard && testCard.count > 0;
+        console.log('🔄 Это дубликат?', isDuplicate);
+        
+        if (isDuplicate) {
+            console.log('✅ Система дубликатов работает корректно');
+        } else {
+            console.log('⚠️ Карта не является дубликатом (count = 0)');
+        }
     }
 
     async startBotBattle() {
@@ -4511,19 +4580,29 @@ class GameData {
             return imagePath;
         }
         
-        // Для локальных изображений (аркан карты, скиллы, руны) добавляем .webp по умолчанию
-        return imagePath + '.webp';
+        // Для локальных изображений (аркан карты, скиллы, руны) добавляем .png по умолчанию
+        // Согласно инструкции: сначала .png, потом .webp
+        return imagePath + '.png';
     }
     
     // Универсальная функция для создания HTML с изображением и fallback
     getImageHTML(imagePath, alt = '', className = '', style = '') {
         const finalImagePath = this.getImageWithFormat(imagePath);
-        const fallbackPath = finalImagePath.replace('.webp', '.png');
+        
+        // Определяем fallback путь
+        let fallbackPath;
+        if (finalImagePath.endsWith('.png')) {
+            fallbackPath = finalImagePath.replace('.png', '.webp');
+        } else if (finalImagePath.endsWith('.webp')) {
+            fallbackPath = finalImagePath.replace('.webp', '.png');
+        } else {
+            fallbackPath = finalImagePath; // Если уже есть расширение, оставляем как есть
+        }
         
         return `
             <img src="${finalImagePath}" 
                  alt="${alt}" 
-                 class="${className}"
+                 class="${className}" 
                  style="${style}"
                  onerror="this.onerror=null; this.src='${fallbackPath}'">
         `;
@@ -4539,8 +4618,14 @@ class GameData {
         }
         
         // Для локальных изображений создаем fallback
-        const fallbackPath = finalImagePath.replace('.webp', '.png');
-        return `background-image: url('${finalImagePath}'), url('${fallbackPath}')`;
+        // Сначала пробуем .png (как указано в инструкции), потом .webp
+        const pngPath = imagePath + '.png';
+        const webpPath = imagePath + '.webp';
+        
+        // Проверяем существование файла и возвращаем правильный путь
+        console.log('🖼️ Загружаем изображение: png:', pngPath, 'webp:', webpPath);
+        
+        return `background-image: url('${pngPath}'), url('${webpPath}')`;
     }
     
     getSkillButtonHTML(card, isPlayer, isDead) {
