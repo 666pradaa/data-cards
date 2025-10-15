@@ -2682,7 +2682,13 @@ class GameData {
                 `;
             }).join('');
             
-            // Обработчики фильтров
+            // Обработчики фильтров (удаляем старые обработчики)
+            document.querySelectorAll('.leaderboard-filters .filter-btn').forEach(btn => {
+                // Удаляем старые обработчики
+                btn.replaceWith(btn.cloneNode(true));
+            });
+            
+            // Добавляем новые обработчики
             document.querySelectorAll('.leaderboard-filters .filter-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
                     document.querySelectorAll('.leaderboard-filters .filter-btn').forEach(b => b.classList.remove('active'));
