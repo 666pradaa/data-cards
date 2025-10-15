@@ -1231,8 +1231,11 @@ class GameData {
             profileTitle.style.display = 'none';
         }
         
-        // Обновляем UI
-        document.getElementById('user-avatar').src = user.avatar;
+        // Обновляем UI с поддержкой всех форматов изображений
+        const userAvatarElement = document.getElementById('user-avatar');
+        if (userAvatarElement && user.avatar) {
+            this.setAvatarWithFallback(userAvatarElement, user.avatar);
+        }
         document.getElementById('display-nickname').textContent = user.nickname || 'Игрок';
         document.getElementById('display-userid').textContent = user.userid || user.userId || 'ID';
         document.getElementById('profile-level').textContent = user.level;
@@ -2256,9 +2259,12 @@ class GameData {
         const container = document.getElementById('users-container');
         container.innerHTML = '<div style="text-align: center; padding: 2rem;">Загрузка...</div>';
 
-        // Обновляем аватар и ник админа
+        // Обновляем аватар и ник админа с поддержкой всех форматов
         if (currentUser) {
-            document.getElementById('admin-avatar').src = currentUser.avatar || this.avatars[0];
+            const adminAvatarElement = document.getElementById('admin-avatar');
+            if (adminAvatarElement) {
+                this.setAvatarWithFallback(adminAvatarElement, currentUser.avatar || this.avatars[0]);
+            }
             const displayText = `${currentUser.nickname || currentUser.username} • ${currentUser.userid || 'ID не задан'}`;
             document.getElementById('admin-user-name').textContent = displayText;
         }
@@ -4463,20 +4469,23 @@ class GameData {
             botNameBattle.textContent = this.battleState.botName || 'ПРОТИВНИК';
         }
         
-        // Устанавливаем аватарки
+        // Устанавливаем аватарки с поддержкой всех форматов
         if (playerAvatarBattle) {
             const user = this.getUser();
-            playerAvatarBattle.src = user.avatar || this.avatars[0] || 'https://i.imgur.com/EbsmHMK.jpg';
+            const avatarPath = user.avatar || this.avatars[0] || 'https://i.imgur.com/EbsmHMK.jpg';
+            this.setAvatarWithFallback(playerAvatarBattle, avatarPath);
         }
         
         if (botAvatarBattle) {
             // Для онлайн-боя используем аватар противника, для оффлайн - случайный
+            let avatarPath;
             if (this.battleState.isOnline && this.battleState.opponentAvatar) {
-                botAvatarBattle.src = this.battleState.opponentAvatar;
+                avatarPath = this.battleState.opponentAvatar;
             } else {
                 const botAvatarIndex = Math.floor(Math.random() * this.avatars.length);
-                botAvatarBattle.src = this.avatars[botAvatarIndex] || 'https://i.imgur.com/EbsmHMK.jpg';
+                avatarPath = this.avatars[botAvatarIndex] || 'https://i.imgur.com/EbsmHMK.jpg';
             }
+            this.setAvatarWithFallback(botAvatarBattle, avatarPath);
         }
     }
 
@@ -4624,47 +4633,168 @@ class GameData {
         return imagePath + '.webp';
     }
     
+    // Новая функция для получения множественных форматов изображения
+    getImageFormats(imagePath) {
+        // Если это внешний URL - возвращаем только его
+        if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+            return [imagePath];
+        }
+        
+        // Если путь уже содержит расширение - возвращаем как есть
+        if (imagePath.includes('.png') || imagePath.includes('.webp') || imagePath.includes('.jpg') || imagePath.includes('.jpeg')) {
+            return [imagePath];
+        }
+        
+        // Для локальных изображений возвращаем все возможные форматы в порядке приоритета
+        return [
+            imagePath + '.webp',  // Приоритет 1: WebP (лучшее сжатие)
+            imagePath + '.png',   // Приоритет 2: PNG (прозрачность)
+            imagePath + '.jpg',   // Приоритет 3: JPG (совместимость)
+            imagePath + '.jpeg'   // Приоритет 4: JPEG (альтернативное расширение)
+        ];
+    }
+    
     // Универсальная функция для создания HTML с изображением и fallback
     getImageHTML(imagePath, alt = '', className = '', style = '') {
-        const finalImagePath = this.getImageWithFormat(imagePath);
+        const imageFormats = this.getImageFormats(imagePath);
         
-        // Определяем fallback путь
-        let fallbackPath;
-        if (finalImagePath.endsWith('.png')) {
-            fallbackPath = finalImagePath.replace('.png', '.webp');
-        } else if (finalImagePath.endsWith('.webp')) {
-            fallbackPath = finalImagePath.replace('.webp', '.png');
-        } else {
-            fallbackPath = finalImagePath; // Если уже есть расширение, оставляем как есть
+        // Если это внешний URL, используем простой img тег
+        if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+            return `
+                <img src="${imagePath}" 
+                     alt="${alt}" 
+                     class="${className}" 
+                     style="${style}"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <div style="display: none; ${style}" class="${className}">🖼️</div>
+            `;
+        }
+        
+        // Для локальных изображений создаем каскад fallback
+        let fallbackScript = '';
+        if (imageFormats.length > 1) {
+            const fallbackPaths = imageFormats.slice(1).map((path, index) => 
+                `this.src='${path}'`
+            ).join('; ');
+            
+            fallbackScript = `
+                onerror="
+                    if (!this.fallbackTried) {
+                        this.fallbackTried = true;
+                        ${fallbackPaths};
+                    } else {
+                        this.style.display='none';
+                        this.nextElementSibling.style.display='block';
+                    }
+                "
+            `;
         }
         
         return `
-            <img src="${finalImagePath}" 
+            <img src="${imageFormats[0]}" 
                  alt="${alt}" 
                  class="${className}" 
                  style="${style}"
-                 onerror="this.onerror=null; this.src='${fallbackPath}'">
+                 ${fallbackScript}>
+            <div style="display: none; ${style}" class="${className}">🖼️</div>
         `;
     }
     
     // Универсальная функция для CSS background-image с fallback
     getBackgroundImageStyle(imagePath) {
-        const finalImagePath = this.getImageWithFormat(imagePath);
-        
         // Если это внешний URL, возвращаем как есть
-        if (finalImagePath.startsWith('http://') || finalImagePath.startsWith('https://')) {
-            return `background-image: url('${finalImagePath}')`;
+        if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+            return `background-image: url('${imagePath}')`;
         }
         
-        // Для локальных изображений создаем fallback
-        // Сначала пробуем .webp (основной формат), потом .png (fallback)
-        const webpPath = imagePath + '.webp';
-        const pngPath = imagePath + '.png';
+        // Если путь уже содержит расширение - возвращаем как есть
+        if (imagePath.includes('.png') || imagePath.includes('.webp') || imagePath.includes('.jpg') || imagePath.includes('.jpeg')) {
+            return `background-image: url('${imagePath}')`;
+        }
         
-        // Проверяем существование файла и возвращаем правильный путь
-        console.log('🖼️ Загружаем изображение: webp:', webpPath, 'png (fallback):', pngPath);
+        // Для локальных изображений создаем каскад fallback через CSS
+        const imageFormats = this.getImageFormats(imagePath);
+        const urlList = imageFormats.map(path => `url('${path}')`).join(', ');
         
-        return `background-image: url('${webpPath}'), url('${pngPath}')`;
+        console.log('🖼️ Загружаем изображение с fallback:', imageFormats);
+        
+        return `background-image: ${urlList}`;
+    }
+    
+    // Специальная функция для обработки аватаров с поддержкой всех форматов
+    setAvatarWithFallback(imgElement, avatarPath) {
+        if (!imgElement || !avatarPath) return;
+        
+        // Если это внешний URL - устанавливаем напрямую
+        if (avatarPath.startsWith('http://') || avatarPath.startsWith('https://')) {
+            imgElement.src = avatarPath;
+            imgElement.onerror = () => {
+                imgElement.style.display = 'none';
+                // Показываем fallback иконку
+                const fallback = imgElement.nextElementSibling;
+                if (fallback && fallback.classList.contains('avatar-fallback')) {
+                    fallback.style.display = 'block';
+                }
+            };
+            return;
+        }
+        
+        // Для локальных аватаров пробуем все форматы
+        const formats = this.getImageFormats(avatarPath);
+        let currentFormat = 0;
+        
+        const tryNextFormat = () => {
+            if (currentFormat >= formats.length) {
+                // Все форматы провалились, показываем fallback
+                imgElement.style.display = 'none';
+                const fallback = imgElement.nextElementSibling;
+                if (fallback && fallback.classList.contains('avatar-fallback')) {
+                    fallback.style.display = 'block';
+                }
+                return;
+            }
+            
+            imgElement.src = formats[currentFormat];
+            currentFormat++;
+        };
+        
+        imgElement.onerror = tryNextFormat;
+        tryNextFormat();
+    }
+    
+    // Тестовая функция для проверки поддержки всех форматов изображений
+    testImageFormats() {
+        console.log('🧪 Тестирование поддержки форматов изображений...');
+        
+        // Тестируем разные пути изображений
+        const testPaths = [
+            'images/runes/invisibility',  // Локальный путь без расширения
+            'images/skills/pudge_dismember.png',  // PNG
+            'images/skills/shadow_fiend_requiem.webp',  // WebP
+            'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/pudge.png'  // Внешний URL
+        ];
+        
+        testPaths.forEach(path => {
+            console.log(`\n📁 Тестируем путь: ${path}`);
+            
+            // Тест getImageFormats
+            const formats = this.getImageFormats(path);
+            console.log('📋 Возможные форматы:', formats);
+            
+            // Тест getImageWithFormat
+            const singleFormat = this.getImageWithFormat(path);
+            console.log('🎯 Основной формат:', singleFormat);
+            
+            // Тест getBackgroundImageStyle
+            const bgStyle = this.getBackgroundImageStyle(path);
+            console.log('🎨 Background style:', bgStyle);
+            
+            // Тест getImageHTML
+            const html = this.getImageHTML(path, 'Test Image', 'test-class');
+            console.log('🖼️ HTML:', html);
+        });
+        
+        console.log('\n✅ Тест завершен! Проверьте консоль на наличие ошибок загрузки изображений.');
     }
     
     getSkillButtonHTML(card, isPlayer, isDead) {
@@ -5901,7 +6031,7 @@ class GameData {
                 if (!this.checkBattleEnd()) {
                     // Онлайн-бой: передаем ход, НЕ вызываем startBotTurn
                     if (this.battleState.isOnline && window.onlineBattlesSystem) {
-                        console.log('🌐 Онлайн: Requiem применен, передаем ход');
+                        console.log('🌐 Онлайн: Requiem применен игроком, передаем ход противнику');
                         window.onlineBattlesSystem.endPlayerTurn();
                     } else {
                         // Оффлайн: переходим к ходу бота (он пропустит из-за страха)
@@ -6614,8 +6744,8 @@ class GameData {
                 if (!this.checkBattleEnd()) {
                     // Онлайн-бой: передаем ход
                     if (this.battleState.isOnline && window.onlineBattlesSystem) {
-                        console.log('🌐 Онлайн: Requiem применен ботом, передаем ход');
-                        window.onlineBattlesSystem.endPlayerTurn();
+                        console.log('🌐 Онлайн: Requiem применен, ход остается у противника');
+                        // НЕ передаем ход - это ход противника, он должен сам завершить его
                     } else {
                         // Оффлайн: переходим к ходу игрока (он пропустит из-за страха)
                         this.startPlayerTurn();
@@ -6656,8 +6786,8 @@ class GameData {
                 this.hideBattleHint();
                 if (!this.checkBattleEnd()) {
                     if (this.battleState.isOnline && window.onlineBattlesSystem) {
-                        console.log('🌐 Онлайн: Dismember применен ботом, передаем ход');
-                        window.onlineBattlesSystem.endPlayerTurn();
+                        console.log('🌐 Онлайн: Dismember применен, ход остается у противника');
+                        // НЕ передаем ход - это ход противника, он должен сам завершить его
                     } else {
                         this.startPlayerTurn();
                     }
@@ -6698,8 +6828,8 @@ class GameData {
                 this.hideBattleHint();
                 if (!this.checkBattleEnd()) {
                     if (this.battleState.isOnline && window.onlineBattlesSystem) {
-                        console.log('🌐 Онлайн: Sun Strike применен ботом, передаем ход');
-                        window.onlineBattlesSystem.endPlayerTurn();
+                        console.log('🌐 Онлайн: Sun Strike применен, ход остается у противника');
+                        // НЕ передаем ход - это ход противника, он должен сам завершить его
                     } else {
                         this.startPlayerTurn();
                     }
@@ -6732,8 +6862,8 @@ class GameData {
                 this.hideBattleHint();
                 if (!this.checkBattleEnd()) {
                     if (this.battleState.isOnline && window.onlineBattlesSystem) {
-                        console.log('🌐 Онлайн: Frostbite применен ботом, передаем ход');
-                        window.onlineBattlesSystem.endPlayerTurn();
+                        console.log('🌐 Онлайн: Frostbite применен, ход остается у противника');
+                        // НЕ передаем ход - это ход противника, он должен сам завершить его
                     } else {
                         this.startPlayerTurn();
                     }
@@ -6772,8 +6902,8 @@ class GameData {
                 this.hideBattleHint();
                 if (!this.checkBattleEnd()) {
                     if (this.battleState.isOnline && window.onlineBattlesSystem) {
-                        console.log('🌐 Онлайн: Sunder применен ботом, передаем ход');
-                        window.onlineBattlesSystem.endPlayerTurn();
+                        console.log('🌐 Онлайн: Sunder применен, ход остается у противника');
+                        // НЕ передаем ход - это ход противника, он должен сам завершить его
                     } else {
                         this.startPlayerTurn();
                     }
@@ -8294,10 +8424,20 @@ if (document.readyState === 'loading') {
         console.log('📄 DOM загружен, инициализируем игру...');
         gameData = new GameData();
         window.gameData = gameData; // Делаем доступным глобально для Firebase
+        
+        // Тестируем поддержку форматов изображений
+        setTimeout(() => {
+            gameData.testImageFormats();
+        }, 1000);
     });
 } else {
     console.log('📄 DOM уже загружен, инициализируем игру...');
     gameData = new GameData();
     window.gameData = gameData; // Делаем доступным глобально для Firebase
+    
+    // Тестируем поддержку форматов изображений
+    setTimeout(() => {
+        gameData.testImageFormats();
+    }, 1000);
 }
 

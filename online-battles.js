@@ -552,6 +552,12 @@ class OnlineBattlesSystem {
                 fearedCards: []
             };
             
+            console.log('🎯 Создано состояние боя:');
+            console.log('   isPlayerTurn:', this.gameData.battleState.isPlayerTurn);
+            console.log('   isHost:', this.isHost);
+            console.log('   playerName:', this.gameData.battleState.playerName);
+            console.log('   botName:', this.gameData.battleState.botName);
+            
             console.log('🎯 Состояние боя создано:', this.gameData.battleState);
             
             // Обновляем статус комнаты
@@ -735,7 +741,7 @@ class OnlineBattlesSystem {
                 
                 if (isOurTurn && !this.gameData.battleState.isPlayerTurn) {
                     // Теперь наш ход
-                    console.log('✅ Теперь наш ход!');
+                    console.log('✅ Теперь наш ход! isHost:', this.isHost, 'isHostTurn:', room.isHostTurn);
                     this.gameData.battleState.isPlayerTurn = true;
                     
                     // Синхронизируем колоды перед нашим ходом
@@ -813,10 +819,12 @@ class OnlineBattlesSystem {
                     updateData.hostDeck = myDeckData;
                     updateData.guestDeck = enemyDeckData;
                     updateData.isHostTurn = false; // Передаём ход гостю
+                    console.log('🔄 Хост передает ход гостю');
                 } else {
                     updateData.guestDeck = myDeckData;
                     updateData.hostDeck = enemyDeckData;
                     updateData.isHostTurn = true; // Передаём ход хосту
+                    console.log('🔄 Гость передает ход хосту');
                 }
                 
                 await roomRef.update(updateData);

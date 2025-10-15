@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест поддержки форматов изображений</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #222;
+            color: #fff;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #444;
+            border-radius: 10px;
+        }
+        .image-test {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            gap: 20px;
+        }
+        .image-container {
+            width: 100px;
+            height: 100px;
+            border: 2px solid #666;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #333;
+        }
+        .fallback {
+            background: linear-gradient(135deg, #444, #666);
+            color: #fff;
+            font-size: 2rem;
+        }
+        .status {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .success { background: #4CAF50; }
+        .error { background: #f44336; }
+        .loading { background: #ff9800; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Тест поддержки форматов изображений</h1>
+    
+    <div class="test-section">
+        <h2>Тест локальных изображений (разные форматы)</h2>
+        
+        <div class="image-test">
+            <div class="image-container" id="test-webp">
+                <img src="images/runes/invisibility.webp" alt="WebP" style="max-width: 100%; max-height: 100%; object-fit: contain;" 
+                     onload="document.getElementById('webp-status').className='status success'; document.getElementById('webp-status').textContent='✅ Загружен';"
+                     onerror="document.getElementById('webp-status').className='status error'; document.getElementById('webp-status').textContent='❌ Ошибка'; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="fallback" style="display: none;">🔮</div>
+            </div>
+            <div>
+                <strong>WebP формат:</strong> images/runes/invisibility.webp
+                <div id="webp-status" class="status loading">⏳ Загрузка...</div>
+            </div>
+        </div>
+        
+        <div class="image-test">
+            <div class="image-container" id="test-png">
+                <img src="images/skills/pudge_dismember.png" alt="PNG" style="max-width: 100%; max-height: 100%; object-fit: contain;"
+                     onload="document.getElementById('png-status').className='status success'; document.getElementById('png-status').textContent='✅ Загружен';"
+                     onerror="document.getElementById('png-status').className='status error'; document.getElementById('png-status').textContent='❌ Ошибка'; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="fallback" style="display: none;">⚡</div>
+            </div>
+            <div>
+                <strong>PNG формат:</strong> images/skills/pudge_dismember.png
+                <div id="png-status" class="status loading">⏳ Загрузка...</div>
+            </div>
+        </div>
+        
+        <div class="image-test">
+            <div class="image-container" id="test-jpg">
+                <img src="images/test.jpg" alt="JPG" style="max-width: 100%; max-height: 100%; object-fit: contain;"
+                     onload="document.getElementById('jpg-status').className='status success'; document.getElementById('jpg-status').textContent='✅ Загружен';"
+                     onerror="document.getElementById('jpg-status').className='status error'; document.getElementById('jpg-status').textContent='❌ Ошибка'; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="fallback" style="display: none;">🖼️</div>
+            </div>
+            <div>
+                <strong>JPG формат:</strong> images/test.jpg (тестовый файл)
+                <div id="jpg-status" class="status loading">⏳ Загрузка...</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Тест внешних URL</h2>
+        
+        <div class="image-test">
+            <div class="image-container">
+                <img src="https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/pudge.png" alt="External PNG" style="max-width: 100%; max-height: 100%; object-fit: contain;"
+                     onload="document.getElementById('external-status').className='status success'; document.getElementById('external-status').textContent='✅ Загружен';"
+                     onerror="document.getElementById('external-status').className='status error'; document.getElementById('external-status').textContent='❌ Ошибка'; this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="fallback" style="display: none;">👤</div>
+            </div>
+            <div>
+                <strong>Внешний URL:</strong> Steam CDN
+                <div id="external-status" class="status loading">⏳ Загрузка...</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Инструкции по тестированию</h2>
+        <ol>
+            <li>Откройте консоль браузера (F12)</li>
+            <li>Запустите основную игру и посмотрите на результаты тестирования</li>
+            <li>Проверьте, что все изображения загружаются корректно</li>
+            <li>Если изображение не загружается, должен показаться fallback символ</li>
+        </ol>
+        
+        <p><strong>Поддерживаемые форматы:</strong></p>
+        <ul>
+            <li>✅ WebP (.webp) - приоритет 1</li>
+            <li>✅ PNG (.png) - приоритет 2</li>
+            <li>✅ JPG (.jpg) - приоритет 3</li>
+            <li>✅ JPEG (.jpeg) - приоритет 4</li>
+            <li>✅ Внешние URL (https://) - без изменений</li>
+        </ul>
+    </div>
+    
+    <script>
+        console.log('🧪 Тестовая страница загружена');
+        console.log('📋 Проверьте статус загрузки изображений выше');
+        console.log('🔍 Откройте основную игру для полного тестирования функций');
+    </script>
+</body>
+</html>
