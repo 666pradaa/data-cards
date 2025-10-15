@@ -338,6 +338,9 @@ class OnlineBattlesSystem {
             
             console.log('✅ Гость присоединился! Ждем синхронизации...');
             console.log('🎧 Начинаем слушать изменения комнаты для запуска боя');
+            console.log('   Статус комнаты:', roomData.status);
+            console.log('   Хост:', roomData.hostNickname);
+            console.log('   Гость:', roomData.guestNickname);
             
             // Закрываем модалку
             const onlineModal = document.getElementById('online-battle-modal');
@@ -417,6 +420,13 @@ class OnlineBattlesSystem {
                 console.log('🎉 Оба игрока готовы! Начинаем бой...');
                 console.log('   Роль:', this.isHost ? 'ХОСТ' : 'ГОСТЬ');
                 console.log('   Хост:', room.hostNickname, 'Гость:', room.guestNickname);
+                console.log('   Проверка колод - Хост:', !!room.hostDeck, 'Гость:', !!room.guestDeck);
+                
+                // Проверяем что у обоих игроков есть колоды
+                if (!room.hostDeck || !room.guestDeck) {
+                    console.log('⏳ Ожидаем загрузки колод...');
+                    return;
+                }
                 
                 // Отключаем слушатель для избежания повторного запуска
                 if (this.roomListener) {
@@ -446,7 +456,7 @@ class OnlineBattlesSystem {
                 setTimeout(() => {
                     console.log('🚀 Запускаем онлайн бой с задержкой для синхронизации...');
                     this.startOnlineBattle(roomCode);
-                }, 500); // 500ms задержка для синхронизации
+                }, 1000); // Увеличиваем задержку до 1 секунды для лучшей синхронизации
             }
             
             // Обновляем текущую комнату
@@ -488,6 +498,10 @@ class OnlineBattlesSystem {
             
             // Создаём полные колоды с данными карт
             console.log('⚙️ Создание боевых колод...');
+            console.log('   isHost:', this.isHost);
+            console.log('   hostDeck:', roomData.hostDeck);
+            console.log('   guestDeck:', roomData.guestDeck);
+            
             const playerDeck = this.isHost ? 
                 await this.createBattleDeck(roomData.hostDeck, roomData.host) :
                 await this.createBattleDeck(roomData.guestDeck, roomData.guest);
@@ -557,6 +571,8 @@ class OnlineBattlesSystem {
             console.log('   isHost:', this.isHost);
             console.log('   playerName:', this.gameData.battleState.playerName);
             console.log('   botName:', this.gameData.battleState.botName);
+            console.log('   roomCode:', this.gameData.battleState.roomCode);
+            console.log('   isOnline:', this.gameData.battleState.isOnline);
             
             console.log('🎯 Состояние боя создано:', this.gameData.battleState);
             
@@ -596,8 +612,15 @@ class OnlineBattlesSystem {
         if (userId && this.gameData.useFirebase) {
             // Для Firebase получаем данные другого пользователя
             console.log('🔍 Загрузка данных пользователя из Firebase:', userId);
-            userData = await this.gameData.getUserById(userId);
-            console.log('📦 Данные пользователя загружены:', userData ? 'OK' : 'NULL');
+            try {
+                userData = await this.gameData.getUserById(userId);
+                console.log('📦 Данные пользователя загружены:', userData ? 'OK' : 'NULL');
+            } catch (error) {
+                console.error('❌ Ошибка загрузки пользователя:', error);
+                // Fallback - используем текущего пользователя
+                userData = this.gameData.getUser();
+                console.log('🔄 Используем данные текущего пользователя как fallback');
+            }
         } else if (userId) {
             // localStorage - получаем другого пользователя
             console.log('🔍 Загрузка данных пользователя из localStorage:', userId);
@@ -759,8 +782,16 @@ class OnlineBattlesSystem {
                 // Если ход противника и есть действие
                 if (!isOurTurn && room.currentAction && room.currentAction.timestamp !== this.lastActionTimestamp) {
                     console.log('⚔️ Противник совершил действие:', room.currentAction);
+                    console.log('   Атакующий:', room.currentAction.attacker);
+                    console.log('   Цель:', room.currentAction.target);
+                    console.log('   Урон:', room.currentAction.damage);
+                    
                     this.lastActionTimestamp = room.currentAction.timestamp;
-                    this.playOpponentAction(room.currentAction);
+                    
+                    // Добавляем задержку для визуального эффекта
+                    setTimeout(() => {
+                        this.playOpponentAction(room.currentAction);
+                    }, 500);
                 }
                 
                 // Синхронизируем состояние колод (только если это обновления HP после хода)
@@ -804,6 +835,16 @@ class OnlineBattlesSystem {
                 skillCooldown: card.skillCooldown || 0
             }));
             
+            // Создаем информацию о действии для передачи противнику
+            const currentAction = {
+                type: 'attack',
+                attacker: this.gameData.battleState.lastPlayerCard?.name,
+                target: this.gameData.battleState.lastBotCard?.name,
+                timestamp: Date.now(),
+                round: this.gameData.battleState.round || 1,
+                damage: this.gameData.battleState.lastPlayerCard?.damage || 0
+            };
+            
             // Обновляем данные в Firebase
             if (this.gameData.useFirebase) {
                 const roomRef = firebase.database().ref(`rooms/${roomCode}`);
@@ -812,7 +853,8 @@ class OnlineBattlesSystem {
                     lastActionTime: Date.now(),
                     round: this.gameData.battleState.round || 1,
                     lastPlayerCard: this.gameData.battleState.lastPlayerCard,
-                    lastBotCard: this.gameData.battleState.lastBotCard
+                    lastBotCard: this.gameData.battleState.lastBotCard,
+                    currentAction: currentAction // Передаем информацию о действии
                 };
                 
                 if (this.isHost) {
@@ -856,24 +898,88 @@ class OnlineBattlesSystem {
             const targetCard = this.gameData.battleState.playerDeck.find(c => c.name === action.target);
             
             if (attackerCard && targetCard) {
+                console.log('⚔️ Атака противника:', attackerCard.name, '→', targetCard.name);
+                
                 // Подсвечиваем атакующую карту
-                const attackerEl = document.querySelector(`.enemy-battle-side .battle-card-new[data-card-name="${attackerCard.name}"]`);
+                const attackerEl = document.querySelector(`#enemy-cards .battle-card-new[data-card-name="${attackerCard.name}"]`);
                 if (attackerEl) {
-                    attackerEl.classList.add('selected');
-                    setTimeout(() => attackerEl.classList.remove('selected'), 800);
+                    attackerEl.classList.add('battle-attacking');
+                    setTimeout(() => attackerEl.classList.remove('battle-attacking'), 800);
                 }
                 
                 // Подсвечиваем цель
-                const targetEl = document.querySelector(`.player-battle-side .battle-card-new[data-card-name="${targetCard.name}"]`);
+                const targetEl = document.querySelector(`#player-cards .battle-card-new[data-card-name="${targetCard.name}"]`);
                 if (targetEl) {
-                    targetEl.classList.add('target-available');
-                    setTimeout(() => targetEl.classList.remove('target-available'), 800);
+                    targetEl.classList.add('battle-taking-damage');
+                    setTimeout(() => targetEl.classList.remove('battle-taking-damage'), 800);
                 }
                 
-                // Показываем подсказку
-                this.gameData.showBattleHint(`${attackerCard.name} атакует ${targetCard.name}!`);
+                // Создаем линию атаки между картами
+                if (attackerEl && targetEl) {
+                    console.log('🎯 Создаем линию атаки между картами');
+                    this.gameData.createAttackLine(attackerEl, targetEl, false);
+                } else {
+                    console.warn('⚠️ Не удалось найти элементы карт для линии атаки');
+                    console.log('   attackerEl:', !!attackerEl);
+                    console.log('   targetEl:', !!targetEl);
+                }
+                
+                // Показываем подсказку с информацией об уроне
+                const damageText = action.damage ? ` (${action.damage} урона)` : '';
+                this.gameData.showBattleHint(`${attackerCard.name} атакует ${targetCard.name}!${damageText}`);
+                setTimeout(() => this.gameData.hideBattleHint(), 2000);
+                
+                // Воспроизводим звук атаки
+                this.gameData.soundSystem.playSound('attack');
+                
+                // Показываем урон на карте
+                if (action.damage && targetEl) {
+                    this.showDamageNumber(targetEl, action.damage);
+                }
             }
         }
+    }
+    
+    showDamageNumber(targetElement, damage) {
+        // Создаем элемент для отображения урона
+        const damageElement = document.createElement('div');
+        damageElement.className = 'damage-number';
+        damageElement.textContent = `-${damage}`;
+        damageElement.style.cssText = `
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff4444;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            z-index: 1000;
+            pointer-events: none;
+            animation: damageFloat 1s ease-out forwards;
+        `;
+        
+        // Добавляем CSS анимацию если её нет
+        if (!document.querySelector('#damage-animation-style')) {
+            const style = document.createElement('style');
+            style.id = 'damage-animation-style';
+            style.textContent = `
+                @keyframes damageFloat {
+                    0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                    100% { opacity: 0; transform: translate(-50%, -150%) scale(1.2); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        targetElement.appendChild(damageElement);
+        
+        // Удаляем элемент через 1 секунду
+        setTimeout(() => {
+            if (damageElement.parentNode) {
+                damageElement.parentNode.removeChild(damageElement);
+            }
+        }, 1000);
     }
 
     syncDecksFromRoom(room) {
@@ -1044,6 +1150,92 @@ class OnlineBattlesSystem {
         
         // Обновляем отображение раунда
         this.gameData.updateRoundDisplay();
+        
+        // Обрабатываем действия противника
+        this.processOpponentActions(roomData);
+    }
+    
+    processOpponentActions(roomData) {
+        console.log('🔄 Обработка действий противника...');
+        
+        // Проверяем, есть ли новые действия противника
+        if (roomData.lastActionTime && roomData.lastActionTime > (this.lastActionTimestamp || 0)) {
+            console.log('⚔️ Обнаружено новое действие противника');
+            this.lastActionTimestamp = roomData.lastActionTime;
+            
+            // Обрабатываем атаку противника
+            if (roomData.lastBotCard && roomData.lastBotCard.name) {
+                this.showOpponentAttack(roomData.lastBotCard, roomData);
+            }
+        }
+        
+        // Синхронизируем состояние колод
+        this.syncDeckStates(roomData);
+    }
+    
+    showOpponentAttack(attackerCard, roomData) {
+        console.log('⚔️ Показываем атаку противника:', attackerCard.name);
+        
+        // Находим карту атакующего
+        const attackerElement = document.querySelector(`#enemy-cards .battle-card-new[data-card-name="${attackerCard.name}"]`);
+        if (!attackerElement) {
+            console.error('❌ Карта атакующего не найдена:', attackerCard.name);
+            return;
+        }
+        
+        // Анимация атакующей карты
+        attackerElement.classList.add('battle-attacking');
+        setTimeout(() => attackerElement.classList.remove('battle-attacking'), 600);
+        
+        // Показываем подсказку
+        this.gameData.showBattleHint(`${attackerCard.name} атакует!`);
+        setTimeout(() => this.gameData.hideBattleHint(), 2000);
+        
+        // Создаем эффект атаки
+        setTimeout(() => {
+            this.createOpponentAttackEffect(attackerElement, roomData);
+        }, 300);
+    }
+    
+    createOpponentAttackEffect(attackerElement, roomData) {
+        // Находим случайную цель (карту игрока)
+        const playerCards = this.gameData.battleState.playerDeck.filter(card => !card.isDead && card.health > 0);
+        if (playerCards.length === 0) return;
+        
+        const randomTarget = playerCards[Math.floor(Math.random() * playerCards.length)];
+        const targetElement = document.querySelector(`#player-cards .battle-card-new[data-card-name="${randomTarget.name}"]`);
+        
+        if (targetElement) {
+            // Создаем линию атаки
+            this.gameData.createAttackLine(attackerElement, targetElement, false);
+            
+            // Анимация получения урона
+            setTimeout(() => {
+                targetElement.classList.add('battle-taking-damage');
+                setTimeout(() => targetElement.classList.remove('battle-taking-damage'), 500);
+            }, 300);
+        }
+    }
+    
+    syncDeckStates(roomData) {
+        // Синхронизируем состояние колод
+        if (roomData.hostDeck && roomData.guestDeck) {
+            const myDeck = this.isHost ? roomData.hostDeck : roomData.guestDeck;
+            const enemyDeck = this.isHost ? roomData.guestDeck : roomData.hostDeck;
+            
+            // Обновляем здоровье карт
+            this.updateCardHealthFromData(myDeck, '#player-cards');
+            this.updateCardHealthFromData(enemyDeck, '#enemy-cards');
+        }
+    }
+    
+    updateCardHealthFromData(deckData, containerSelector) {
+        deckData.forEach(cardData => {
+            const cardElement = document.querySelector(`${containerSelector} .battle-card-new[data-card-name="${cardData.name}"]`);
+            if (cardElement) {
+                this.gameData.updateCardHealth(cardElement, cardData);
+            }
+        });
     }
 
     async endOnlineBattle(playerWon) {

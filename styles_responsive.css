@@ -33,10 +33,17 @@ html, body {
     }
     
     /* КРИТИЧНО: Исправляем обрезанные карты в бою */
-    .battle-arena {
+    .battle-arena,
+    .battle-arena-v2 {
         overflow: visible !important;
         min-height: 100vh;
+        max-height: 100vh;
         padding: 1rem 0.5rem;
+        /* Учитываем высоту адресной строки браузера */
+        height: calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+        /* Предотвращаем перекрытие браузерными элементами */
+        padding-bottom: max(env(safe-area-inset-bottom, 0px), 20px);
+        padding-top: max(env(safe-area-inset-top, 0px), 20px);
     }
     
     /* Навигация */
@@ -97,6 +104,26 @@ html, body {
     .battle-card-image {
         height: 120px;
         min-height: 120px;
+    }
+    
+    /* Предотвращение перекрытия браузерными элементами */
+    .battle-arena-v2 {
+        /* Учитываем высоту адресной строки и панели навигации */
+        padding-bottom: max(env(safe-area-inset-bottom, 0px), 60px);
+        padding-top: max(env(safe-area-inset-top, 0px), 20px);
+    }
+    
+    /* Улучшенная прокрутка для мобильных устройств */
+    .battle-arena-v2 {
+        overflow-y: auto;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .cards-row-v2 {
+        flex-wrap: wrap;
+        justify-content: center;
+        overflow-x: hidden;
     }
     
     .battle-hint {
@@ -270,6 +297,34 @@ html, body {
 /* ========== ПЛАНШЕТЫ (768px - 1024px) ========== */
 
 @media screen and (min-width: 769px) and (max-width: 1024px) {
+    /* Боевая арена для планшетов */
+    .battle-arena-v2 {
+        min-height: 100vh;
+        max-height: 100vh;
+        padding: 1rem;
+        /* Учитываем высоту адресной строки */
+        height: calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+    }
+    
+    .battle-card-new {
+        min-width: 140px;
+        max-width: 160px;
+        min-height: 180px;
+    }
+    
+    .battle-card-image {
+        height: 100px;
+        min-height: 100px;
+    }
+    
+    .player-avatar-v2 {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .vs-indicator-v2 {
+        font-size: 2rem;
+    }
     .main-container {
         padding: 1.5rem;
         max-width: 95%;
@@ -832,6 +887,65 @@ html, body {
     .custom-alert-modal p, .custom-confirm-modal p {
         font-size: 0.9rem !important;
     }
+    
+    /* Боевая арена для очень маленьких экранов */
+    .battle-arena-v2 {
+        padding: 0.25rem;
+        /* Учитываем высоту адресной строки и панели навигации */
+        height: calc(100vh - 60px);
+        min-height: calc(100vh - 60px);
+        max-height: calc(100vh - 60px);
+    }
+    
+    .battle-header-v2 {
+        padding: 0.3rem 0.5rem;
+    }
+    
+    .battle-round-indicator {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+    }
+    
+    .player-info-card {
+        padding: 0.5rem;
+        margin: 0.25rem;
+    }
+    
+    .player-avatar-v2 {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .player-name-v2 {
+        font-size: 0.8rem;
+        padding: 0.3rem 0.6rem;
+    }
+    
+    .battle-card-new {
+        min-width: 100px;
+        max-width: 120px;
+        min-height: 140px;
+        font-size: 0.7rem;
+    }
+    
+    .battle-card-image {
+        height: 60px;
+        min-height: 60px;
+    }
+    
+    .battle-card-stats {
+        padding: 0.2rem;
+        font-size: 0.6rem;
+    }
+    
+    .vs-indicator-v2 {
+        font-size: 1.2rem;
+        letter-spacing: 1px;
+    }
+    
+    .cards-row-v2 {
+        gap: 0.3rem;
+    }
 }
 
 /* ========== УЛУЧШЕНИЕ ПРОИЗВОДИТЕЛЬНОСТИ НА МОБИЛЬНЫХ ========== */
@@ -882,6 +996,86 @@ html, body {
     button:focus, input:focus, select:focus {
         outline: 2px solid rgba(255, 215, 0, 0.5);
     }
+}
+
+/* ========== СТИЛИ ДЛЯ ОРИЕНТАЦИИ ЭКРАНА ========== */
+
+/* Портретная ориентация */
+@media screen and (orientation: portrait) {
+    .battle-arena-v2 {
+        /* Учитываем высоту адресной строки в портретной ориентации */
+        height: calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 20px);
+        min-height: calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 20px);
+    }
+    
+    .enemy-zone-v2,
+    .player-zone-v2 {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    .battle-center-v2 {
+        flex: 0 0 auto;
+        padding: 0.5rem 0;
+    }
+}
+
+/* Ландшафтная ориентация */
+@media screen and (orientation: landscape) and (max-height: 600px) {
+    .battle-arena-v2 {
+        /* Учитываем высоту адресной строки в ландшафтной ориентации */
+        height: calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 10px);
+        min-height: calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 10px);
+    }
+    
+    .battle-header-v2 {
+        padding: 0.3rem 1rem;
+    }
+    
+    .battle-round-indicator {
+        padding: 0.5rem 1.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .player-info-card {
+        padding: 0.5rem;
+        margin: 0.25rem;
+    }
+    
+    .player-avatar-v2 {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .battle-card-new {
+        min-width: 120px;
+        max-width: 140px;
+        min-height: 160px;
+    }
+    
+    .battle-card-image {
+        height: 80px;
+        min-height: 80px;
+    }
+    
+    .vs-indicator-v2 {
+        font-size: 1.5rem;
+    }
+    
+    .battle-center-v2 {
+        padding: 0.25rem 0;
+    }
+}
+
+/* Предотвращение перекрытия браузерными элементами */
+@supports (padding: max(0px)) {
+    .battle-arena-v2 {
+        padding-bottom: max(env(safe-area-inset-bottom, 0px), 20px);
+        padding-top: max(env(safe-area-inset-top, 0px), 20px);
+    }
+}
     
     /* Увеличиваем активную область кнопок */
     .btn::before, .nav-btn::before, .filter-btn::before {

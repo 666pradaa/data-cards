@@ -526,6 +526,17 @@ class GameData {
         this.checkEmojiSupport();
         await this.setupEventListeners();
         await this.checkAuth();
+        
+        // Обновляем все изображения после инициализации
+        setTimeout(() => {
+            this.refreshAllImages();
+        }, 1000);
+        
+        // Добавляем обработчик изменения размера окна
+        window.addEventListener('resize', () => this.handleResize());
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => this.adaptBattleToScreen(), 500);
+        });
     }
     
     checkEmojiSupport() {
@@ -856,6 +867,7 @@ class GameData {
         document.getElementById('save-edit-btn').addEventListener('click', () => this.saveEdit());
         document.getElementById('upload-avatar-btn').addEventListener('click', () => document.getElementById('avatar-file-input').click());
         document.getElementById('avatar-file-input').addEventListener('change', (e) => this.handleAvatarUpload(e));
+        document.getElementById('refresh-images-btn').addEventListener('click', () => this.forceRefreshAllImages());
         
         document.querySelectorAll('.edit-btn').forEach(btn => {
             btn.addEventListener('click', (e) => this.openEditModal(e.target.dataset.field));
@@ -1236,8 +1248,21 @@ class GameData {
         if (userAvatarElement && user.avatar) {
             this.setAvatarWithFallback(userAvatarElement, user.avatar);
         }
-        document.getElementById('display-nickname').textContent = user.nickname || 'Игрок';
-        document.getElementById('display-userid').textContent = user.userid || user.userId || 'ID';
+        
+        // Обновляем ник с проверкой
+        const nicknameElement = document.getElementById('display-nickname');
+        if (nicknameElement) {
+            const displayName = user.nickname || user.username || 'Игрок';
+            nicknameElement.textContent = displayName;
+            console.log('👤 Установлен ник:', displayName);
+        } else {
+            console.error('❌ Элемент display-nickname не найден');
+        }
+        
+        const useridElement = document.getElementById('display-userid');
+        if (useridElement) {
+            useridElement.textContent = user.userid || user.userId || 'ID';
+        }
         document.getElementById('profile-level').textContent = user.level;
         document.getElementById('profile-gold').textContent = user.gold;
         document.getElementById('profile-gems').textContent = user.gems;
@@ -2628,7 +2653,10 @@ class GameData {
                 return `
                     <div class="leaderboard-item ${isCurrentUser ? 'current-user' : ''}">
                         <div class="leader-rank">${medal}</div>
-                        ${this.getImageHTML(avatarPath, 'Avatar', 'leader-avatar')}
+                        <div class="leader-avatar-container">
+                            <img class="leader-avatar" src="${avatarPath}" alt="Avatar" loading="lazy">
+                            <div class="avatar-fallback" style="display: none; width: 50px; height: 50px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">👤</div>
+                        </div>
                         <div class="leader-info">
                             <div class="leader-name">${userData.nickname || userData.username}</div>
                             <div class="leader-stats">
@@ -2648,6 +2676,14 @@ class GameData {
                     this.loadLeaderboard(btn.dataset.filter);
                 });
             });
+            
+            // Обрабатываем аватары с fallback системой
+            setTimeout(() => {
+                document.querySelectorAll('.leader-avatar').forEach(img => {
+                    const avatarPath = img.src;
+                    this.setAvatarWithFallback(img, avatarPath);
+                });
+            }, 100);
             
         } catch (error) {
             console.error('❌ Ошибка загрузки топа:', error);
@@ -4452,6 +4488,11 @@ class GameData {
         
         this.renderDeck('player-cards', this.battleState.playerDeck, true);
         this.renderDeck('enemy-cards', this.battleState.botDeck, false);
+        
+        // Адаптируем бой под экран после рендеринга
+        setTimeout(() => {
+            this.adaptBattleToScreen();
+        }, 100);
     }
 
     updateBattleNames() {
@@ -4481,9 +4522,11 @@ class GameData {
             let avatarPath;
             if (this.battleState.isOnline && this.battleState.opponentAvatar) {
                 avatarPath = this.battleState.opponentAvatar;
+                console.log('🖼️ Аватар противника (онлайн):', avatarPath);
             } else {
                 const botAvatarIndex = Math.floor(Math.random() * this.avatars.length);
                 avatarPath = this.avatars[botAvatarIndex] || 'https://i.imgur.com/EbsmHMK.jpg';
+                console.log('🖼️ Аватар противника (оффлайн):', avatarPath);
             }
             this.setAvatarWithFallback(botAvatarBattle, avatarPath);
         }
@@ -4658,19 +4701,20 @@ class GameData {
     getImageHTML(imagePath, alt = '', className = '', style = '') {
         const imageFormats = this.getImageFormats(imagePath);
         
-        // Если это внешний URL, используем простой img тег
+        // Если это внешний URL, используем простой img тег с улучшенной обработкой ошибок
         if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
             return `
                 <img src="${imagePath}" 
                      alt="${alt}" 
                      class="${className}" 
                      style="${style}"
-                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                     loading="lazy"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'; this.nextElementSibling.style.alignItems='center'; this.nextElementSibling.style.justifyContent='center';">
                 <div style="display: none; ${style}" class="${className}">🖼️</div>
             `;
         }
         
-        // Для локальных изображений создаем каскад fallback
+        // Для локальных изображений создаем каскад fallback с улучшенной обработкой
         let fallbackScript = '';
         if (imageFormats.length > 1) {
             const fallbackPaths = imageFormats.slice(1).map((path, index) => 
@@ -4684,7 +4728,9 @@ class GameData {
                         ${fallbackPaths};
                     } else {
                         this.style.display='none';
-                        this.nextElementSibling.style.display='block';
+                        this.nextElementSibling.style.display='flex';
+                        this.nextElementSibling.style.alignItems='center';
+                        this.nextElementSibling.style.justifyContent='center';
                     }
                 "
             `;
@@ -4695,6 +4741,7 @@ class GameData {
                  alt="${alt}" 
                  class="${className}" 
                  style="${style}"
+                 loading="lazy"
                  ${fallbackScript}>
             <div style="display: none; ${style}" class="${className}">🖼️</div>
         `;
@@ -4704,12 +4751,12 @@ class GameData {
     getBackgroundImageStyle(imagePath) {
         // Если это внешний URL, возвращаем как есть
         if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
-            return `background-image: url('${imagePath}')`;
+            return `background-image: url('${imagePath}'); background-size: cover; background-position: center; background-repeat: no-repeat;`;
         }
         
         // Если путь уже содержит расширение - возвращаем как есть
         if (imagePath.includes('.png') || imagePath.includes('.webp') || imagePath.includes('.jpg') || imagePath.includes('.jpeg')) {
-            return `background-image: url('${imagePath}')`;
+            return `background-image: url('${imagePath}'); background-size: cover; background-position: center; background-repeat: no-repeat;`;
         }
         
         // Для локальных изображений создаем каскад fallback через CSS
@@ -4718,12 +4765,21 @@ class GameData {
         
         console.log('🖼️ Загружаем изображение с fallback:', imageFormats);
         
-        return `background-image: ${urlList}`;
+        return `background-image: ${urlList}; background-size: cover; background-position: center; background-repeat: no-repeat;`;
     }
     
     // Специальная функция для обработки аватаров с поддержкой всех форматов
     setAvatarWithFallback(imgElement, avatarPath) {
         if (!imgElement || !avatarPath) return;
+        
+        // Сначала скрываем fallback
+        const fallback = imgElement.nextElementSibling;
+        if (fallback && fallback.classList.contains('avatar-fallback')) {
+            fallback.style.display = 'none';
+        }
+        
+        // Показываем изображение
+        imgElement.style.display = 'block';
         
         // Если это внешний URL - устанавливаем напрямую
         if (avatarPath.startsWith('http://') || avatarPath.startsWith('https://')) {
@@ -4731,9 +4787,8 @@ class GameData {
             imgElement.onerror = () => {
                 imgElement.style.display = 'none';
                 // Показываем fallback иконку
-                const fallback = imgElement.nextElementSibling;
                 if (fallback && fallback.classList.contains('avatar-fallback')) {
-                    fallback.style.display = 'block';
+                    fallback.style.display = 'flex';
                 }
             };
             return;
@@ -4747,9 +4802,8 @@ class GameData {
             if (currentFormat >= formats.length) {
                 // Все форматы провалились, показываем fallback
                 imgElement.style.display = 'none';
-                const fallback = imgElement.nextElementSibling;
                 if (fallback && fallback.classList.contains('avatar-fallback')) {
-                    fallback.style.display = 'block';
+                    fallback.style.display = 'flex';
                 }
                 return;
             }
@@ -4760,6 +4814,250 @@ class GameData {
         
         imgElement.onerror = tryNextFormat;
         tryNextFormat();
+    }
+    
+    // Функция для принудительного обновления всех изображений
+    forceRefreshAllImages() {
+        console.log('🔄 Принудительное обновление всех изображений...');
+        
+        // Обновляем аватары в профиле
+        const profileAvatar = document.getElementById('profile-avatar');
+        if (profileAvatar) {
+            const user = this.getUser();
+            if (user && user.avatar) {
+                this.setAvatarWithFallback(profileAvatar, user.avatar);
+            }
+        }
+        
+        // Обновляем аватары в бою
+        const playerAvatar = document.getElementById('player-avatar-battle');
+        const botAvatar = document.getElementById('bot-avatar-battle');
+        
+        if (playerAvatar) {
+            const user = this.getUser();
+            const avatarPath = user.avatar || this.avatars[0] || 'https://i.imgur.com/EbsmHMK.jpg';
+            this.setAvatarWithFallback(playerAvatar, avatarPath);
+        }
+        
+        if (botAvatar && this.battleState) {
+            let avatarPath;
+            if (this.battleState.isOnline && this.battleState.opponentAvatar) {
+                avatarPath = this.battleState.opponentAvatar;
+            } else {
+                const botAvatarIndex = Math.floor(Math.random() * this.avatars.length);
+                avatarPath = this.avatars[botAvatarIndex] || 'https://i.imgur.com/EbsmHMK.jpg';
+            }
+            this.setAvatarWithFallback(botAvatar, avatarPath);
+        }
+        
+        // Обновляем аватары в топе
+        document.querySelectorAll('.leader-avatar').forEach(img => {
+            const avatarPath = img.src;
+            this.setAvatarWithFallback(img, avatarPath);
+        });
+        
+        // Обновляем изображения карт
+        document.querySelectorAll('.card-image').forEach(div => {
+            const currentStyle = div.style.backgroundImage;
+            if (currentStyle && currentStyle.includes('url(')) {
+                // Извлекаем URL из CSS
+                const urlMatch = currentStyle.match(/url\(['"]?([^'"]+)['"]?\)/);
+                if (urlMatch && urlMatch[1]) {
+                    const imagePath = urlMatch[1];
+                    div.style.cssText = this.getBackgroundImageStyle(imagePath);
+                }
+            }
+        });
+        
+        console.log('✅ Все изображения обновлены');
+    }
+    refreshAllImages() {
+        console.log('🔄 Обновляем все изображения...');
+        
+        // Обновляем аватары
+        const userAvatar = document.getElementById('user-avatar');
+        if (userAvatar && userAvatar.src) {
+            const currentSrc = userAvatar.src;
+            userAvatar.src = '';
+            setTimeout(() => {
+                userAvatar.src = currentSrc;
+            }, 100);
+        }
+        
+        // Обновляем изображения карт
+        document.querySelectorAll('.battle-card-new img').forEach(img => {
+            if (img.src) {
+                const currentSrc = img.src;
+                img.src = '';
+                setTimeout(() => {
+                    img.src = currentSrc;
+                }, 100);
+            }
+        });
+        
+        // Обновляем фоновые изображения
+        document.querySelectorAll('[style*="background-image"]').forEach(element => {
+            const currentStyle = element.style.backgroundImage;
+            if (currentStyle && currentStyle !== 'none') {
+                element.style.backgroundImage = 'none';
+                setTimeout(() => {
+                    element.style.backgroundImage = currentStyle;
+                }, 100);
+            }
+        });
+        
+        console.log('✅ Все изображения обновлены');
+    }
+    
+    // Функция для адаптации боя под разные экраны
+    adaptBattleToScreen() {
+        console.log('📱 Адаптируем бой под экран...');
+        
+        const battleArena = document.querySelector('.battle-arena-v2');
+        if (!battleArena) return;
+        
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        const isLandscape = screenWidth > screenHeight;
+        const isMobile = screenWidth <= 768;
+        const isTablet = screenWidth > 768 && screenWidth <= 1024;
+        const isDesktop = screenWidth > 1024;
+        
+        console.log('📱 Параметры экрана:', {
+            width: screenWidth,
+            height: screenHeight,
+            isLandscape,
+            isMobile,
+            isTablet,
+            isDesktop
+        });
+        
+        // Адаптируем высоту арены
+        if (isMobile) {
+            // Для мобильных устройств учитываем адресную строку
+            const safeHeight = screenHeight - (window.visualViewport?.height ? 
+                (screenHeight - window.visualViewport.height) : 0);
+            battleArena.style.height = `${Math.max(safeHeight - 60, 400)}px`;
+            battleArena.style.minHeight = `${Math.max(safeHeight - 60, 400)}px`;
+        } else {
+            battleArena.style.height = '100vh';
+            battleArena.style.minHeight = '100vh';
+        }
+        
+        // Адаптируем размеры карт
+        const battleCards = document.querySelectorAll('.battle-card-new');
+        battleCards.forEach(card => {
+            if (isMobile) {
+                card.style.minWidth = '120px';
+                card.style.maxWidth = '140px';
+                card.style.minHeight = '160px';
+            } else if (isTablet) {
+                card.style.minWidth = '140px';
+                card.style.maxWidth = '160px';
+                card.style.minHeight = '180px';
+            } else {
+                card.style.minWidth = '160px';
+                card.style.maxWidth = '180px';
+                card.style.minHeight = '200px';
+            }
+        });
+        
+        // Адаптируем размеры аватаров
+        const avatars = document.querySelectorAll('.player-avatar-v2');
+        avatars.forEach(avatar => {
+            if (isMobile) {
+                avatar.style.width = '60px';
+                avatar.style.height = '60px';
+            } else if (isTablet) {
+                avatar.style.width = '80px';
+                avatar.style.height = '80px';
+            } else {
+                avatar.style.width = '100px';
+                avatar.style.height = '100px';
+            }
+        });
+        
+        // Адаптируем размеры изображений карт
+        const cardImages = document.querySelectorAll('.battle-card-image');
+        cardImages.forEach(img => {
+            if (isMobile) {
+                img.style.height = '80px';
+                img.style.minHeight = '80px';
+            } else if (isTablet) {
+                img.style.height = '100px';
+                img.style.minHeight = '100px';
+            } else {
+                img.style.height = '120px';
+                img.style.minHeight = '120px';
+            }
+        });
+        
+        // Адаптируем размеры шрифтов
+        const roundIndicator = document.querySelector('.battle-round-indicator');
+        if (roundIndicator) {
+            if (isMobile) {
+                roundIndicator.style.fontSize = '0.9rem';
+                roundIndicator.style.padding = '0.8rem 1.5rem';
+            } else if (isTablet) {
+                roundIndicator.style.fontSize = '1rem';
+                roundIndicator.style.padding = '1rem 2rem';
+            } else {
+                roundIndicator.style.fontSize = '1.1rem';
+                roundIndicator.style.padding = '1rem 2.5rem';
+            }
+        }
+        
+        // Адаптируем VS индикатор
+        const vsIndicator = document.querySelector('.vs-indicator-v2');
+        if (vsIndicator) {
+            if (isMobile) {
+                vsIndicator.style.fontSize = '1.5rem';
+                vsIndicator.style.letterSpacing = '2px';
+            } else if (isTablet) {
+                vsIndicator.style.fontSize = '2rem';
+                vsIndicator.style.letterSpacing = '3px';
+            } else {
+                vsIndicator.style.fontSize = '2.5rem';
+                vsIndicator.style.letterSpacing = '5px';
+            }
+        }
+        
+        // Адаптируем контейнеры карт
+        const cardsContainers = document.querySelectorAll('.cards-container-v2');
+        cardsContainers.forEach(container => {
+            if (isMobile) {
+                container.style.padding = '0.5rem';
+                container.style.margin = '0.5rem 0';
+            } else {
+                container.style.padding = '1rem';
+                container.style.margin = '1rem 0';
+            }
+        });
+        
+        // Адаптируем ряды карт
+        const cardsRows = document.querySelectorAll('.cards-row-v2');
+        cardsRows.forEach(row => {
+            if (isMobile) {
+                row.style.gap = '0.5rem';
+                row.style.flexWrap = 'wrap';
+                row.style.justifyContent = 'center';
+            } else {
+                row.style.gap = '1rem';
+                row.style.flexWrap = 'nowrap';
+                row.style.justifyContent = 'center';
+            }
+        });
+        
+        console.log('✅ Бой адаптирован под экран');
+    }
+    
+    // Функция для обработки изменения размера окна
+    handleResize() {
+        // Дебаунс для предотвращения частых вызовов
+        clearTimeout(this.resizeTimeout);
+        this.resizeTimeout = setTimeout(() => {
+            this.adaptBattleToScreen();
+        }, 250);
     }
     
     // Тестовая функция для проверки поддержки всех форматов изображений
