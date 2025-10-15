@@ -1252,7 +1252,7 @@ class GameData {
         this.avatars.forEach(avatarUrl => {
             const avatarDiv = document.createElement('div');
             avatarDiv.className = 'avatar-option';
-            avatarDiv.innerHTML = `<img src="${avatarUrl}" alt="Avatar">`;
+            avatarDiv.innerHTML = this.getImageHTML(avatarUrl, 'Avatar');
             avatarDiv.addEventListener('click', () => this.selectAvatar(avatarUrl));
             grid.appendChild(avatarDiv);
         });
@@ -2504,7 +2504,7 @@ class GameData {
                 <div class="weekly-winner-banner" style="background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%); padding: 2rem; border-radius: 15px; margin-bottom: 1.5rem; border: 3px solid rgba(255, 215, 0, 0.5); box-shadow: 0 0 30px rgba(255, 215, 0, 0.4); text-align: center;">
                     <h3 style="margin: 0 0 1rem 0; font-size: 2rem; color: #000;">🏆 ПОБЕДИТЕЛЬ НЕДЕЛИ! 🏆</h3>
                     <div style="display: flex; align-items: center; justify-content: center; gap: 1.5rem; margin: 1.5rem 0;">
-                        <img src="${topPlayer.avatar || this.avatars[0]}" alt="Avatar" style="width: 80px; height: 80px; border-radius: 50%; border: 4px solid #000; box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);">
+                        ${this.getImageHTML(topPlayer.avatar || this.avatars[0], 'Avatar', '', 'width: 80px; height: 80px; border-radius: 50%; border: 4px solid #000; box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);')}
                         <div style="text-align: left;">
                             <div style="font-size: 1.5rem; font-weight: 900; color: #000;">${topPlayer.nickname || topPlayer.username}</div>
                             <div style="font-size: 1rem; color: #000; opacity: 0.8;">ID: ${topPlayer.userid || topPlayer.id}</div>
@@ -2618,7 +2618,7 @@ class GameData {
                 return `
                     <div class="leaderboard-item ${isCurrentUser ? 'current-user' : ''}">
                         <div class="leader-rank">${medal}</div>
-                        <img src="${userData.avatar || this.avatars[0]}" alt="Avatar" class="leader-avatar">
+                        ${this.getImageHTML(userData.avatar || this.avatars[0], 'Avatar', 'leader-avatar')}
                         <div class="leader-info">
                             <div class="leader-name">${userData.nickname || userData.username}</div>
                             <div class="leader-stats">
@@ -2907,7 +2907,7 @@ class GameData {
                 ` : '';
                 
                 cardDiv.innerHTML = `
-                    <div class="card-image" style="background-image: url('${card.image}'); background-size: cover; background-position: center; width: 100%; height: 80px; border-radius: 10px; margin-bottom: 10px;"></div>
+                    <div class="card-image" style="${this.getBackgroundImageStyle(card.image)} background-size: cover; background-position: center; width: 100%; height: 80px; border-radius: 10px; margin-bottom: 10px;"></div>
                     <div class="card-rarity rarity-${card.rarity}">${this.getRarityName(card.rarity)}</div>
                     <div class="card-stars">${starsHtml}</div>
                     <div class="card-name">${card.name}</div>
@@ -2956,7 +2956,7 @@ class GameData {
                 slot.classList.add('filled');
                 slot.innerHTML = `
                     <div class="deck-card rarity-border-${card.rarity}">
-                        <div class="card-image" style="background-image: url('${card.image}'); background-size: cover; background-position: center; width: 100%; height: 80px; border-radius: 10px; margin-bottom: 5px;"></div>
+                        <div class="card-image" style="${this.getBackgroundImageStyle(card.image)} background-size: cover; background-position: center; width: 100%; height: 80px; border-radius: 10px; margin-bottom: 5px;"></div>
                         <div class="card-stars">${starsHtml}</div>
                         <div class="card-name">${card.name}</div>
                         <div class="card-stats-mini">
@@ -3031,7 +3031,7 @@ class GameData {
                 ` : '';
                 
                 cardDiv.innerHTML = `
-                    <div class="card-image" style="background-image: url('${card.image}'); background-size: cover; background-position: center; width: 100%; height: 80px; border-radius: 10px; margin-bottom: 10px;"></div>
+                    <div class="card-image" style="${this.getBackgroundImageStyle(card.image)} background-size: cover; background-position: center; width: 100%; height: 80px; border-radius: 10px; margin-bottom: 10px;"></div>
                     <div class="card-rarity rarity-${card.rarity}">${this.getRarityName(card.rarity)}</div>
                     <div class="card-stars">${starsHtml}</div>
                     <div class="card-name">${card.name}</div>
@@ -3187,7 +3187,7 @@ class GameData {
                 ).join('');
                 
                 cardDiv.innerHTML = `
-                    <div class="card-image" style="background-image: url('${card.image}'); background-size: cover; background-position: center; width: 100%; height: 80px; border-radius: 10px; margin-bottom: 10px;"></div>
+                    <div class="card-image" style="${this.getBackgroundImageStyle(card.image)} background-size: cover; background-position: center; width: 100%; height: 80px; border-radius: 10px; margin-bottom: 10px;"></div>
                     <div class="card-rarity rarity-${card.rarity}">${this.getRarityName(card.rarity)}</div>
                     <div class="card-stars">${starsHtml}</div>
                     <div class="card-name">${card.name}</div>
@@ -3518,7 +3518,7 @@ class GameData {
                     <div class="dropped-card rarity-border-${cardResult.card.rarity}">
                         <div class="card-glow"></div>
                         ${needsSparks ? this.generateSparks(sparksColor) : ''}
-                        <div class="card-image" style="background-image: url('${cardResult.card.image}'); background-size: cover; background-position: center; width: 100%; height: 150px; border-radius: 10px; margin-bottom: 10px;"></div>
+                        <div class="card-image" style="${this.getBackgroundImageStyle(cardResult.card.image)} background-size: cover; background-position: center; width: 100%; height: 150px; border-radius: 10px; margin-bottom: 10px;"></div>
                         <div class="card-rarity rarity-${cardResult.card.rarity}">${this.getRarityName(cardResult.card.rarity)}</div>
                         <div class="card-name">${cardResult.card.name}</div>
                         <div class="card-stats">
@@ -4468,8 +4468,7 @@ class GameData {
         const rarityClass = `rarity-${card.rarity}`;
         
         return `
-            <div class="battle-card-image" style="background-image: url('${this.getImageWithFormat(card.image)}')" 
-                 onerror="this.style.backgroundImage='url(' + this.style.backgroundImage.replace('.png', '.webp').replace('.webp', '.png') + ')'"></div>
+            <div class="battle-card-image" style="${this.getBackgroundImageStyle(card.image)}"></div>
             <div class="battle-card-info">
                 <div class="battle-card-name ${rarityClass}">${card.name}</div>
                 ${starsHtml}
@@ -4502,13 +4501,46 @@ class GameData {
     }
     
     getImageWithFormat(imagePath) {
+        // Если это внешний URL (например, Steam CDN) - возвращаем как есть
+        if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+            return imagePath;
+        }
+        
         // Если путь уже содержит расширение - возвращаем как есть
         if (imagePath.includes('.png') || imagePath.includes('.webp') || imagePath.includes('.jpg') || imagePath.includes('.jpeg')) {
             return imagePath;
         }
         
-        // Для аркан карт добавляем .webp по умолчанию (файлы в формате webp)
+        // Для локальных изображений (аркан карты, скиллы, руны) добавляем .webp по умолчанию
         return imagePath + '.webp';
+    }
+    
+    // Универсальная функция для создания HTML с изображением и fallback
+    getImageHTML(imagePath, alt = '', className = '', style = '') {
+        const finalImagePath = this.getImageWithFormat(imagePath);
+        const fallbackPath = finalImagePath.replace('.webp', '.png');
+        
+        return `
+            <img src="${finalImagePath}" 
+                 alt="${alt}" 
+                 class="${className}"
+                 style="${style}"
+                 onerror="this.onerror=null; this.src='${fallbackPath}'">
+        `;
+    }
+    
+    // Универсальная функция для CSS background-image с fallback
+    getBackgroundImageStyle(imagePath) {
+        const finalImagePath = this.getImageWithFormat(imagePath);
+        
+        // Если это внешний URL, возвращаем как есть
+        if (finalImagePath.startsWith('http://') || finalImagePath.startsWith('https://')) {
+            return `background-image: url('${finalImagePath}')`;
+        }
+        
+        // Для локальных изображений создаем fallback
+        const fallbackPath = finalImagePath.replace('.webp', '.png');
+        return `background-image: url('${finalImagePath}'), url('${fallbackPath}')`;
     }
     
     getSkillButtonHTML(card, isPlayer, isDead) {
@@ -4527,8 +4559,7 @@ class GameData {
                     data-skill-name="${card.skill.name}"
                     data-skill-desc="${card.skill.description}"
                     data-skill-cooldown="${skillOnCooldown ? card.skillCooldown : 0}">
-                <img src="${this.getImageWithFormat(card.skill.icon)}" alt="${card.skill.name}"
-                     onerror="this.src=this.src.replace('.png', '.webp').replace('.webp', '.png'); this.onerror=null; this.style.display='none'; this.nextElementSibling.nextElementSibling.style.display='block';">
+                ${this.getImageHTML(card.skill.icon, card.skill.name)}
                 ${cooldownText ? '<span class="skill-cooldown">' + cooldownText + '</span>' : ''}
                 <span class="skill-icon-fallback" style="display: none; font-size: 1.5rem;">⚡</span>
             </button>
@@ -7769,7 +7800,7 @@ class GameData {
             
             friendDiv.innerHTML = `
                 <div class="friend-avatar">
-                    <img src="${avatarSrc}" alt="${friend.nickname || friend.username}">
+                    ${this.getImageHTML(avatarSrc, friend.nickname || friend.username)}
                 </div>
                 <div class="friend-info">
                     <div class="friend-name">${friend.nickname || friend.username}</div>
@@ -7844,7 +7875,7 @@ class GameData {
             
             resultDiv.innerHTML = `
                 <div class="search-result-avatar">
-                    <img src="${avatarSrc}" alt="${user.nickname || user.username}">
+                    ${this.getImageHTML(avatarSrc, user.nickname || user.username)}
                 </div>
                 <div class="search-result-info">
                     <div class="search-result-name">${user.nickname || user.username}</div>
@@ -8032,6 +8063,13 @@ class GameData {
         const incoming = user.friendRequests?.incoming || [];
         const outgoing = user.friendRequests?.outgoing || [];
         
+        console.log('🔍 Загрузка запросов в друзья:', {
+            incoming: incoming.length,
+            outgoing: outgoing.length,
+            incomingList: incoming,
+            outgoingList: outgoing
+        });
+        
         incomingCount.textContent = incoming.length;
         outgoingCount.textContent = outgoing.length;
         
@@ -8051,7 +8089,7 @@ class GameData {
                 
                 requestDiv.innerHTML = `
                     <div class="request-avatar">
-                        <img src="${avatarSrc}" alt="${sender.nickname || sender.username}">
+                        ${this.getImageHTML(avatarSrc, sender.nickname || sender.username)}
                     </div>
                     <div class="request-info">
                         <div class="request-name">${sender.nickname || sender.username}</div>
@@ -8083,7 +8121,7 @@ class GameData {
                 
                 requestDiv.innerHTML = `
                     <div class="request-avatar">
-                        <img src="${avatarSrc}" alt="${target.nickname || target.username}">
+                        ${this.getImageHTML(avatarSrc, target.nickname || target.username)}
                     </div>
                     <div class="request-info">
                         <div class="request-name">${target.nickname || target.username}</div>

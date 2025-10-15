@@ -227,6 +227,12 @@ class ClansSystem {
         
         container.innerHTML = '<p>Загрузка участников...</p>';
         
+        console.log('🔍 Загрузка участников клана:', {
+            clanId: clan.id,
+            members: clan.members,
+            membersCount: clan.members ? clan.members.length : 0
+        });
+        
         try {
             const allUsers = await this.gameData.getAllUsers();
             const members = (clan.members || []).map(userId => {
