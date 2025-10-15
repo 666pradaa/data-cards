@@ -1377,12 +1377,42 @@ body.light-theme .stat-item {
     animation: legendary-pulse 2s infinite;
 }
 
+.rarity-border-arcane {
+    border: 3px solid #00ff00 !important;
+    box-shadow: 0 0 25px rgba(0, 255, 0, 0.8), 0 0 50px rgba(0, 255, 0, 0.6);
+    animation: arcane-pulse 2s infinite;
+}
+
+.rarity-border-mythic {
+    border: 3px solid #ff0000 !important;
+    box-shadow: 0 0 22px rgba(255, 0, 0, 0.8), 0 0 45px rgba(255, 0, 0, 0.6);
+    animation: mythic-pulse 2s infinite;
+}
+
 @keyframes legendary-pulse {
     0%, 100% {
         box-shadow: 0 0 20px rgba(255, 153, 0, 0.7), 0 0 40px rgba(255, 153, 0, 0.5);
     }
     50% {
         box-shadow: 0 0 30px rgba(255, 153, 0, 0.9), 0 0 60px rgba(255, 153, 0, 0.7);
+    }
+}
+
+@keyframes arcane-pulse {
+    0%, 100% {
+        box-shadow: 0 0 25px rgba(0, 255, 0, 0.8), 0 0 50px rgba(0, 255, 0, 0.6);
+    }
+    50% {
+        box-shadow: 0 0 35px rgba(0, 255, 0, 1.0), 0 0 70px rgba(0, 255, 0, 0.8);
+    }
+}
+
+@keyframes mythic-pulse {
+    0%, 100% {
+        box-shadow: 0 0 22px rgba(255, 0, 0, 0.8), 0 0 45px rgba(255, 0, 0, 0.6);
+    }
+    50% {
+        box-shadow: 0 0 32px rgba(255, 0, 0, 1.0), 0 0 65px rgba(255, 0, 0, 0.8);
     }
 }
 
@@ -4066,6 +4096,26 @@ body.light-theme .stat-item {
     animation: legendaryGlowBW 2s ease-in-out infinite;
 }
 
+.battle-card-new.rarity-border-arcane {
+    border-color: rgba(0, 255, 0, 0.7);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 0 35px rgba(0, 255, 0, 0.4),
+        0 0 70px rgba(0, 255, 0, 0.3),
+        inset 0 1px 0 rgba(0, 255, 0, 0.3);
+    animation: arcaneGlowBW 2s ease-in-out infinite;
+}
+
+.battle-card-new.rarity-border-mythic {
+    border-color: rgba(255, 0, 0, 0.7);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 0 32px rgba(255, 0, 0, 0.4),
+        0 0 65px rgba(255, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 0, 0, 0.3);
+    animation: mythicGlowBW 2s ease-in-out infinite;
+}
+
 /* Анимация свечения для эпиков */
 @keyframes epicGlowBW {
     0%, 100% {
@@ -4095,6 +4145,40 @@ body.light-theme .stat-item {
             0 10px 40px rgba(0, 0, 0, 0.5),
             0 0 50px rgba(255, 153, 0, 0.5),
             inset 0 1px 0 rgba(255, 153, 0, 0.15);
+    }
+}
+
+@keyframes arcaneGlowBW {
+    0%, 100% {
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.4),
+            0 0 35px rgba(0, 255, 0, 0.4),
+            0 0 70px rgba(0, 255, 0, 0.3),
+            inset 0 1px 0 rgba(0, 255, 0, 0.3);
+    }
+    50% {
+        box-shadow: 
+            0 10px 40px rgba(0, 0, 0, 0.5),
+            0 0 50px rgba(0, 255, 0, 0.6),
+            0 0 90px rgba(0, 255, 0, 0.5),
+            inset 0 1px 0 rgba(0, 255, 0, 0.4);
+    }
+}
+
+@keyframes mythicGlowBW {
+    0%, 100% {
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.4),
+            0 0 32px rgba(255, 0, 0, 0.4),
+            0 0 65px rgba(255, 0, 0, 0.3),
+            inset 0 1px 0 rgba(255, 0, 0, 0.3);
+    }
+    50% {
+        box-shadow: 
+            0 10px 40px rgba(0, 0, 0, 0.5),
+            0 0 45px rgba(255, 0, 0, 0.6),
+            0 0 85px rgba(255, 0, 0, 0.5),
+            inset 0 1px 0 rgba(255, 0, 0, 0.4);
     }
 }
 

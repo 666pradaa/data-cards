@@ -426,6 +426,80 @@ class GameData {
                     description: '100 урона + Cold Snap (пропуск следующего хода)',
                     cooldown: 2
                 }
+            },
+            // Арканные карты (сила ~250-280) - самые сильные
+            'Shadow Fiend Arcane': {
+                name: 'Shadow Fiend Arcane',
+                rarity: 'arcane',
+                damage: 95,
+                health: 160,
+                defense: 28,
+                speed: 32,
+                image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/nevermore.png',
+                skill: {
+                    name: 'Demon Eater',
+                    icon: 'images/skills/shadow_fiend_requiem.webp',
+                    description: '75 урона карте напротив, 30 остальным. Все в страхе (пропуск хода)',
+                    cooldown: 2
+                }
+            },
+            'Terrorblade Arcane': {
+                name: 'Terrorblade Arcane',
+                rarity: 'arcane',
+                damage: 88,
+                health: 155,
+                defense: 25,
+                speed: 30,
+                image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/terrorblade.png',
+                skill: {
+                    name: 'Fractal Horns',
+                    icon: 'images/skills/terrorblade_sunder.webp',
+                    description: 'Обменивается HP с целью + 50% от разницы',
+                    cooldown: 2
+                }
+            },
+            'Pudge Arcane': {
+                name: 'Pudge Arcane',
+                rarity: 'arcane',
+                damage: 82,
+                health: 190,
+                defense: 35,
+                speed: 18,
+                image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/pudge.png',
+                skill: {
+                    name: 'Feast of Abscession',
+                    icon: 'images/skills/pudge_dismember.png',
+                    description: 'Снимает 75 HP врага, восстанавливает 50 HP',
+                    cooldown: 2
+                }
+            },
+            // Мифические карты (сила ~180-210)
+            'Arc Warden': {
+                name: 'Arc Warden',
+                rarity: 'mythic',
+                damage: 85,
+                health: 140,
+                defense: 22,
+                speed: 28,
+                image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/arc_warden.png'
+            },
+            'Morphling': {
+                name: 'Morphling',
+                rarity: 'mythic',
+                damage: 80,
+                health: 150,
+                defense: 25,
+                speed: 25,
+                image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/morphling.png'
+            },
+            'Night Stalker': {
+                name: 'Night Stalker',
+                rarity: 'mythic',
+                damage: 90,
+                health: 145,
+                defense: 20,
+                speed: 30,
+                image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/night_stalker.png'
             }
         };
 
@@ -441,6 +515,7 @@ class GameData {
         this.cases = {
             normal: { name: 'Обычный кейс', cost: 100, currency: 'gold', rewards: {} },
             mega: { name: 'Мега бокс', cost: 10, currency: 'gems', rewards: {} },
+            arcane: { name: 'Arcane кейс', cost: 50, currency: 'gems', rewards: {} },
             upgrades: { name: 'Улучшения', cost: 250, currency: 'gold', rewards: { upgrades: 1 } }
         };
     }
@@ -2987,7 +3062,9 @@ class GameData {
             common: 'Обычная',
             rare: 'Редкая',
             epic: 'Эпическая',
-            legendary: 'Легендарная'
+            legendary: 'Легендарная',
+            arcane: 'Арканная',
+            mythic: 'Мифическая'
         };
         return names[rarity] || rarity;
     }
@@ -3526,6 +3603,33 @@ class GameData {
                 // 55% шанс редкой
                 availableCardPool = Object.keys(this.cards).filter(name => 
                     this.cards[name].rarity === 'rare'
+                );
+            }
+            
+            selectedCardName = availableCardPool[Math.floor(Math.random() * availableCardPool.length)];
+            
+            // Проверяем, является ли это дубликатом
+            if (userCards[selectedCardName] && userCards[selectedCardName].count > 0) {
+                isDuplicate = true;
+                
+                // Даем половину стоимости кейса вместо дубликата
+                const caseData = this.cases[caseType];
+                const refund = Math.floor(caseData.cost / 2);
+                await this.saveUser({ gems: user.gems + refund });
+            }
+        } else if (caseType === 'arcane') {
+            // Arcane кейс - 30% арканные, 70% мифические
+            const rand = Math.random();
+            
+            if (rand < 0.3) {
+                // 30% шанс арканной карты
+                availableCardPool = Object.keys(this.cards).filter(name => 
+                    this.cards[name].rarity === 'arcane'
+                );
+            } else {
+                // 70% шанс мифической карты
+                availableCardPool = Object.keys(this.cards).filter(name => 
+                    this.cards[name].rarity === 'mythic'
                 );
             }
             
@@ -5453,13 +5557,15 @@ class GameData {
         // В зависимости от скилла показываем выбор цели или применяем сразу
         if (card.name === 'Shadow Fiend') {
             this.useShadowFiendSkill(card);
-        } else if (card.name === 'Pudge') {
+        } else if (card.name === 'Shadow Fiend Arcane') {
+            this.useShadowFiendArcaneSkill(card);
+        } else if (card.name === 'Pudge' || card.name === 'Pudge Arcane') {
             this.showSkillTargetSelection(card, 'enemy');
         } else if (card.name === 'Invoker') {
             this.showSkillTargetSelection(card, 'enemy');
         } else if (card.name === 'Crystal Maiden') {
             this.showSkillTargetSelection(card, 'enemy');
-        } else if (card.name === 'Terrorblade') {
+        } else if (card.name === 'Terrorblade' || card.name === 'Terrorblade Arcane') {
             this.showSkillTargetSelection(card, 'any');
         } else if (card.name === 'Spirit Breaker') {
             this.useSpiritBreakerSkill(card);
@@ -5519,12 +5625,16 @@ class GameData {
         // Применяем скилл в зависимости от героя
         if (casterCard.name === 'Pudge') {
             this.usePudgeSkill(casterCard, targetCard);
+        } else if (casterCard.name === 'Pudge Arcane') {
+            this.usePudgeArcaneSkill(casterCard, targetCard);
         } else if (casterCard.name === 'Invoker') {
             this.useInvokerSkill(casterCard, targetCard);
         } else if (casterCard.name === 'Crystal Maiden') {
             this.useCrystalMaidenSkill(casterCard, targetCard);
         } else if (casterCard.name === 'Terrorblade') {
             this.useTerrorbladeSkill(casterCard, targetCard);
+        } else if (casterCard.name === 'Terrorblade Arcane') {
+            this.useTerrorbladeArcaneSkill(casterCard, targetCard);
         }
     }
     
@@ -6479,6 +6589,159 @@ class GameData {
                 this.performBotMultipleAttacks(card, target, attacksCount);
             }, 800);
         }, 1000);
+    }
+    
+    // ===== АРКАННЫЕ СКИЛЛЫ =====
+    
+    // Shadow Fiend Arcane - Demon Eater
+    useShadowFiendArcaneSkill(card) {
+        console.log('💀 Shadow Fiend Arcane использует Demon Eater!');
+        
+        // Воспроизводим звук
+        this.soundSystem.playSound('shadow_fiend_requiem', 1.2);
+        
+        // Устанавливаем кулдаун на ВСЕ скиллы колоды
+        this.setAllSkillsCooldown(this.battleState.playerDeck);
+        
+        // Помечаем что ходили этой картой
+        this.battleState.lastPlayerCard = { name: card.name };
+        
+        // Находим карту напротив (тот же индекс)
+        const casterIndex = this.battleState.playerDeck.findIndex(c => c.name === card.name);
+        const oppositeCard = this.battleState.botDeck[casterIndex];
+        
+        // Анимация Demon Eater
+        this.createShadowFiendAnimation(card);
+        
+        setTimeout(() => {
+            // 75 урона карте напротив, 30 остальным
+            if (oppositeCard && !oppositeCard.isDead) {
+                oppositeCard.health -= 75;
+                if (oppositeCard.health <= 0) {
+                    oppositeCard.isDead = true;
+                    oppositeCard.health = 0;
+                }
+            }
+            
+            // 30 урона остальным врагам
+            this.battleState.botDeck.forEach(enemy => {
+                if (enemy !== oppositeCard && !enemy.isDead) {
+                    enemy.health -= 30;
+                    if (enemy.health <= 0) {
+                        enemy.isDead = true;
+                        enemy.health = 0;
+                    }
+                }
+            });
+            
+            // Все враги в страхе (пропуск следующего хода)
+            this.battleState.botDeck.forEach(enemy => {
+                if (!enemy.isDead) {
+                    enemy.fear = true;
+                }
+            });
+            
+            this.renderBattle();
+            this.showBattleHint(`Demon Eater! 75 урона карте напротив, 30 остальным. Все в страхе!`);
+            
+            setTimeout(() => {
+                this.hideBattleHint();
+                if (!this.checkBattleEnd()) {
+                    if (this.battleState.isOnline && window.onlineBattlesSystem) {
+                        console.log('🌐 Онлайн: Demon Eater применен, передаем ход');
+                        window.onlineBattlesSystem.endPlayerTurn();
+                    } else {
+                        this.startBotTurn();
+                    }
+                }
+            }, 2000);
+        }, 1500);
+    }
+    
+    // Terrorblade Arcane - Fractal Horns
+    useTerrorbladeArcaneSkill(casterCard, targetCard) {
+        console.log('🔄 Terrorblade Arcane использует Fractal Horns!');
+        
+        // Воспроизводим звук
+        this.soundSystem.playSound('terrorblade_sunder', 1.2);
+        
+        // Устанавливаем кулдаун на ВСЕ скиллы колоды
+        this.setAllSkillsCooldown(this.battleState.playerDeck);
+        this.battleState.lastPlayerCard = { name: casterCard.name };
+        
+        // Анимация Fractal Horns
+        this.createSunderAnimation(casterCard, targetCard);
+        
+        setTimeout(() => {
+            // Обмениваемся HP + 50% от разницы
+            const healthDiff = Math.abs(casterCard.health - targetCard.health);
+            const bonus = Math.floor(healthDiff * 0.5);
+            
+            const tempHealth = casterCard.health;
+            casterCard.health = targetCard.health + bonus;
+            targetCard.health = tempHealth - bonus;
+            
+            // Проверяем смерти
+            if (casterCard.health <= 0) casterCard.isDead = true;
+            if (targetCard.health <= 0) targetCard.isDead = true;
+            
+            this.renderBattle();
+            this.showBattleHint(`Fractal Horns! ${casterCard.name} и ${targetCard.name} обменялись HP + бонус!`);
+            
+            setTimeout(() => {
+                this.hideBattleHint();
+                if (!this.checkBattleEnd()) {
+                    if (this.battleState.isOnline && window.onlineBattlesSystem) {
+                        console.log('🌐 Онлайн: Fractal Horns применен, передаем ход');
+                        window.onlineBattlesSystem.endPlayerTurn();
+                    } else {
+                        this.startBotTurn();
+                    }
+                }
+            }, 2000);
+        }, 1500);
+    }
+    
+    // Pudge Arcane - Feast of Abscession
+    usePudgeArcaneSkill(casterCard, targetCard) {
+        console.log('🍖 Pudge Arcane использует Feast of Abscession!');
+        
+        // Воспроизводим звук
+        this.soundSystem.playSound('pudge_dismember', 1.2);
+        
+        // Устанавливаем кулдаун на ВСЕ скиллы колоды
+        this.setAllSkillsCooldown(this.battleState.playerDeck);
+        this.battleState.lastPlayerCard = { name: casterCard.name };
+        
+        // Анимация Feast of Abscession
+        this.createPudgeAnimation(casterCard, targetCard);
+        
+        setTimeout(() => {
+            // Снимаем 75 HP врага, восстанавливаем 50 HP
+            targetCard.health -= 75;
+            if (targetCard.health <= 0) {
+                targetCard.isDead = true;
+                targetCard.health = 0;
+            }
+            
+            // Восстанавливаем HP кастеру
+            casterCard.health += 50;
+            
+            this.renderBattle();
+            this.showBattleHint(`Feast of Abscession! -75 HP врагу, +50 HP кастеру!`);
+            
+            setTimeout(() => {
+                this.hideBattleHint();
+                if (!this.checkBattleEnd()) {
+                    if (this.battleState.isOnline && window.onlineBattlesSystem) {
+                        console.log('🌐 Онлайн: Feast of Abscession применен, передаем ход');
+                        window.onlineBattlesSystem.endPlayerTurn();
+                    } else {
+                        this.startBotTurn();
+                    }
+                }
+            }, 2000);
+        }, 1500);
     }
     
     // ===== КОНЕЦ СИСТЕМЫ СКИЛЛОВ =====
