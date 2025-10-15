@@ -435,10 +435,10 @@ class GameData {
                 health: 160,
                 defense: 28,
                 speed: 32,
-                image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/nevermore.png',
+                image: 'images/arcane/shadow_fiend_arcane',
                 skill: {
                     name: 'Demon Eater',
-                    icon: 'images/skills/shadow_fiend_requiem.webp',
+                    icon: 'images/skills/arcane/shadow_fiend_arcane_skill',
                     description: '75 урона карте напротив, 30 остальным. Все в страхе (пропуск хода)',
                     cooldown: 2
                 }
@@ -450,10 +450,10 @@ class GameData {
                 health: 155,
                 defense: 25,
                 speed: 30,
-                image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/terrorblade.png',
+                image: 'images/arcane/terrorblade_arcane',
                 skill: {
                     name: 'Fractal Horns',
-                    icon: 'images/skills/terrorblade_sunder.webp',
+                    icon: 'images/skills/arcane/terrorblade_arcane_skill',
                     description: 'Обменивается HP с целью + 50% от разницы',
                     cooldown: 2
                 }
@@ -465,10 +465,10 @@ class GameData {
                 health: 190,
                 defense: 35,
                 speed: 18,
-                image: 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes/pudge.png',
+                image: 'images/arcane/pudge_arcane',
                 skill: {
                     name: 'Feast of Abscession',
-                    icon: 'images/skills/pudge_dismember.png',
+                    icon: 'images/skills/arcane/pudge_arcane_skill',
                     description: 'Снимает 75 HP врага, восстанавливает 50 HP',
                     cooldown: 2
                 }
@@ -4468,7 +4468,8 @@ class GameData {
         const rarityClass = `rarity-${card.rarity}`;
         
         return `
-            <div class="battle-card-image" style="background-image: url('${card.image}')"></div>
+            <div class="battle-card-image" style="background-image: url('${this.getImageWithFormat(card.image)}')" 
+                 onerror="this.style.backgroundImage='url(' + this.style.backgroundImage.replace('.png', '.webp').replace('.webp', '.png') + ')'"></div>
             <div class="battle-card-info">
                 <div class="battle-card-name ${rarityClass}">${card.name}</div>
                 ${starsHtml}
@@ -4500,8 +4501,18 @@ class GameData {
         </div>`;
     }
     
+    getImageWithFormat(imagePath) {
+        // Если путь уже содержит расширение - возвращаем как есть
+        if (imagePath.includes('.png') || imagePath.includes('.webp') || imagePath.includes('.jpg') || imagePath.includes('.jpeg')) {
+            return imagePath;
+        }
+        
+        // Для аркан карт добавляем .png по умолчанию, браузер попробует .webp если не найдет
+        return imagePath + '.png';
+    }
+    
     getSkillButtonHTML(card, isPlayer, isDead) {
-        const hasSkill = card.skill && (card.rarity === 'epic' || card.rarity === 'legendary');
+        const hasSkill = card.skill && (card.rarity === 'epic' || card.rarity === 'legendary' || card.rarity === 'arcane');
         if (!hasSkill || !isPlayer || isDead) return '';
         
         const skillOnCooldown = card.skillCooldown > 0;
@@ -4516,8 +4527,8 @@ class GameData {
                     data-skill-name="${card.skill.name}"
                     data-skill-desc="${card.skill.description}"
                     data-skill-cooldown="${skillOnCooldown ? card.skillCooldown : 0}">
-                <img src="${card.skill.icon}" alt="${card.skill.name}"
-                     onerror="console.error('❌ Ошибка загрузки иконки:', this.src); this.onerror=null; this.style.display='none'; this.nextElementSibling.nextElementSibling.style.display='block';">
+                <img src="${this.getImageWithFormat(card.skill.icon)}" alt="${card.skill.name}"
+                     onerror="this.src=this.src.replace('.png', '.webp').replace('.webp', '.png'); this.onerror=null; this.style.display='none'; this.nextElementSibling.nextElementSibling.style.display='block';">
                 ${cooldownText ? '<span class="skill-cooldown">' + cooldownText + '</span>' : ''}
                 <span class="skill-icon-fallback" style="display: none; font-size: 1.5rem;">⚡</span>
             </button>
@@ -4525,7 +4536,7 @@ class GameData {
     }
     
     attachBattleCardHandlers(cardDiv, card, isPlayer, isDead) {
-        const hasSkill = card.skill && (card.rarity === 'epic' || card.rarity === 'legendary');
+        const hasSkill = card.skill && (card.rarity === 'epic' || card.rarity === 'legendary' || card.rarity === 'arcane');
         const skillOnCooldown = card.skillCooldown > 0;
         
         if (hasSkill && isPlayer && !isDead && !skillOnCooldown) {
@@ -4652,7 +4663,8 @@ class GameData {
         });
         
         // Помечаем карты которые не могут атаковать
-        if (this.battleState.lastPlayerCard) {
+        // ИСКЛЮЧЕНИЕ: Если карта последняя живая - не добавляем класс used-last-round
+        if (this.battleState.lastPlayerCard && alivePlayerCards.length > 1) {
             const usedCardElement = document.querySelector(`#player-cards .battle-card-new[data-card-name="${this.battleState.lastPlayerCard.name}"]`);
             if (usedCardElement && availableCards.length > 0) {
                 usedCardElement.classList.add('used-last-round');
