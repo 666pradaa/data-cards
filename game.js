@@ -1246,6 +1246,13 @@ class GameData {
         // Обновляем UI с поддержкой всех форматов изображений
         const userAvatarElement = document.getElementById('user-avatar');
         if (userAvatarElement && user.avatar) {
+            // Проверяем и исправляем поврежденные base64 аватары
+            if (user.avatar.startsWith('data:image/') && !this.isValidBase64DataURL(user.avatar)) {
+                console.warn('⚠️ Обнаружен поврежденный base64 аватар, сбрасываем на аватар по умолчанию');
+                user.avatar = this.avatars[0];
+                await this.saveUser({ avatar: user.avatar });
+            }
+            
             this.setAvatarWithFallback(userAvatarElement, user.avatar);
         }
         
@@ -1293,6 +1300,13 @@ class GameData {
     }
 
     async selectAvatar(avatarUrl) {
+        // Проверяем валидность base64 данных перед сохранением
+        if (avatarUrl.startsWith('data:image/') && !this.isValidBase64DataURL(avatarUrl)) {
+            console.error('❌ Поврежденные base64 данные аватара, используем аватар по умолчанию');
+            await this.showAlert('Ошибка загрузки аватара. Выбран аватар по умолчанию.', '⚠️', 'Внимание');
+            avatarUrl = this.avatars[0]; // Используем аватар по умолчанию
+        }
+        
         await this.saveUser({ avatar: avatarUrl });
         this.loadProfile();
         this.closeAvatarModal();
@@ -2953,7 +2967,9 @@ class GameData {
                 ` : '';
                 
                 cardDiv.innerHTML = `
-                    <div class="card-image" style="${this.getBackgroundImageStyle(card.image)} background-size: cover; background-position: center; width: 100%; height: 80px; border-radius: 10px; margin-bottom: 10px;"></div>
+                    <div class="card-image" style="width: 100%; height: 80px; border-radius: 10px; margin-bottom: 10px; position: relative; overflow: hidden;">
+                        ${this.getImageHTML(card.image, card.name, 'card-image-img', 'width: 100%; height: 100%; object-fit: cover; border-radius: 10px;')}
+                    </div>
                     <div class="card-rarity rarity-${card.rarity}">${this.getRarityName(card.rarity)}</div>
                     <div class="card-stars">${starsHtml}</div>
                     <div class="card-name">${card.name}</div>
@@ -3002,7 +3018,9 @@ class GameData {
                 slot.classList.add('filled');
                 slot.innerHTML = `
                     <div class="deck-card rarity-border-${card.rarity}">
-                        <div class="card-image" style="${this.getBackgroundImageStyle(card.image)} background-size: cover; background-position: center; width: 100%; height: 80px; border-radius: 10px; margin-bottom: 5px;"></div>
+                        <div class="card-image" style="width: 100%; height: 80px; border-radius: 10px; margin-bottom: 5px; position: relative; overflow: hidden;">
+                            ${this.getImageHTML(card.image, card.name, 'card-image-img', 'width: 100%; height: 100%; object-fit: cover; border-radius: 10px;')}
+                        </div>
                         <div class="card-stars">${starsHtml}</div>
                         <div class="card-name">${card.name}</div>
                         <div class="card-stats-mini">
@@ -3077,7 +3095,9 @@ class GameData {
                 ` : '';
                 
                 cardDiv.innerHTML = `
-                    <div class="card-image" style="${this.getBackgroundImageStyle(card.image)} background-size: cover; background-position: center; width: 100%; height: 80px; border-radius: 10px; margin-bottom: 10px;"></div>
+                    <div class="card-image" style="width: 100%; height: 80px; border-radius: 10px; margin-bottom: 10px; position: relative; overflow: hidden;">
+                        ${this.getImageHTML(card.image, card.name, 'card-image-img', 'width: 100%; height: 100%; object-fit: cover; border-radius: 10px;')}
+                    </div>
                     <div class="card-rarity rarity-${card.rarity}">${this.getRarityName(card.rarity)}</div>
                     <div class="card-stars">${starsHtml}</div>
                     <div class="card-name">${card.name}</div>
@@ -3233,7 +3253,9 @@ class GameData {
                 ).join('');
                 
                 cardDiv.innerHTML = `
-                    <div class="card-image" style="${this.getBackgroundImageStyle(card.image)} background-size: cover; background-position: center; width: 100%; height: 80px; border-radius: 10px; margin-bottom: 10px;"></div>
+                    <div class="card-image" style="width: 100%; height: 80px; border-radius: 10px; margin-bottom: 10px; position: relative; overflow: hidden;">
+                        ${this.getImageHTML(card.image, card.name, 'card-image-img', 'width: 100%; height: 100%; object-fit: cover; border-radius: 10px;')}
+                    </div>
                     <div class="card-rarity rarity-${card.rarity}">${this.getRarityName(card.rarity)}</div>
                     <div class="card-stars">${starsHtml}</div>
                     <div class="card-name">${card.name}</div>
@@ -3573,7 +3595,9 @@ class GameData {
                     <div class="dropped-card rarity-border-${cardResult.card.rarity}">
                         <div class="card-glow"></div>
                         ${needsSparks ? this.generateSparks(sparksColor) : ''}
-                        <div class="card-image" style="${this.getBackgroundImageStyle(cardResult.card.image)} background-size: cover; background-position: center; width: 100%; height: 150px; border-radius: 10px; margin-bottom: 10px;"></div>
+                        <div class="card-image" style="width: 100%; height: 150px; border-radius: 10px; margin-bottom: 10px; position: relative; overflow: hidden;">
+                            ${this.getImageHTML(cardResult.card.image, cardResult.card.name, 'card-image-img', 'width: 100%; height: 100%; object-fit: cover; border-radius: 10px;')}
+                        </div>
                         <div class="card-rarity rarity-${cardResult.card.rarity}">${this.getRarityName(cardResult.card.rarity)}</div>
                         <div class="card-name">${cardResult.card.name}</div>
                         <div class="card-stats">
@@ -4628,7 +4652,9 @@ class GameData {
         const rarityClass = `rarity-${card.rarity}`;
         
         return `
-            <div class="battle-card-image" style="${this.getBackgroundImageStyle(card.image)}"></div>
+            <div class="battle-card-image" style="position: relative; overflow: hidden;">
+                ${this.getImageHTML(card.image, card.name, 'battle-card-image-img', 'width: 100%; height: 100%; object-fit: cover;')}
+            </div>
             <div class="battle-card-info">
                 <div class="battle-card-name ${rarityClass}">${card.name}</div>
                 ${starsHtml}
@@ -4794,6 +4820,30 @@ class GameData {
             return;
         }
         
+        // Проверяем base64 data URL на валидность
+        if (avatarPath.startsWith('data:image/')) {
+            // Проверяем что base64 данные не повреждены
+            if (!this.isValidBase64DataURL(avatarPath)) {
+                console.error('❌ Поврежденные base64 данные аватара, используем fallback');
+                imgElement.style.display = 'none';
+                if (fallback && fallback.classList.contains('avatar-fallback')) {
+                    fallback.style.display = 'flex';
+                }
+                return;
+            }
+            
+            // Устанавливаем base64 данные
+            imgElement.src = avatarPath;
+            imgElement.onerror = () => {
+                console.error('❌ Ошибка загрузки base64 аватара');
+                imgElement.style.display = 'none';
+                if (fallback && fallback.classList.contains('avatar-fallback')) {
+                    fallback.style.display = 'flex';
+                }
+            };
+            return;
+        }
+        
         // Для локальных аватаров пробуем все форматы
         const formats = this.getImageFormats(avatarPath);
         let currentFormat = 0;
@@ -4814,6 +4864,49 @@ class GameData {
         
         imgElement.onerror = tryNextFormat;
         tryNextFormat();
+    }
+    
+    // Проверка валидности base64 data URL
+    isValidBase64DataURL(dataURL) {
+        try {
+            // Проверяем формат data URL
+            if (!dataURL.startsWith('data:image/')) {
+                return false;
+            }
+            
+            // Проверяем что есть base64 данные
+            const base64Index = dataURL.indexOf('base64,');
+            if (base64Index === -1) {
+                return false;
+            }
+            
+            // Извлекаем base64 данные
+            const base64Data = dataURL.substring(base64Index + 7);
+            
+            // Проверяем что base64 данные не пустые и не слишком короткие
+            if (!base64Data || base64Data.length < 100) {
+                console.error('❌ Base64 данные слишком короткие или пустые');
+                return false;
+            }
+            
+            // Проверяем что base64 данные не обрезаны (должны заканчиваться правильно)
+            if (base64Data.length % 4 !== 0) {
+                console.error('❌ Base64 данные обрезаны (длина не кратна 4)');
+                return false;
+            }
+            
+            // Пробуем декодировать base64
+            try {
+                atob(base64Data);
+                return true;
+            } catch (e) {
+                console.error('❌ Base64 данные содержат недопустимые символы');
+                return false;
+            }
+        } catch (error) {
+            console.error('❌ Ошибка проверки base64 данных:', error);
+            return false;
+        }
     }
     
     // Функция для принудительного обновления всех изображений
